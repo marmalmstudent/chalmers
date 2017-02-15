@@ -1,0 +1,107 @@
+\documentclass[12pt,a4paper]{article}
+
+%\pdfoutput=1
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{mathabx}
+\usepackage{lmodern}
+\usepackage{units}
+\usepackage{siunitx}
+\usepackage{icomma}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{color}
+\usepackage{pgf}
+\DeclareMathOperator{\acosh}{arccosh}
+\newcommand{\N}{\ensuremath{\mathbbm{N}}}
+\newcommand{\Z}{\ensuremath{\mathbbm{Z}}}
+\newcommand{\Q}{\ensuremath{\mathbbm{Q}}}
+\newcommand{\R}{\ensuremath{\mathbbm{R}}}
+\newcommand{\C}{\ensuremath{\mathbbm{C}}}
+\newcommand{\rd}{\ensuremath{\mathrm{d}}}
+\newcommand{\id}{\ensuremath{\,\rd}}
+\usepackage{hyperref}
+%\usepackage{a4wide} % puts the page numbering further down the page.
+\usepackage{pdfpages}
+\usepackage{epstopdf}
+\DeclareGraphicsExtensions{.eps}
+
+\title{Handin 6}
+\author{Marcus Malmquist, marmalm, 941022}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Task 1}\label{sec:1}
+The periodic structure used in this task can be seen in Figure~\ref{fig:periodic_struct} and the properties of then structure can be seen in Table~\ref{tab:props}. Sine no information about the microstrip was provided, it is assumed that $\epsilon_r=10$.
+
+\begin{table}
+  \centering
+  \begin{tabular}{|c|l|} \hline
+    $f_0$ & $\SI{2}{\giga\hertz}$ \\
+    $Z_0$ & $\SI{50}{\ohm}$ \\
+    $C$ & $\SI{500}{\femto\farad}$ \\
+    $\left. \theta\right|_{f=f_0}$ & $\dfrac{8}{9}\pi$ \\
+    $\epsilon_r$ & 10 (assumed) \\ \hline
+  \end{tabular}
+  \caption{The properties of the periodic structure seen in Figure~\ref{fig:periodic_struct}.}
+  \label{tab:props}
+\end{table}
+
+The physical length, $d$, of each section can be calculated using (\ref{eq:phys_len})
+\begin{equation}
+  \label{eq:phys_len}
+  \begin{cases}
+    kd = \theta \\
+    k = \dfrac{\omega}{c_0}\epsilon_r
+  \end{cases}
+  \Rightarrow d = \frac{c_0}{\omega\epsilon_r}\theta
+\end{equation}
+
+In order to relate $k$ and $\beta$ it is convenient to use the $ABCD$-matrix which, for a cascaded circuit with transmission lines and impedances in series, can be calculated using (\ref{eq:abcd}). The $ABCD$-matrix in (\ref{eq:abcd}) is reciprocal since then determinant for each of the matrices in the right hand side in (\ref{eq:abcd}) is 1.
+\begin{equation}
+  \label{eq:abcd}
+  \begin{bmatrix}
+    A & B \\
+    C & D
+  \end{bmatrix} =
+  \begin{bmatrix}
+    \cos\frac{\theta}{2} & jZ_0\sin\frac{\theta}{2} \\
+    j\frac{1}{Z_0}\sin\frac{\theta}{2} & \cos\frac{\theta}{2}
+  \end{bmatrix}
+  \begin{bmatrix}
+    1 & -j\frac{1}{\omega C} \\
+    0 & 1
+  \end{bmatrix}
+  \begin{bmatrix}
+    \cos\frac{\theta}{2} & jZ_0\sin\frac{\theta}{2} \\
+    j\frac{1}{Z_0}\sin\frac{\theta}{2} & \cos\frac{\theta}{2}
+  \end{bmatrix}
+\end{equation}
+
+It is possible to relate $\omega$ and $k$ using (\ref{eq:phys_len}) once $d$ is known so (\ref{eq:abcd}) will be a function of $k$.
+Using then hint that $\cosh(\gamma d) = \frac{A+D}{2}$ and the asumption that $\gamma = j\beta$, we can solve (\ref{eq:solve}) which relates $\beta$ and $k$. The solution in the region $(-\pi < \beta d < \pi)$ can be seen in Figure~\ref{fig:kbeta}.
+\begin{equation}
+  \label{eq:solve}
+  \cos(\beta d) = \frac{A+D}{2}
+\end{equation}
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.7}{\input{periodic_struct.pdf_t}}}
+  \caption{Then periodic structure layout both as microstrip and equivalent circuit.}
+  \label{fig:periodic_struct}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.9}{\input{beta-k.pgf}}}
+  \caption{$k$-$\beta$ diagram for the structure in Figure~\ref{fig:periodic_struct}. The dashed lines are upper and lower bounds of the passbands.}
+  \label{fig:kbeta}
+\end{figure}
+
+\end{document}

@@ -1,0 +1,52 @@
+\begin{picture}(0,0)%
+\includegraphics{k_d.pdf}%
+\end{picture}%
+\setlength{\unitlength}{3947sp}%
+%
+\begingroup\makeatletter\ifx\SetFigFont\undefined%
+\gdef\SetFigFont#1#2#3#4#5{%
+  \reset@font\fontsize{#1}{#2pt}%
+  \fontfamily{#3}\fontseries{#4}\fontshape{#5}%
+  \selectfont}%
+\fi\endgroup%
+\begin{picture}(8411,6617)(300,-8257)
+%  text 
+\put(1203,-7786){\makebox(0,0)[lb]{\smash{{\SetFigFont{11}{13.2}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}0}%
+}}}}
+%  text 
+\put(3094,-7786){\makebox(0,0)[lb]{\smash{{\SetFigFont{11}{13.2}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}500}%
+}}}}
+%  text 
+\put(5032,-7786){\makebox(0,0)[lb]{\smash{{\SetFigFont{11}{13.2}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}1000}%
+}}}}
+%  text 
+\put(7016,-7786){\makebox(0,0)[lb]{\smash{{\SetFigFont{11}{13.2}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}1500}%
+}}}}
+%  text 
+\put(647,-7100){\makebox(0,0)[lb]{\smash{{\SetFigFont{11}{13.2}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}-30000}%
+}}}}
+%  text 
+\put(647,-6259){\makebox(0,0)[lb]{\smash{{\SetFigFont{11}{13.2}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}-20000}%
+}}}}
+%  text 
+\put(647,-5419){\makebox(0,0)[lb]{\smash{{\SetFigFont{11}{13.2}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}-10000}%
+}}}}
+%  text 
+\put(1073,-4578){\makebox(0,0)[lb]{\smash{{\SetFigFont{11}{13.2}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}0}%
+}}}}
+%  text 
+\put(702,-3738){\makebox(0,0)[lb]{\smash{{\SetFigFont{11}{13.2}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}10000}%
+}}}}
+%  text 
+\put(702,-2897){\makebox(0,0)[lb]{\smash{{\SetFigFont{11}{13.2}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}20000}%
+}}}}
+%  text 
+\put(702,-2057){\makebox(0,0)[lb]{\smash{{\SetFigFont{11}{13.2}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}30000}%
+}}}}
+%  text 
+\put(4801,-8161){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$K_d$}%
+}}}}
+%  text 
+\put(526,-5311){\rotatebox{90.0}{\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}Function Value}%
+}}}}}
+\end{picture}%

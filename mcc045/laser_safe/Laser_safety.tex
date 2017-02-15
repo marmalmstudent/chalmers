@@ -1,0 +1,70 @@
+\documentclass[12pt,a4paper]{article}
+
+%\pdfoutput=1
+
+\usepackage{pagecolor}
+\definecolor{bgcolor}{HTML}{3F3F3F}
+\definecolor{fgcolor}{HTML}{DCDCCC}
+\pagecolor{bgcolor}
+\color{fgcolor}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+%\renewcommand*\rmdefault{ptm}
+\usepackage{amsmath}
+\usepackage{mathabx}
+\usepackage{units}
+\usepackage{siunitx}
+\usepackage{icomma}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{color}
+\usepackage{pgf}
+\DeclareMathOperator{\acosh}{arccosh}
+\newcommand{\N}{\ensuremath{\mathbbm{N}}}
+\newcommand{\Z}{\ensuremath{\mathbbm{Z}}}
+\newcommand{\Q}{\ensuremath{\mathbbm{Q}}}
+\newcommand{\R}{\ensuremath{\mathbbm{R}}}
+\newcommand{\C}{\ensuremath{\mathbbm{C}}}
+\newcommand{\rd}{\ensuremath{\mathrm{d}}}
+\newcommand{\id}{\ensuremath{\,\rd}}
+\usepackage{hyperref}
+%\usepackage{a4wide} % puts the page numbering further down the page.
+\usepackage{pdfpages}
+\usepackage{epstopdf}
+\DeclareGraphicsExtensions{.eps}
+\title{Laser safety}
+\author{Marcus Malmquist, marmalm, 941022}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Answers: laser safety}\label{sec:1}
+
+\subsection{1}
+It is OK to put your hand in the laser beam for two reasons:
+\begin{enumerate}
+\item The beam is not focused on your hand, but it will be ($>10^5$ times higher) on the retina.
+\item You can easely cope with a damaged hand but not with a damaged eye...
+\end{enumerate}
+\subsection{2}
+According to the lecture notes it take about one fourth of a second.
+\subsection{3}
+The laser beam has a diameter of approximately $\SI{2}{\milli\metre}$, which is less than the diameter of a pupil, so all of the incident power ($\SI{2.5}{\milli\watt}$) will hit the retina. The pupil can be approximated to be a circular disk with a diameter of approximately $\SI{7}{\milli\metre}$ so the incident irradiance is therefor $I=\SI{65}{\watt\metre^{-2}}$.
+
+The laser is assumed to be (nearly) a point source so the solid angle is very small. The maximum premissible exposure time can be calculated from \ref{eq:mpe}, where $C_6=1$ since the solid angle is small.
+\begin{equation}
+  \label{eq:mpe}
+  It=18t^{0.75}C_6 \Leftrightarrow t=(18/I)^{\frac{1}{0.25}}=\SI{5.9}{\milli\second}
+\end{equation}
+\subsection{4}
+No because $\SI{5.9}{\milli\second}<\SI{250}{\milli\second}$.
+\subsection{5}
+The exposure time would be roughly 40 times higher than the maximum allowed so it would be likely to cause permanent damage to the retina.
+\subsection{6}
+This $\SI{2.5}{\milli\watt}$ laser should be labeled as \textbf{Class 3R} as it allows up to $\SI{5}{\milli\watt}$ and the more restrictive Class 2(M) allows up to $\SI{1}{\milli\watt}$.
+
+\end{document}

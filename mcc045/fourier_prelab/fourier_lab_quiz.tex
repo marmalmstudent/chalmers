@@ -1,0 +1,139 @@
+\documentclass[12pt,a4paper]{article}
+
+%\pdfoutput=1
+
+\usepackage{pagecolor}
+\definecolor{bgcolor}{HTML}{3F3F3F}
+\definecolor{fgcolor}{HTML}{DCDCCC}
+\pagecolor{bgcolor}
+\color{fgcolor}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+%\renewcommand*\rmdefault{ptm}
+\usepackage{amsmath}
+\usepackage{mathabx}
+\usepackage{units}
+\usepackage{siunitx}
+\usepackage{icomma}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{color}
+\usepackage{pgf}
+\DeclareMathOperator{\acosh}{arccosh}
+\newcommand{\N}{\ensuremath{\mathbbm{N}}}
+\newcommand{\Z}{\ensuremath{\mathbbm{Z}}}
+\newcommand{\Q}{\ensuremath{\mathbbm{Q}}}
+\newcommand{\R}{\ensuremath{\mathbbm{R}}}
+\newcommand{\C}{\ensuremath{\mathbbm{C}}}
+\newcommand{\rd}{\ensuremath{\mathrm{d}}}
+\newcommand{\id}{\ensuremath{\,\rd}}
+\usepackage{hyperref}
+%\usepackage{a4wide} % puts the page numbering further down the page.
+\usepackage{pdfpages}
+\usepackage{epstopdf}
+\DeclareGraphicsExtensions{.eps}
+\title{Answers: Fourier lab quiz}
+\author{Marcus Malmquist, marmalm, 941022}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{1}\label{sec:1}
+\subsection{a}\label{sec:1a}
+To get the maximum magnification one would want to use the two lenses that has the shortest and largest focal lengths. In this case that would be the lense with $f=\SI{-50}{\milli\metre}$ and $f=\SI{400}{\milli\metre}$
+\subsection{b}\label{sec:1b}
+The lense with shortest focal length should be placed closest to the object.
+\subsection{c}\label{sec:1c}
+Therefor separation should be the sum of the focal lengths, i.e. $\SI{350}{\milli\metre}$.
+\subsection{d}\label{sec:1d}
+Using trigonometry the magnification is the quotient of the focal lengths, i.e. $8$.
+\subsection{e}\label{sec:1e}
+The telescope is of Galileo's design as both a concave and convex lense is used.
+\subsection{f}\label{sec:1f}
+The beam radius at a distance $z$ from the beam waist, $w_0$, can be found from (\ref{eq:bw})
+\begin{equation}
+  \label{eq:bw}
+  w(z)=w_0\sqrt{1+\frac{z\lambda}{\pi w_0^2}}
+\end{equation}
+If i understand the setup correctly the distance between the laser source and the beam expander is not specified (and does not need to be), (\ref{eq:bw}) can only be solved for $w_0$ if $z$ is known or vice versa. If $w(z)=\frac{\SI{25}{\milli\metre}}{2\cdot 8}=\SI{1.5625}{\milli\metre} := r$ we can express $w_0$ as a function of $z$, seen in (\ref{eq:w0z})
+\begin{equation}
+  \label{eq:w0z}
+  w_0(z)=\sqrt{\frac{r^2}{2}+\sqrt{\frac{r^4}{4}-\Big(\frac{z\lambda}{\pi}\Big)^2}}
+\end{equation}
+It is perhaps more likely that we can change the distance between the laser and the beam expander, so (\ref{eq:zw0}) might be more usefull.
+\begin{equation}
+  \label{eq:zw0}
+  z(w_0)=\frac{\pi}{\lambda}(r-w_0)w_0
+\end{equation}
+\section{2}\label{sec:2}
+\subsection{a}\label{sec:2a}
+The concave lense can not be used for the 4f-system and both the fourier plane and the object plane are located at the focal length so the size of the fourier plane is not affected by the choise of focal length (as long as it is not chosen too large in which case the beam will diverge).
+
+Choosing a shorter focal length as the object lense will produce a larger image. For this reason the lense with focal length $\SI{120}{\milli\metre}$ could be used.
+\subsection{b}\label{sec:2b}
+At the focal length, i.e. they should be separated by $\SI{120}{\milli\metre}$.
+\subsection{c}\label{sec:2c}
+At the focal length, i.e. they should be separated by $\SI{120}{\milli\metre}$.
+\subsection{d}\label{sec:2d}
+The beam radius is $\SI{12.5}{\milli\metre}$ and the focal length if $\SI{120}{\milli\metre}$ so the the maximum angle will be $\theta_{\text{max}}=\arctan\big(\frac{12.5}{200}\big)=5.9^{\text{o}}$.
+\subsection{e}\label{sec:2e}
+I don't know a simple way to calculate this, but the beam diameter contains roughly $86\%$ of the beam $(1-e^{-2})$, and for the maximum angle this should mean that this is all that gets through. If this clipped gaussian beam is fourier transformed it will yield the remaining frequency components.
+
+\section{3}\label{sec:3}
+\subsection{a}\label{sec:3a}
+The only viable remaining lense has focal length of $f=\SI{200}{\milli\metre}$.
+\subsection{b}\label{sec:3b}
+The magnification will be $\frac{5}{3}$.
+\subsection{c}\label{sec:3c}
+The compound lense could be created by placing separating the lenses by $\SI{150}{\milli\metre}$ (from (\ref{eq:3c})).
+\begin{equation}
+  \label{eq:3c}
+  d=f_1+f_2-\frac{f_1f_2}{f}
+\end{equation}
+The convex lense ($f=\SI{200}{\milli\metre}$) should be placed $\SI{400}{\milli\metre}$ from the fourier plane and the concave lense ($f=\SI{-100}{\milli\metre}$) should be placed $\SI{150}{\milli\metre}$ from the convex lense towards the fourier plane. The image plane should then be located $\SI{400}{\milli\metre}$ from the convex lense.
+\subsection{d}\label{sec:3d}
+The 4f-system should now magnify the the beam by a factor $\frac{10}{3}$ so the image should beam $\frac{250}{3}\SI{}{\milli\metre}$.
+\section{4}\label{sec:4}
+\subsection{a}\label{sec:4a}
+By removing the concave lense ($f=\SI{-100}{\milli\metre}$) the image plane should still be located $\SI{400}{\milli\metre}$ (from \ref{eq:4a}).
+\begin{equation}
+  \label{eq:4a}
+  z_1=\frac{ff_2}{f-f_2}
+\end{equation}
+\subsection{b}\label{sec:4b}
+This would not provide any magnification.
+\subsection{c}\label{sec:4c}
+It is not possible to get a focused image by moving the lense with my setup since (\ref{eq:4c}) does not have 3 solutions ($x=0$ and $x=\pm x_1$ for some $\SI{400}{\milli\metre}<x_1<\SI{400}{\milli\metre}$).
+\begin{equation}
+  \label{eq:4c}
+  \frac{1}{f-x}+\frac{1}{z_1+x}=\frac{1}{f_2}
+\end{equation}
+\subsection{d}\label{sec:4d}
+I have probably made some mistake along the way but since the setup in Section~\ref{sec:4c} is not possible there can be no magnification.
+\subsection{e}\label{sec:4e}
+For the reason mentioned in Section~\ref{sec:4d} the setup from Section~\ref{sec:3} would be the only working solution.
+
+\section{5}
+\section{a}\label{sec:5a}
+The grating from Figure 3 in the lab PM, task 3 should yield
+\begin{enumerate}
+\item vertical grating: horizontally spread dots since it is a bandpass/bandstop along the $x$-axis
+\item circular grating: circular pattern (same as the grating itself) since it is a radially symmetric bandpass/bandstop
+\item chess board: horizontally and vertically spread dots since it is a bandpass/bandstop along both $x$-axis and $y$-axis.
+\end{enumerate}
+\subsection{b}\label{sec:5b}
+The filters can be seen in Figure~\ref{fig:5b}
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.70}{\input{filters.pdf_t}}}
+  \caption{1D low pass, 1D hight pass, 2D low pass, 2D high pass filters.}
+  \label{fig:5b}
+\end{figure}
+\section{c}\label{sec:5c}
+Places where there are sharp edges between dark and bright would become more blurry when using a low pass filter while only places with sharp edges between dark and bright would be visible when using a highpass filter.
+For 1D filters a vertical filter would only affect vertical edges and analogus for horisontal filter.
+\end{document}

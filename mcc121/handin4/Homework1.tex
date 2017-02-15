@@ -1,0 +1,117 @@
+\documentclass{article}
+
+\pdfoutput=1
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{lmodern}
+\usepackage{units}
+\usepackage{siunitx}
+\usepackage{icomma}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{color}
+\newcommand{\N}{\ensuremath{\mathbbm{N}}}
+\newcommand{\Z}{\ensuremath{\mathbbm{Z}}}
+\newcommand{\Q}{\ensuremath{\mathbbm{Q}}}
+\newcommand{\R}{\ensuremath{\mathbbm{R}}}
+\newcommand{\C}{\ensuremath{\mathbbm{C}}}
+\newcommand{\rd}{\ensuremath{\mathrm{d}}}
+\newcommand{\id}{\ensuremath{\,\rd}}
+\usepackage{hyperref}
+%\usepackage{a4wide} % puts the page numbering further down the page.
+\usepackage{pdfpages}
+\usepackage{epstopdf}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareGraphicsExtensions{.eps}
+
+\title{Home Assigment 4}
+\author{Marcus Malmquist, marmalm, 941022}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Task 1}\label{sec:1}
+The scattering matrix $\mathbf{S}$ of a four port is shown in (\ref{eq:scatt}).
+\begin{equation}
+  \mathbf{S} =
+  \begin{pmatrix}
+    0.2e^{j\frac{\pi}{2}} & 0.5e^{-j\frac{\pi}{4}} & 0.5e^{j\frac{\pi}{4}} & 0 \\
+    0.5e^{-j\frac{\pi}{4}} & 0 & 0 & 0.5e^{j\frac{\pi}{4}} \\
+    0.5e^{-j\frac{\pi}{4}} & 0 & 0 & 0.5e^{-j\frac{\pi}{4}} \\
+    0 & 0.5e^{-j\frac{\pi}{4}} & 0.5e^{-j\frac{\pi}{4}} & 0
+  \end{pmatrix}
+  \label{eq:scatt}
+\end{equation}
+
+\subsection{a}\label{sec:1a}
+The circuit is lossless if $\mathbf{S}$ is unitary. In order for $\mathbf{S}$ to be unitary it has to be equal to its Hermitian conjugate (denoted $\dagger$) (\ref{eq:hermit}), which is not the case for $\mathbf{S}$ as it is defined in (\ref{eq:scatt}).
+\begin{equation}
+  \mathbf{S}\mathbf{S}^\dagger=\mathbf{I}
+  \label{eq:hermit}
+\end{equation}
+
+\subsection{b}\label{sec:1b}
+The circuit islossless if $\mathbf{S}$ is symmetric (\ref{eq:symm}), which is not the case for $\mathbf{S}$ as it is defined in (\ref{eq:scatt}).
+\begin{equation}
+  \mathbf{S}=\mathbf{S}^T
+  \label{eq:symm}
+\end{equation}
+
+\subsection{c}\label{sec:1c}
+The incident and reflected voltage waves are related through the scattering matrix as shown in (\ref{eq:volt})
+\begin{equation}
+  \vec{V}^{-}=\mathbf{S}\vec{V}^{+}
+  \label{eq:volt}
+\end{equation}
+
+If the system is driven by a voltage wave incident at port 1 while all other ports are matched then
+\begin{equation}
+  V^{-}_{1}=\mathbf{S}_{11}V^{+}_{1} + \mathbf{S}_{1j}\overbrace{(1-\delta_{i1})\mathbf{\Gamma}\underbrace{\mathbf{S}\vec{V}^{+}}_{\vec{V}^{-}}}^{\vec{V}^{'+}}=\mathbf{S}_{11}V^{+}_{1}
+  \label{eq:return}
+\end{equation}
+where $\mathbf{\Gamma}_{ij}=\delta_{i1}\delta_{j1}$. Equation (\ref{eq:return}) implies that the reflection coefficient and return loss is
+\begin{subequations}
+  \begin{align}
+    \Gamma & = \mathbf{S}_{11}=0.2e^{j\frac{\pi}{2}}, \\
+    L_\text{return} & = 10\log_{10}|\mathbf{S}_{11}|^{-2}=\SI{13.98}{\deci\bel}
+  \end{align}
+  \label{eq:RL}
+\end{subequations}
+
+\subsection{c}\label{sec:1c}
+If the system is driven by a voltage wave incident at port 3 or 4 and measurements are made at port 4 or 3 while all other ports are matched then the outgoing wave at the port is (\ref{eq:s43}) or (\ref{eq:s34})
+\begin{subequations}
+  \begin{align}
+    V^{-}_{4} & =\mathbf{S}_{43}V^{+}_{3}, \label{eq:s43} \\
+    V^{-}_{3} & =\mathbf{S}_{34}V^{+}_{4} \label{eq:s34}
+  \end{align}
+\end{subequations}
+When the system is driven at port $j$ and the output power is measured at port $i$ then the losses between port $i$ and $j$ for this system can be calculated using (\ref{eq:loss}).
+\begin{equation}
+  L_{ij}=10\log_{10}\frac{P_\text{in}}{P_\text{out}}=10\log_{10}|\mathbf{S}_{ij}|^{-2}
+  \label{eq:loss}
+\end{equation}
+When evaluating the losses between port 3 and 4 it is evident that $\mathbf{S}_{34}=\mathbf{S}_{43}=0.5e^{-j\frac{\pi}{4}}$ so the loss is $\SI{6}{\deci\bel}$ both ways.
+
+\subsection{d}\label{sec:1d}
+If the system is driven by a voltage wave incident at port 1 while port 3 is shorted and ports 2 and 4 are matched
+\begin{equation}
+  V^{-}_{1}=\mathbf{S}_{11}V^{+}_{1} + \mathbf{S}_{1j}\overbrace{(1-\delta_{i1})\mathbf{\Gamma}\underbrace{\mathbf{S}\vec{V}^{+}}_{\vec{V}^{-}}}^{\vec{V}^{'+}}=(\mathbf{S}_{11}-\mathbf{S}_{13}\mathbf{S}_{31})V^{+}_{1}
+  \label{eq:return_d}
+\end{equation}
+where $\mathbf{\Gamma}_{ij}=\delta_{i1}\delta_{j1}-\delta_{i3}\delta_{j3}$. Equation (\ref{eq:return_d}) implies that the reflection coefficient and return loss is
+\begin{subequations}
+  \begin{align}
+    \Gamma & = \mathbf{S}_{11}-\mathbf{S}_{13}\mathbf{S}_{31}=0.2e^{j\frac{\pi}{2}}-0.5^2=-0.25+j0.2, \\
+    L_\text{return} & = 10\log_{10}|\mathbf{S}_{11}-\mathbf{S}_{13}\mathbf{S}_{31}|^{-2}=\SI{9.89}{\deci\bel}.
+  \end{align}
+  \label{eq:RL}
+\end{subequations}
+
+\end{document}

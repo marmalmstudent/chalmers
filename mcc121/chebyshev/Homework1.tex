@@ -1,0 +1,181 @@
+\documentclass[12pt,a4paper]{article}
+
+%\pdfoutput=1
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{lmodern}
+\usepackage{units}
+\usepackage{siunitx}
+\usepackage{icomma}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{color}
+\usepackage{pgf}
+\DeclareMathOperator{\acosh}{arccosh}
+\newcommand{\N}{\ensuremath{\mathbbm{N}}}
+\newcommand{\Z}{\ensuremath{\mathbbm{Z}}}
+\newcommand{\Q}{\ensuremath{\mathbbm{Q}}}
+\newcommand{\R}{\ensuremath{\mathbbm{R}}}
+\newcommand{\C}{\ensuremath{\mathbbm{C}}}
+\newcommand{\rd}{\ensuremath{\mathrm{d}}}
+\newcommand{\id}{\ensuremath{\,\rd}}
+\usepackage{hyperref}
+%\usepackage{a4wide} % puts the page numbering further down the page.
+\usepackage{pdfpages}
+\usepackage{epstopdf}
+\DeclareGraphicsExtensions{.eps}
+
+\title{HFSS part 2: Chebyshev transformer}
+\author{Marcus Malmquist, marmalm, 941022}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Task 1}\label{sec:1}
+This part involved designing a Chebyshev transformer (with a center frequency of $\SI{6}{\giga\hertz}$ for a waveguide with dimensions $a=\SI{80}{\milli\metre}$ and $b=\SI{10}{\milli\metre}$) with some predefined properties depending on assigned design id. For me the design id was 6 which means that I used the filter properties in Table~\ref{tab:filter_prop}
+
+\begin{table}
+  \centering
+  \caption{Design constraints of the Chebyshev transformer.}
+  \begin{tabular}{|c|c|c|c|}\hline
+    Design ID & $\frac{Z_0}{Z_L}$ & Fractional & $\Gamma_m$ \\
+     & & bandwidth & \\ \hline
+    6 & 3.4 & 1 & 0.07 \\ \hline
+  \end{tabular}
+  \label{tab:filter_prop}
+\end{table}
+\noindent The fractional bandwidth presented in Table~\ref{tab:filter_prop} can be used to calculate $\theta_m$ using (\ref{eq:bw_frac})
+\begin{equation}
+  1=\dfrac{\Delta f}{f_0}=2-\dfrac{4\theta_m}{\pi}\Leftrightarrow \theta_m=\dfrac{\pi}{4}
+  \label{eq:bw_frac}
+\end{equation}
+When $\theta_m$ is known the number of sections needed can be calculated using (\ref{eq:N})
+\begin{equation}
+  \cos^{-1}{\theta_m}=\cosh\Big[\dfrac{1}{N}\acosh\Big(\dfrac{1}{\Gamma_m}\Big|\dfrac{Z_L-Z_0}{Z_L+Z_0}\Big|\Big)\Big] 
+  \label{eq:N}
+\end{equation}
+
+Since the resulting value of $N$ from (\ref{eq:N}) is not an integer it has to be rounded off and used to calculate a new value of $\theta_m$. The result is $N=3$ and $\theta_m\approx 0.808$.
+
+When the number of sections is known what remains is to calculate the reflection coefficien $\Gamma$ in each interface and from there calculate what wave impedances are needed in the sections. By matching the total reflection coefficient and its components to the Chebyshev polynom (type I) corresponging to the number of sections using (\ref{eq:Gamma})
+\begin{equation}
+  \Gamma(\theta)=2e^{-j3\theta}\sum_n\big(\Gamma_n\cos(N-2n)\theta\big)=-\Gamma_me^{-j3\theta}T_N\Big(\frac{\cos\theta}{\cos\theta_m}\Big)
+  \label{eq:Gamma}
+\end{equation}
+In this case we have $N=3$ and $T_3(x)=4x^3-3x$ so the reflection coefficients can be gotten by equating cosine terms as seen in (\ref{eq:Gamma_res})
+\begin{subequations}
+  \begin{align}
+    \Gamma_0=\Gamma_3&=-\frac{\Gamma_m}{2\cos^{2}\theta_m}, \label{eq:Gamma_res1} \\
+    \Gamma_1=\Gamma_2&=-\frac{3}{2}\Gamma_m\Big(\frac{1}{\cos^{3}\theta_m}-\frac{1}{\cos\theta_m}\Big)\label{eq:Gamma_res2}
+  \end{align}
+  \label{eq:Gamma_res}
+\end{subequations}
+then the characteristic impedances can be acquired from (\ref{eq:imp})
+\begin{equation}
+  Z_{i+1}=Z_i\frac{1+\Gamma_i}{1-\Gamma_i}
+  \label{eq:imp}
+\end{equation}
+
+We now encounter a potential problem because (\ref{eq:Gamma_res}) and (\ref{eq:imp}) can be used to calculate the ratio between $Z_{L}$ and $Z_{0}$, but this can also be calculated since the ratio $\frac{Z_{0}}{Z_{L}}$ was given as a design property. As it truns out those expressions do not match so this problem has no solution. Instead we have to find the solution that have properties that are as close to those in Table~\ref{tab:filter_prop} as possible. This will be done by minimizing (\ref{eq:tar_fun}) with the condition that (\ref{eq:condition1}) and (\ref{eq:condition2}) must be fulfilled. (\ref{eq:condition1}) comes from the fact that $\Gamma_{m}$ must be the same in (\ref{eq:Gamma_res1}) and (\ref{eq:Gamma_res2}) while (\ref{eq:condition2}) comes from the fact that recursive use of (\ref{eq:imp}) must yield the same ratio between $Z_{L}$ and $Z_{0}$ as the ratio given as a design property.
+\begin{subequations}
+  \begin{align}
+    f(\theta^{'}_{m},\Gamma^{'}_{0}, \Gamma^{'}_{1})&=\Big(\frac{|\theta^{'}_{m}-\theta_{m}|}{\theta_{m}}\Big)^{2}+\Big(\frac{|\Gamma^{'}_{0}-\Gamma_{0}|}{\Gamma_{0}}\Big)^{2}+\Big(\frac{|\Gamma^{'}_{1}-\Gamma_{1}|}{\Gamma_{1}}\Big)^{2}, \label{eq:tar_fun} \\
+    \Gamma^{'}_{0}&=\frac{\Gamma^{'}_{1}}{3\sin^3\theta_{m}}, \label{eq:condition1} \\
+    \frac{Z_L}{Z_0}&=\Big(\frac{1+\Gamma^{'}_0}{1-\Gamma^{'}_0}\Big)^{2}\Big(\frac{1+\Gamma^{'}_1}{1-\Gamma^{'}_1}\Big)^{2}, \label{eq:condition2}
+  \end{align}
+  \label{eq:optimize}
+\end{subequations}
+The result from this optimization problem was $\min f(\theta^{'}_{m},\Gamma^{'}_{0}, \Gamma^{'}_{1})=0.31453276$ after the final iteration (and $0.3959806$ after one iteration) and the final values can be seen in Table~\ref{tab:final_val} and the theoretical $\text{S}_{11}$ plot can be seen in Figure~\ref{fig:theoretical}
+\begin{table}
+  \centering
+  \caption{Final transformer properties after optimization.}
+  \begin{tabular}{|c|c|}\hline
+    Property & Value \\ \hline
+    $\frac{Z_{0}}{Z_{L}}$ & 3.4 \\ \hline
+    $\Gamma_{m}$ & 0.077 \\ \hline
+    $\frac{\Delta f}{f_{0}}$ & 0.969 \\ \hline
+    $N$ & 3 \\ \hline
+    $\theta_{m}$ & 0.810 \\ \hline
+  \end{tabular}
+  \label{tab:final_val}
+\end{table}
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.9}{\input{transformer.pgf}}}
+  \caption{Theoretical $\text{S}_{11}$ output for both transformers using the properties in Table~\ref{tab:final_val}.}
+  \label{fig:theoretical}
+\end{figure}
+
+\subsection{Part A}\label{sec:1a}
+One way to create a section of the transformer is to use the same dimensions as the waveguide but fill it with a different dielectric. the relative permittivity of the dielectric can be calculated from (\ref{eq:charr_imp})
+\begin{equation}
+  Z_\text{TE}=\frac{k\eta}{\beta}=\frac{\omega\mu}{\sqrt{\omega^2\mu\epsilon-k^2_c}}=\frac{k\eta}{\beta}=\frac{\omega\mu}{\sqrt{\omega^2\mu\epsilon-\big(\frac{m\pi}{a}\big)^2-\big(\frac{n\pi}{b}\big)^2}}
+  \label{eq:charr_imp}
+\end{equation}
+For a $\text{TE}_{{10}}$-mode the relative permittivity (assuming the relative permeability is equal to unity) can be calculated from (\ref{eq:e_r})
+\begin{equation}
+  \epsilon_r=\frac{c_0}{\omega}\Big[\Big(\frac{\omega\mu}{Z_\text{TE}}\Big)^2+\Big(\frac{\pi}{a}\Big)^2\Big]
+  \label{eq:e_r}
+\end{equation}
+The relation between the relative permittivity of the dielectric can be found regardless of the wave impedance of the waveguide but the length of the section (which is $\frac{\lambda_g}{4}$) requires knowlege of the wave impedance of the waveguide. The value of the relative permittivity and section length, assuming the waveguide has $\epsilon_r=1$, can be found in Table~\ref{tab:e_r}.
+\begin{table}
+  \centering
+  \caption{Chebyshev transformer properties using variable dielectric.}
+  \begin{tabular}{|c|c|c|}\hline
+     & $\epsilon_r$ & $\frac{\lambda_g}{4}$ \\ \hline
+    $Z_0$ & 1.00 & $\SI{13.15}{\milli\metre}$ \\ \hline
+    $Z_1$ & 1.55 & $\SI{10.38}{\milli\metre}$ \\ \hline
+    $Z_2$ & 3.17 & $\SI{7.13}{\milli\metre}$ \\ \hline
+    $Z_3$ & 6.60 & $\SI{4.90}{\milli\metre}$ \\ \hline
+    $Z_4$ & 10.53 & $\SI{3.87}{\milli\metre}$ \\ \hline
+  \end{tabular}
+  \label{tab:e_r}
+\end{table}
+
+The simulations results shown in Figure~\ref{fig:var_diel_s11} indicates that the theoretical bandwidth ($\Delta f=\SI{6}{\giga\hertz}$) was not achieved with this setup, but instead only $\SI{5.41}{\giga\hertz}$ was achieved. One reason for this could be that the transformer in \textit{HFSS} is not ideal.
+
+To improve the results in \textit{HFSS} one could tweak the material parameters or perhaps change the design properties of the transformer.
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\includegraphics[width=\textwidth]{var_diel_s11_optimized.png}}
+  \caption{$\text{S}_{11}$ plot using a Chebyshev transformer with 3 sections with varying dielectric.}
+  \label{fig:var_diel_s11}
+\end{figure}
+
+\subsection{Part B}\label{sec:1b}
+Another way to create a section of the transformer is to vary the height of the sections and use the same dielectric as that of the waveguide. the height of the sections can be calculated from (\ref{eq:height})
+\begin{equation}
+  b_i=b_0\frac{Z_i}{Z_0}
+  \label{eq:height}
+\end{equation}
+The value of the section height and section length, assuming the waveguide has $\epsilon_r=1$, can be found in Table~\ref{tab:height}
+\begin{table}
+  \centering
+  \caption{Chebyshev transformer properties using variable height.}
+  \begin{tabular}{|c|c|c|}\hline
+     & $b$ & $\frac{\lambda_g}{4}$ \\ \hline
+    $Z_0$ & $\SI{10.00}{\milli\metre}$ & $\SI{13.50}{\milli\metre}$ \\ \hline
+    $Z_1$ & $\SI{7.89}{\milli\metre}$ & $\SI{13.50}{\milli\metre}$ \\ \hline
+    $Z_2$ & $\SI{5.42}{\milli\metre}$ & $\SI{13.50}{\milli\metre}$ \\ \hline
+    $Z_3$ & $\SI{3.73}{\milli\metre}$ & $\SI{13.50}{\milli\metre}$ \\ \hline
+    $Z_4$ & $\SI{2.94}{\milli\metre}$ & $\SI{13.50}{\milli\metre}$ \\ \hline
+  \end{tabular}
+  \label{tab:height}
+\end{table}
+The simulation results shown in Figure~\ref{fig:var_dim_s11} shows that the theoretical bandwidth ($\Delta f=\SI{6}{\giga\hertz}$) was not achieved with this setup, but instead only $\SI{4.80}{\giga\hertz}$ was achieved. One reason for this could be that the transformer in \textit{HFSS} is not ideal.
+
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\includegraphics[width=\textwidth]{var_dim_s11_optimized.png}}
+  \caption{$\text{S}_{11}$ plot using a Chebyshev transformer with 3 sections with varying height.}
+  \label{fig:var_dim_s11}
+\end{figure}
+
+\section{Discussion}
+The transformer in Section~\ref{sec:1a} has better bandwidth than the transformer in Section~\ref{sec:1b} so theoretically a transformer with variable dielectric should be preferred. In reality it might not be as easy to find materials with dielectric that completely match the desired permittivity while the dimensions of the transformer is much easier to modify so for practical reasons the transformer in Section~\ref{sec:1b} should be preferred.
+\end{document}

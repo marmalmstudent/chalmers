@@ -1,0 +1,21 @@
+\begin{picture}(0,0)%
+\includegraphics{filters.pdf}%
+\end{picture}%
+\setlength{\unitlength}{3947sp}%
+%
+\begingroup\makeatletter\ifx\SetFigFont\undefined%
+\gdef\SetFigFont#1#2#3#4#5{%
+  \reset@font\fontsize{#1}{#2pt}%
+  \fontfamily{#3}\fontseries{#4}\fontshape{#5}%
+  \selectfont}%
+\fi\endgroup%
+\begin{picture}(11424,2926)(589,-2675)
+\put(1201,-2611){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0.862745,0.862745,0.8}1D low pass}%
+}}}}
+\put(4201,-2611){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0.862745,0.862745,0.8}1D high pass}%
+}}}}
+\put(7201,-2611){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0.862745,0.862745,0.8}2D low pass}%
+}}}}
+\put(10201,-2611){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0.862745,0.862745,0.8}2D high pass}%
+}}}}
+\end{picture}%

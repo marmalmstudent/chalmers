@@ -1,0 +1,59 @@
+\begin{picture}(0,0)%
+\includegraphics{handin1_2c_edit_2.pdf}%
+\end{picture}%
+\setlength{\unitlength}{3947sp}%
+%
+\begingroup\makeatletter\ifx\SetFigFont\undefined%
+\gdef\SetFigFont#1#2#3#4#5{%
+  \reset@font\fontsize{#1}{#2pt}%
+  \fontfamily{#3}\fontseries{#4}\fontshape{#5}%
+  \selectfont}%
+\fi\endgroup%
+\begin{picture}(9082,7036)(378,-12200)
+%  text 
+\put(1635,-11802){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$10^0$}%
+}}}}
+%  text 
+\put(2875,-11802){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$10^2$}%
+}}}}
+%  text 
+\put(4115,-11802){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$10^4$}%
+}}}}
+%  text 
+\put(5355,-11802){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$10^6$}%
+}}}}
+%  text 
+\put(6595,-11802){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$10^8$}%
+}}}}
+%  text 
+\put(7835,-11802){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$10^{10}$}%
+}}}}
+%  text 
+\put(730,-11636){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$10^{-2}$}%
+}}}}
+%  text 
+\put(730,-10462){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$10^{-1}$}%
+}}}}
+%  text 
+\put(730,-9288){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$10^0$}%
+}}}}
+%  text 
+\put(730,-8115){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$10^1$}%
+}}}}
+%  text 
+\put(730,-6941){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$10^2$}%
+}}}}
+%  text 
+\put(730,-5768){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\sfdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$10^3$}%
+}}}}
+\put(9076,-11761){\makebox(0,0)[lb]{\smash{{\SetFigFont{12}{14.4}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$f$}%
+}}}}
+\put(9076,-11386){\makebox(0,0)[lb]{\smash{{\SetFigFont{12}{14.4}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}[Hz]}%
+}}}}
+\put(1426,-5311){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}[m]}%
+}}}}
+\put(4501,-12136){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}Frequency}%
+}}}}
+\put(841,-5311){\makebox(0,0)[lb]{\smash{{\SetFigFont{14}{16.8}{\rmdefault}{\mddefault}{\updefault}{\color[rgb]{0,0,0}$\delta(f)$}%
+}}}}
+\end{picture}%

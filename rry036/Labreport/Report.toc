@@ -1,0 +1,16 @@
+\select@language {english}
+\contentsline {section}{\numberline {1}Introduction}{1}{section.1}
+\contentsline {section}{\numberline {2}Theory}{1}{section.2}
+\contentsline {subsection}{\numberline {2.1}Reflection coefficient}{1}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Reflections in unmatched circuits}{2}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Length of transmission line}{3}{subsection.2.3}
+\contentsline {section}{\numberline {3}Equipment}{3}{section.3}
+\contentsline {section}{\numberline {4}Method}{4}{section.4}
+\contentsline {subsection}{\numberline {4.1}Black box \#1, Study known terminations}{5}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Black box \#2, Study unknown unmatched circuit}{5}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Black box \#3, Study unknown matched circuit}{5}{subsection.4.3}
+\contentsline {section}{\numberline {5}Results}{6}{section.5}
+\contentsline {subsection}{\numberline {5.1}Black box \#1, Study known terminations}{6}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}Black box \#2, Study unknown unmatched circuit}{6}{subsection.5.2}
+\contentsline {subsection}{\numberline {5.3}Black box \#3, Study unknown matched circuit}{7}{subsection.5.3}
+\contentsline {section}{\numberline {6}Discussion and conclusion}{7}{section.6}
