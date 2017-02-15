@@ -292,7 +292,7 @@ class Handin2():
                 self.p2_sd = 10e-6
                 # propagate and use lense transfer function
                 self.E1 = self.mainFun(self.d) *\
-                    self.getAperture(self.p2_sd, fracRadi=1) *\
+                    self.getAperture(self.p2_sd, fracRadi=0.5) *\
                     self.getLensTrsfFunc(self.p2_sd, self.focalLenLeft)
                 yield self.E1, i
         elif (self.task_nbr == 2 or self.task_nbr == 3 or self.task_nbr == 7):
@@ -309,11 +309,11 @@ class Handin2():
                 self.p2_sd = 10e-6
                 # propagate and use lense transfer function
                 self.E1 = self.mainFun(self.d) *\
-                    self.getAperture(self.p2_sd, fracRadi=1) *\
+                    self.getAperture(self.p2_sd, fracRadi=0.5) *\
                     self.getLensTrsfFunc(self.p2_sd, self.focalLenLeft)
                 I_max = np.max(np.abs(self.E1)**2)
                 # the integral over the gaussian function
-                itgl_val = np.sum(np.abs(self.E1)**2)*(self.N-1)*self.p1_sd**2
+                itgl_val = np.sum(np.abs(self.E1)**2*self.p2_sd**2)
                 self.omega = np.sqrt(2*itgl_val/(I_max*pi))
                 yield self.E1, self.omega, i
         elif (self.task_nbr >= 4 and self.task_nbr <= 6):
@@ -338,11 +338,11 @@ class Handin2():
                 # propagate and use lense transfer function
                 self.E1 = self.getHair(self.p1_sd, hair_w, hair_clip) *\
                     self.mainFun(self.d) *\
-                    self.getAperture(self.p2_sd, fracRadi=1) *\
+                    self.getAperture(self.p2_sd, fracRadi=0.5) *\
                     self.getLensTrsfFunc(self.p2_sd, self.focalLenLeft)
                 I_max = np.max(np.abs(self.E1)**2)
                 # the integral over the gaussian function
-                itgl_val = np.sum(np.abs(self.E1)**2)*(self.N-1)*self.p1_sd**2
+                itgl_val = np.sum(np.abs(self.E1)**2*self.p2_sd**2)
                 self.omega = np.sqrt(2*itgl_val/(I_max*pi))
                 yield self.E1, self.omega, i
 
@@ -503,7 +503,7 @@ class Handin2():
         """
         self.omega_vec = np.zeros(np.size(self.iter_vec))
         self.line, = ax2.plot([], [], linestyle="-", color="black")
-        ax2.set_ylim(0, 20e-3)
+        ax2.set_ylim(0, 2e-3)
         ax2.set_xlim(0, np.size(self.iter_vec))
 
     def createInitialField(self):
@@ -579,6 +579,7 @@ class Handin2():
         """
         self.task_nbr = 3
         self.calcBeamDiameter()
+        print(self.z0, self.z1, self.z2)
         self.p1_sd = 10e-6
         self.p2_sd = 20e-6
         self.initializeImage(self.createInitialField())
