@@ -28,7 +28,7 @@ class Handin2():
         class instantiation.
         """
         self.txt_tmpl = "iteration: %.0f"
-        self.line_txt_tmpl = "omega: %.3f mm"
+        self.line_txt_tmpl = "omega: %.0f um"
         self.img_txt = None
         self.N = 0x1 << 8  # number fo sample points
         self.lbda_0 = 633e-9  # wavelength in vacuum
@@ -380,10 +380,10 @@ class Handin2():
             E1_plt = np.array(np.abs(E1)/np.max(np.abs(E1)),
                               dtype=np.float64)**2
             dst = self.txt_tmpl % iter_idx + ", " +\
-                self.line_txt_tmpl % (omga*1e3)
+                self.line_txt_tmpl % (omga*1e6)
             self.img_txt.set_text(dst)
             self.img.set_array(E1_plt)
-            self.omega_vec[iter_idx] = omga
+            self.omega_vec[iter_idx] = omga*1e6
             self.line.set_data(self.iter_vec[:iter_idx],
                                self.omega_vec[:iter_idx])
             return self.img, self.line, self.img_txt
@@ -493,9 +493,16 @@ class Handin2():
         I0 : array_like
             The intensty of the (starting) field.
         """
-        self.img_txt = ax1.text(0.0, -5.0, "")
+        self.img_txt = ax1.text(-1256, 1.3e3, "", color="#000000")
         self.img = ax1.imshow(I0, animated=True, cmap=plt.get_cmap('gray'),
-                              interpolation='quadric', vmin=0, vmax=1)
+                              interpolation='quadric', vmin=0, vmax=1,
+                              extent=[-(self.N/2)*self.p1_sd*1e6,
+                                      (self.N/2-1)*self.p1_sd*1e6,
+                                      -(self.N/2)*self.p1_sd*1e6,
+                                      (self.N/2-1)*self.p1_sd*1e6])
+        ax1.set_xlabel("[um]")
+        ax1.set_ylabel("[um]")
+        ax1.set_aspect(1)
 
     def initializePlot(self):
         """
@@ -503,7 +510,9 @@ class Handin2():
         """
         self.omega_vec = np.zeros(np.size(self.iter_vec))
         self.line, = ax2.plot([], [], linestyle="-", color="black")
-        ax2.set_ylim(0, 2e-3)
+        ax2.set_ylim(0, 600)
+        ax2.set_xlabel("Iteration")
+        ax2.set_ylabel("$e^{-2}$-radius [um]")
         ax2.set_xlim(0, np.size(self.iter_vec))
 
     def createInitialField(self):

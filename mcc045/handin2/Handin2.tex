@@ -8,6 +8,7 @@
 \usepackage{amsmath}
 \usepackage{mathabx}
 \usepackage{lmodern}
+\usepackage{listings}
 \usepackage{units}
 \usepackage{siunitx}
 \usepackage{icomma}
@@ -29,6 +30,8 @@
 \usepackage{pdfpages}
 \usepackage{epstopdf}
 \DeclareGraphicsExtensions{.eps}
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist
 
 \title{Handin 2}
 \author{Marcus Malmquist, marmalm, 941022}
@@ -38,10 +41,10 @@
 \maketitle
 
 \section{Task 1}\label{sec:1}
-The beam waist is located at $z=0$ because that is how I define it. The beam width at $z=z_1$ (which is located at $z=-0.81$) is $\SI{296}{\micro\metre}$.
+The beam waist is located at $z=0$ because that is how I define it. The beam width at $z=z_1$ (which is located at $z=-0.81$) is $\SI{296}{\micro\metre}$. Since the mirrors are separated by $\SI{95}{\centi\metre}$ and the left mirror is located at $z=-0.81$, the right mirror is naturally located at $z=0.14$.
 
 \section{Task 2}\label{sec:2}
-The beam width was numerically calculated to be $\SI{9.6}{\milli\metre}$ which is roughly 30 times larger than there theoretical value. The theoretical value is more likely to be correct as it is theoretical (and if not it would just be rubbish). The simulation uses approximations (particularly when calculating the integral) which probaby has a substantial inpact on the result.
+The beam width was numerically calculated to be $\SI{300}{\micro\metre}$ which is very close to the theoretical value. The theoretical value is more likely to be correct as it is theoretical (and if not it would just be rubbish). The simulation uses approximations (particularly when calculating the integral) which probaby has an inpact on the result.
 
 \section{Task 3}\label{sec:3}
 It is possible for a more incorrect and random starting field to converge into a the fundamental mode as seen in Figure~\ref{fig:task3}
@@ -94,5 +97,10 @@ Then graph in Figure~\ref{fig:task7b} confirms that the distance traveled in one
 
 \subsection{c}
 In order to make the phase of the field equal for two consecutive roundtrips one canadian change the distance between the mirrors slightly in order to make the distance traveled in one roundtrip be a multiple offset $\lambda$.
-
+\newpage
+\appendix
+\section{Code}
+\begin{changemargin}{-3cm}{0.5cm}
+\lstinputlisting[language=Python]{tsm.py}
+\end{changemargin}
 \end{document}
