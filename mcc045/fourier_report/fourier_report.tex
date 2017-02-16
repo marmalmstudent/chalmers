@@ -1,0 +1,192 @@
+\documentclass[12pt,a4paper]{article}
+
+%\pdfoutput=1
+
+\usepackage{pagecolor}
+%\definecolor{bgcolor}{HTML}{3F3F3F}
+%\definecolor{fgcolor}{HTML}{DCDCCC}
+%\pagecolor{bgcolor}
+%\color{fgcolor}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lmodern}
+%\renewcommand*\rmdefault{ptm}
+\usepackage{amsmath}
+\usepackage{mathabx}
+\usepackage{units}
+\usepackage{siunitx}
+\usepackage{icomma}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{color}
+\usepackage{pgf}
+\DeclareMathOperator{\acosh}{arccosh}
+\newcommand{\N}{\ensuremath{\mathbbm{N}}}
+\newcommand{\Z}{\ensuremath{\mathbbm{Z}}}
+\newcommand{\Q}{\ensuremath{\mathbbm{Q}}}
+\newcommand{\R}{\ensuremath{\mathbbm{R}}}
+\newcommand{\C}{\ensuremath{\mathbbm{C}}}
+\newcommand{\rd}{\ensuremath{\mathrm{d}}}
+\newcommand{\id}{\ensuremath{\,\rd}}
+\usepackage{hyperref}
+%\usepackage{a4wide} % puts the page numbering further down the page.
+\usepackage{pdfpages}
+\usepackage{epstopdf}
+\DeclareGraphicsExtensions{.eps}
+\title{Answers: Fourier lab quiz}
+\author{Marcus Malmquist, marmalm, 941022}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+This report is a summary offset three separate labs. In the first lab the effects of diffraction was studied and in the second lab some characteristics of a gaussian beam (such as beam width and beam waist) was studied. In the third lab a setup to study defferent image filtering techniques was created and used to filter images both in the spatial domain and the frequency domain.
+
+Since these labs cover separate topics the structure of this report will be somewhat unconventional and focus on explaining the topics as they are brought up and in the order that they were performed.
+
+\section{Fourier optics - image filtering techniques}
+\subsection{Experimental setup}\label{sec:setup}
+The available lenses that was used in this lab can be seen in Table~\ref{tab:lenses} and the setup that was initially used by combining the lenses can be seen in Figure~\ref{fig:setup0}.
+
+The Beam expander was comprised of the two that had the highest ratio between their focal lengths. For this reason $L_1$ and $L_2$ was used, separated by the sum of their focal lengths ($\SI{350}{\milli\metre}$), expanding the beam by a factor of 8.
+
+The object lens in the $4f$-system was chosen to have the longest focal length (i.e. $L_4$) to create the largest fourier plane. The image lens was a compound lens made from the remaining two lenses ($L_2$ and $L_3$) separated by $\SI{50}{\milli\metre}$ (from (\ref{eq:clens_sep})) to create a compound lens with a focal length of $\SI{400}{\milli\metre}$. The ``position'' of the compound lens was set to be directly inbetween $L_2$ andhelp $L_3$.
+
+In order to see a larger image on the screen, $L_2$ was removed and $L_3$ was moved to be $\SI{147}{\milli\metre}$ from the fourier plane while the image plane was kept $\SI{800}{\milli\metre}$ (from (\ref{eq:new_lens_pos})). This results in a magnification of $44.4$. The final setup can be seen in Figure~\ref{fig:setup_final}.
+\begin{equation}
+  \label{eq:clens_sep}
+  d=f_1+f_2-\frac{f_1f_2}{f}
+\end{equation}
+\begin{equation}
+  \label{eq:new_lens_pos}
+  \begin{cases}
+    \dfrac{1}{z_1}+\dfrac{1}{z_2}=\dfrac{1}{f_3} \\
+    z_1+z_2=\SI{800}{\milli\metre}
+  \end{cases}
+\end{equation}
+\begin{table}
+  \centering
+  \begin{tabular}{|l|l|}\hline
+    Lens & Focal length \\
+    $L_1$ & $f_1=\SI{-50}{\milli\metre}$ \\
+    $L_2$ & $f_2=\SI{-100}{\milli\metre}$ \\
+    $L_3$ & $f_3=\SI{120}{\milli\metre}$ \\
+    $L_4$ & $f_4=\SI{200}{\milli\metre}$ \\
+    $L_5$ & $f_5=\SI{400}{\milli\metre}$ \\ \hline
+  \end{tabular}
+  \caption{The Available lenses and their focal lengths.}
+  \label{tab:lenses}
+\end{table}
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.70}{\input{figures/lense_setup.pdf_t}}}
+  \caption{The inital setup using a compound lens between the fourier plane and the image plane. Values for the focal lengths can be seen in Table~\ref{tab:lenses}.}
+  \label{fig:setup0}
+\end{figure}
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.70}{\input{figures/lense_setup2.pdf_t}}}
+  \caption{The final setup using a compound lens between the fourier plane and the image plane. Values for the focal lengths can be seen in Table~\ref{tab:lenses}.}
+  \label{fig:setup_final}
+\end{figure}
+
+\subsection{Amplitude modulation}\label{sec:ampmod}
+Amplitude modulation simply means that an object is placed in front of the beam that have parts that let through varying intensity. In these experiments the amplitude modulation was either full transmission or no transmission.
+\subsubsection{Linear grating}
+When a linear grating with vertical lines was placed in the object plane dots appeared along the horizontal axis on the image plane. The $0^\text{th}$ order was brightest and higher order spots less so. The even order spots had notable less intensity than their odd order modes. This is caused by the linewidth being very close to the line separation and the lines act as a bandpass filter.
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.70}{\input{figures/linear_grating.pdf_t}}}
+  \caption{Linear grating.}
+  \label{fig:linear_grating}
+\end{figure}
+
+\subsubsection{Circular grating}
+When a circular grating was placed in the object plane circles appeared on the image plane. Much like the case with the linear grating the $0^\text{th}$ order was brightest and the brightness decreased with higher order. The even order rings also had notably less intensity compared to the odd order rings and the reason is the same; their width of the rings is very close to the separation of the rings.
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.70}{\input{figures/circular_grating.pdf_t}}}
+  \caption{circular grating.}
+  \label{fig:circular_grating}
+\end{figure}
+
+\subsubsection{Chess-board grating}
+When a chess-board grating was placed in the object plane both horizontal and vertical dots appeared on the image plane. The $0^\text{th}$ order was brightest and the brightness decreased with higher order. Unlike the other gratings the even orders was not visibly less bright than the odd orders. This is because the chess board is not quite a bandpass filter.
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.70}{\input{figures/chess_board.pdf_t}}}
+  \caption{chess borad.}
+  \label{fig:chess_board}
+\end{figure}
+
+\subsubsection{Two gratings}
+When two gratings were placed in the object plane (linear with vertical lines and circular) rings appeared along the horizontal axis. Much like the case when linear and circular gratings were used the even order spots andhelp even order circles was less bright than odd orders. This is because placing two gratings in their object plane yields a grating that is the convolution between the gratings. A convolution in the spatial domain corresponds to multiplication on the frequency domains which results in the circular pattern from the circular grating appears where the spots from the linear grating would be.
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.70}{\input{figures/lin_circ_grating.pdf_t}}}
+  \caption{linear and circular grating.}
+  \label{fig:lin_circ_grating}
+\end{figure}
+
+\subsection{Spatial filtering}
+If gratings are placed in the fourier plane one can manipulate the spatial image.
+
+\subsubsection{One- and two-dimensional low pass and high pass}
+One-dimensional filters are created by blocking the light some distance from the center of the beam along one axis and out if it is a low pass filter. For a one-dimensional high-pass filter the light should be blocked some distance from the center of the beam along one axis and in.
+The resulting image will have the sharp edges between bright and dark areas (high contrast) removed along the axis of the filter for low pass filter but for high-pass filter the areas with very low variation in brightness (low contrast) will be removed.
+
+Two-dimensional filters are created by blocking light some distance from the center of the beam radially isotropic and out if it is a low pass filter. Forall a two-dimensional high-pass filter the light should be blocked some distance from the center of the beam radially isotropic and in.
+The resulting image will have the sharp edges between bright and dark areas (high contrast) for low pass filter but for high-pass filter the areas with very low variation in brightness (low contrast) will be removed.
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=0.9\textwidth]{figures/1dlp.pdf}
+    \subcaption{One-dimensional low pass filter.}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=0.9\textwidth]{figures/1dhp.pdf}
+    \subcaption{One-dimensional high pass filter.}
+  \end{subfigure}\\
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=0.9\textwidth]{figures/2dlp.pdf}
+    \subcaption{Two-dimensional low pass filter.}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=0.9\textwidth]{figures/2dhp.pdf}
+    \subcaption{Two-dimensional high pass filter.}
+  \end{subfigure}
+  \caption{One- and two-dimensional high and low pass filters.}
+  \label{fig:filters}
+\end{figure}
+
+\subsubsection{Image filtering}
+An image of a brick building was placed in the object plane. In order to filter out the bricks a two-dimensional low pass filter was used. This is because the bricks were rather small which means that high contrast is required to see them. Analogously a high pass filter was used to emphasize the bricks and filter out their rest of the image.
+
+\subsubsection{Disturbance filtering}
+A linear grating with some disturbance was placed in the object plane. As expected the bright spots (intensity decreasing with higher order spots) appeared in the image plane. The disturbance formed forward- and backward-slanting lines intersecting at the bright spots (forming an X-patten with the bright spot in the center). The disturbance  therefor could therefor be thin and near-horizontally aligned.
+In order to filter out these disturbances a one-dimensional low pass filter was used.
+In order to filter out the linear grating a one-dimensional slit was placed horizontally.
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.70}{\input{figures/disturbance.pdf_t}}}
+  \caption{linear grating with some disturbance.}
+  \label{fig:disturbance}
+\end{figure}
+\begin{figure}
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=0.9\textwidth]{figures/1dlp.pdf}
+    \subcaption{One-dimensional low pass filter.}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}
+    \includegraphics[width=0.9\textwidth]{figures/slit.pdf}
+    \subcaption{One-dimensional slit.}
+  \end{subfigure}
+  \caption{One-dimensional low pass filter and a one-dimensional slit.}
+  \label{fig:filters}
+\end{figure}
+
+\end{document}
