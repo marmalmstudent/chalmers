@@ -4,18 +4,22 @@
 \contentsline {subsection}{\numberline {2.1}Red laser}{1}{subsection.2.1}
 \contentsline {subsection}{\numberline {2.2}Orange laser}{2}{subsection.2.2}
 \contentsline {section}{\numberline {3}Gaussian beam propagation}{3}{section.3}
-\contentsline {subsection}{\numberline {3.1}Knife-edge}{3}{subsection.3.1}
-\contentsline {subsubsection}{\numberline {3.1.1}Without a beam expander}{3}{subsubsection.3.1.1}
-\contentsline {subsubsection}{\numberline {3.1.2}With a beam expander}{3}{subsubsection.3.1.2}
+\contentsline {subsection}{\numberline {3.1}Without a beam expander}{4}{subsection.3.1}
+\contentsline {subsubsection}{\numberline {3.1.1}Knife-edge}{5}{subsubsection.3.1.1}
 \contentsline {subsection}{\numberline {3.2}Circular aperture}{5}{subsection.3.2}
-\contentsline {section}{\numberline {4}Fourier Optics}{5}{section.4}
-\contentsline {subsection}{\numberline {4.1}Experimental setup}{5}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Amplitude modulation}{7}{subsection.4.2}
-\contentsline {subsubsection}{\numberline {4.2.1}Linear grating}{7}{subsubsection.4.2.1}
-\contentsline {subsubsection}{\numberline {4.2.2}Circular grating}{7}{subsubsection.4.2.2}
-\contentsline {subsubsection}{\numberline {4.2.3}Chess-board grating}{7}{subsubsection.4.2.3}
-\contentsline {subsubsection}{\numberline {4.2.4}Two gratings}{8}{subsubsection.4.2.4}
-\contentsline {subsection}{\numberline {4.3}Spatial filtering}{8}{subsection.4.3}
-\contentsline {subsubsection}{\numberline {4.3.1}One- and two-dimensional low pass and high pass}{9}{subsubsection.4.3.1}
-\contentsline {subsubsection}{\numberline {4.3.2}Image filtering}{9}{subsubsection.4.3.2}
-\contentsline {subsubsection}{\numberline {4.3.3}Disturbance filtering}{9}{subsubsection.4.3.3}
+\contentsline {subsubsection}{\numberline {3.2.1}Divergence}{5}{subsubsection.3.2.1}
+\contentsline {subsection}{\numberline {3.3}With a beam expander}{5}{subsection.3.3}
+\contentsline {subsubsection}{\numberline {3.3.1}Knife-edge}{5}{subsubsection.3.3.1}
+\contentsline {subsection}{\numberline {3.4}Circular aperture}{5}{subsection.3.4}
+\contentsline {subsubsection}{\numberline {3.4.1}Divergence}{6}{subsubsection.3.4.1}
+\contentsline {section}{\numberline {4}Fourier Optics}{6}{section.4}
+\contentsline {subsection}{\numberline {4.1}Experimental setup}{6}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Amplitude modulation}{6}{subsection.4.2}
+\contentsline {subsubsection}{\numberline {4.2.1}Linear grating}{8}{subsubsection.4.2.1}
+\contentsline {subsubsection}{\numberline {4.2.2}Circular grating}{8}{subsubsection.4.2.2}
+\contentsline {subsubsection}{\numberline {4.2.3}Chess-board grating}{9}{subsubsection.4.2.3}
+\contentsline {subsubsection}{\numberline {4.2.4}Two gratings}{10}{subsubsection.4.2.4}
+\contentsline {subsection}{\numberline {4.3}Spatial filtering}{10}{subsection.4.3}
+\contentsline {subsubsection}{\numberline {4.3.1}One- and two-dimensional low pass and high pass}{10}{subsubsection.4.3.1}
+\contentsline {subsubsection}{\numberline {4.3.2}Image filtering}{11}{subsubsection.4.3.2}
+\contentsline {subsubsection}{\numberline {4.3.3}Disturbance filtering}{12}{subsubsection.4.3.3}

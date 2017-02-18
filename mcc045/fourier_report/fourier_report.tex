@@ -49,7 +49,7 @@
 \pagenumbering{arabic}
 
 \section{Introduction}
-This report is a summary off three separate labs. In the first lab the effects of diffraction was studied and in the second lab some characteristics of a gaussian beam (such as beam width and beam waist) was studied. In the third lab a setup to study defferent image filtering techniques was created and used to filter images both in the spatial domain and the frequency domain.
+This report is a summary of three separate labs. In the first lab the effects of diffraction was studied and in the second lab some characteristics of a gaussian beam (such as beam width and beam waist) was studied. In the third lab a setup to study defferent image filtering techniques was created and used to filter images both in the spatial domain and the frequency domain.
 
 Since these labs cover separate topics the structure of this report will be somewhat unconventional and focus on explaining the topics as they are brought up and in the order that they were performed.
 \section{Wavelength measurement
@@ -62,7 +62,7 @@ The wavelength of the lasers can be found using the equation for diffraction fro
 \subsection{Red laser}
 The wavelength of the red laser was measured using the setup in Figure~\ref{fig:diffraction_red} and the measured quantities can be found in Table~\ref{tab:diffraction_red_vals}.
 
-Using the values from Table~\ref{tab:diffraction_red_vals}, the angles depicted in Figure~\ref{fig:diffraction_red} could be calculated and finally the wavelength. These can be found in Table~\ref{tab:diffraction_red_calcs}. The calculated value off $\lambda$ ($\SI{627}{\nano\metre}$) was quite close to the wavelength of the laser which was $\SI{633}{\nano\metre}$.
+Using the values from Table~\ref{tab:diffraction_red_vals}, the angles depicted in Figure~\ref{fig:diffraction_red} could be calculated and finally the wavelength. These can be found in Table~\ref{tab:diffraction_red_calcs}. The calculated value of $\lambda$ ($\SI{627}{\nano\metre}$) was quite close to the wavelength of the laser which was $\SI{633}{\nano\metre}$.
 
 \begin{table}
   \centering
@@ -93,9 +93,9 @@ Using the values from Table~\ref{tab:diffraction_red_vals}, the angles depicted 
   \label{fig:diffraction_red}
 \end{figure}
 \subsection{Orange laser}
-The wavelength of the orange laser was measured using the setup in Figure~\ref{fig:diffraction_orange} and the measured quantities can be found in Table~\ref{tab:diffraction_orange_vals}. The separation of the grating lines, ($\Lambda$) was calculated using the red laser. When $\Lambda$ was known the orange laser was instead used and the calculated angles along with the grating line separation and the wavelength can be seen in Table~\ref{tab:diffraction_orange_calcs}.
+The wavelength of the orange laser was measured using the setup in Figure~\ref{fig:diffraction_orange} and the measured quantities can be found in Table~\ref{tab:diffraction_orange_vals}. The separation of the grating lines ($\Lambda$), was calculated using the red laser. When $\Lambda$ was known the orange laser was instead used and the calculated angles along with the grating line separation and the wavelength can be seen in Table~\ref{tab:diffraction_orange_calcs}.
 
-The grating line separation was not as close to the actual value as one would have wanted which could have to do with the scaling of the setup. The distance between the disk and the board was much smaller than in the setup used to measure the red laser and the setup was so small that is was rather difficult to accurately measure distances. The actual value of $\Lambda$ was $\SI{740}{\nano\metre}$.
+The grating line separation was not as close to the actual value as one would have wanted which could have to do with the scaling of the setup. The distance between the disk and the board was much smaller than in the setup used to measure the wavelength of the red laser and the setup was so small that is was rather difficult to accurately measure distances. The actual value of $\Lambda$ was $\SI{740}{\nano\metre}$.
 
 The error in $\Lambda$ affected the error in $\lambda$ which resulted in a calculated wavelength for the orange laser that was higher than the wavelength of the red lased (which is impossible). When using $\Lambda=\SI{740}{\nano\metre}$, however, $\lambda_\text{orange}$ was $\SI{620}{\nano\metre}$ which is a lot closer to the actual value ($\SI{613}{\nano\metre}$) measured using a spectrometer.
 
@@ -129,27 +129,56 @@ The accuracy of the measurement could have increased if a lower grating line sep
   \label{fig:diffraction_orange}
 \end{figure}
 \section{Gaussian beam propagation}
+In this section two methods for measuring the beam diameter will be used. The first method uses a knife edge to partially block the beam. A central part of this method is the rule of thumb (\ref{eq:rot}), where $x_{90\%-10\%}$ is the beam diameter that starts where their knife blocks 10\% of the beam and ends where the knife blocks 90\% of the beam (and thus contains 80\% of the beam).
+\begin{equation}
+  \label{eq:rot}
+  x_{90\%-10\%}=1.28w_0
+\end{equation}
+The second method uses a circular aperture uses a circular aperture to partially block the beam. This method uses a relation between the radius of the aperture and the radius of the beam as a function of how much of the beam the aperture blocks. This relation, when the aperture blocks 50\% of the beam, can be seen in (\ref{eq:cap}).
+\begin{equation}
+  \label{eq:cap}
+  r_{50\%}=0.59w
+\end{equation}
+Finally, the (half-angle) divergence as well as the beam diameter after propagating $\SI{1}{\kilo\metre}$ will beam calculated. The half-angle divergence can be calculated using (\ref{eq:ff}) which requires that the far-field approximations is valid (\ref{eq:ff_def}).
+\begin{equation}
+  \label{eq:ff}
+  \theta_0=\lim_{z\rightarrow 0}\frac{w(z)}{z}=\frac{\lambda}{\pi w_0}
+\end{equation}
+\begin{equation}
+  \label{eq:ff_def}
+  z \gg z_0=\frac{\pi w_0^2}{\lambda}=\SI{700}{\milli\metre}
+\end{equation}
+The beam radius can be calculated using (\ref{eq:bw}).
+\begin{equation}
+  \label{eq:bw}
+  w(z)=w_0\sqrt{1+\Big(\frac{z}{z_0}\Big)^2}
+\end{equation}
 \begin{figure}
   \centering
   \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/gauss_setup.pdf_t}}}
-  \caption{The setup used when performing measurement on a gaussian beam.}
-  \label{fig:diffraction_orange}
+  \caption{The setup used when measuring the beam width on a gaussian beam.}
+  \label{fig:gauss_setup}
 \end{figure}
-\subsection{Knife-edge}
-A central part of this method is the rule of thumb (\ref{eq:rot}), where $x_{90\%-10\%}$ is the beam diameter that starts where their knife blocks 10\% of the beam and ends where the knife blocks 90\% of the beam (and thus contains 80\% of the beam).
-\begin{equation}
-  \label{eq:rot}
-  x_{90\%-10\%}=1.28W_0
-\end{equation}
-\subsubsection{Without a beam expander}
-Without using a beam expander ($L_1$ and $L_2$), $x_{90\%-10\%}$ was measured at the output of the laser using a knife attached to a mm-screw to be $\SI{475}{\micro\metre}$. Using (\ref{eq:rot}) the beam diameter was $\SI{740}{\micro\metre}$. A (very) rough estimate of the beam diameter was measured to be \textasciitilde$\SI{2}{mm}$ using a ruler which indicates that the knife-edge method works.
-
-\subsubsection{With a beam expander}
-Using a beam expander ($L_1$ and $L_2$), $x_{90\%-10\%}$ was measured at the output of the laser using a knife attached to a mm-screw to be $\SI{3.15}{\milli\metre}$. Using (\ref{eq:rot}) the beam diameter was $\SI{4.92}{\milli\metre}$.
-
+\subsection{Without a beam expander}
+When the beam expander was not present it means that $L_1$ and $L_2$ in Figure~\ref{fig:gauss_setup} are not present.
+\subsubsection{Knife-edge}
+$x_{90\%-10\%}$ was measured at the output of the laser using a knife attached to a mm-screw to be $\SI{475}{\micro\metre}$. Using (\ref{eq:rot}) the beam diameter was $\SI{740}{\micro\metre}$. A (very) rough estimate of the beam diameter was measured to be \textasciitilde$\SI{2}{\milli\metre}$ using a ruler which indicates that the knife-edge method works.
 \subsection{Circular aperture}
-//TODO.
+The aperture diameter when the intensity had dropped to 50\% ($d_{50\%}$) was measured to be $\SI{1.03}{\centi\metre}$. Using (\ref{eq:cap}) the beam diameter was $\SI{1.76}{\milli\metre}$. A rough estimate of the beam diameter was measured to be \textasciitilde$\SI{2}{\centi\metre}$ using a ruler which indicates that the circular aperture method works.
+\subsubsection{Divergence}
+The far-field approximations are valid if (\ref{eq:ff_def}) is fulfilled. The half-angle, which is valid in the far-field was computed to be $5.45\cdot 10^{-4}\corresponds 0.0047^\circ$ using (\ref{eq:ff}) and the beam diameter $\SI{1}{\kilo\metre}$ from the source was computed to be $\SI{16.4}{\centi\metre}$ using (\ref{eq:bw}). This means that using a larger beam actually makes the beam smaller in the far field. This has to do with how (\ref{eq:bw}) scales with distance and the fact that increasing the beam diameter is equivalend to decreasing the distance.
+
+\subsection{With a beam expander}
+When the beam expander was present $L_1$ and $L_2$ in Figure~\ref{fig:gauss_setup} are present and $f_1=\SI{-50}{\milli\metre}$ and $f_2=\SI{300}{\milli\metre}$.
+\subsubsection{Knife-edge}
+$x_{90\%-10\%}$ was measured at the output of the laser using a knife attached to a mm-screw to be $\SI{3.15}{\milli\metre}$. Using (\ref{eq:rot}) the beam diameter was $\SI{4.92}{\milli\metre}$.
+\subsection{Circular aperture}
+The aperture diameter when the intensity had dropped to 50\% ($d_{50\%}$) was measured to be $\SI{5.5}{\centi\metre}$. Using (\ref{eq:cap}) the beam diameter was $\SI{9.32}{\centi\metre}$.
+\subsubsection{Divergence}
+The half-angle, which is valid in the far-field was computed to be $8.19\cdot 10^{-5}\corresponds 0.031^\circ$ using (\ref{eq:ff}) and the beam diameter $\SI{1}{\kilo\metre}$ from the source was computed to be $\SI{1.09}{\metre}$ using (\ref{eq:bw}).
+
 \section{Fourier Optics}
+This lab focused on setting up the equipment and then using different filters to get an understanding of what they do with the ultimate goal of being able to manipulate images today filter out unwanted content or impurities.
 \subsection{Experimental setup}\label{sec:setup}
 The available lenses that was used in this lab can be seen in Table~\ref{tab:lenses} and the setup that was initially used by combining the lenses can be seen in Figure~\ref{fig:setup0}.
 
