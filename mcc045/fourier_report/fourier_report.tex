@@ -40,17 +40,115 @@
 \date{\today}
 
 \begin{document}
+\pagenumbering{gobble}
 \maketitle
+\newpage
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
 
 \section{Introduction}
-This report is a summary offset three separate labs. In the first lab the effects of diffraction was studied and in the second lab some characteristics of a gaussian beam (such as beam width and beam waist) was studied. In the third lab a setup to study defferent image filtering techniques was created and used to filter images both in the spatial domain and the frequency domain.
+This report is a summary off three separate labs. In the first lab the effects of diffraction was studied and in the second lab some characteristics of a gaussian beam (such as beam width and beam waist) was studied. In the third lab a setup to study defferent image filtering techniques was created and used to filter images both in the spatial domain and the frequency domain.
 
 Since these labs cover separate topics the structure of this report will be somewhat unconventional and focus on explaining the topics as they are brought up and in the order that they were performed.
 \section{Wavelength measurement
   through diffraction}
+The wavelength of the lasers can be found using the equation for diffraction from a grating (\ref{eq:grating}), where $\Lambda$ is the separation of the grating lines, $\theta_i$ is the incident angle and $\lambda$ is the wavelength. The wavelength of a red and an orange laser was measured.
+\begin{equation}
+  \label{eq:grating}
+  \Lambda(\sin\theta_i+\sin\theta_q)=q\lambda \text{, }q=0,1,2,...
+\end{equation}
+\subsection{Red laser}
+The wavelength of the red laser was measured using the setup in Figure~\ref{fig:diffraction_red} and the measured quantities can be found in Table~\ref{tab:diffraction_red_vals}.
 
+Using the values from Table~\ref{tab:diffraction_red_vals}, the angles depicted in Figure~\ref{fig:diffraction_red} could be calculated and finally the wavelength. These can be found in Table~\ref{tab:diffraction_red_calcs}. The calculated value off $\lambda$ ($\SI{627}{\nano\metre}$) was quite close to the wavelength of the laser which was $\SI{633}{\nano\metre}$.
+
+\begin{table}
+  \centering
+  \begin{tabular}{|l|l|}\hline
+    $L$ & $\SI{3.5}{\metre}$ \\
+    $2x$ & $\SI{76.8}{\centi\metre}$ \\
+    $y-x$ & $\SI{5}{\centi\metre}$ \\ 
+    $\Lambda$ & $\frac{1}{64}$''$\approx\SI{400}{\micro\metre}$ \\ \hline
+  \end{tabular}
+  \caption{The quantities measured during the measurement of the wavelength of the red laser.}
+  \label{tab:diffraction_red_vals}
+\end{table}
+\begin{table}
+  \centering
+  \begin{tabular}{|l|l|}\hline
+    $\theta_0$ & $6.3^\text{o}$ \\
+    $\theta_1$ & $7.1^\text{o}$ \\
+    $\theta_i$ & $83.7^\text{o}$ \\
+    $\lambda$ & $\SI{627}{\nano\metre}$ \\ \hline
+  \end{tabular}
+  \caption{The quantities calculated during the measurement of the wavelength of the red laser.}
+  \label{tab:diffraction_red_calcs}
+\end{table}
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.80}{\input{figures/diffraction_red.pdf_t}}}
+  \caption{The setup used when measuring the wavelength of the red laser.}
+  \label{fig:diffraction_red}
+\end{figure}
+\subsection{Orange laser}
+The wavelength of the orange laser was measured using the setup in Figure~\ref{fig:diffraction_orange} and the measured quantities can be found in Table~\ref{tab:diffraction_orange_vals}. The separation of the grating lines, ($\Lambda$) was calculated using the red laser. When $\Lambda$ was known the orange laser was instead used and the calculated angles along with the grating line separation and the wavelength can be seen in Table~\ref{tab:diffraction_orange_calcs}.
+
+The grating line separation was not as close to the actual value as one would have wanted which could have to do with the scaling of the setup. The distance between the disk and the board was much smaller than in the setup used to measure the red laser and the setup was so small that is was rather difficult to accurately measure distances. The actual value of $\Lambda$ was $\SI{740}{\nano\metre}$.
+
+The error in $\Lambda$ affected the error in $\lambda$ which resulted in a calculated wavelength for the orange laser that was higher than the wavelength of the red lased (which is impossible). When using $\Lambda=\SI{740}{\nano\metre}$, however, $\lambda_\text{orange}$ was $\SI{620}{\nano\metre}$ which is a lot closer to the actual value ($\SI{613}{\nano\metre}$) measured using a spectrometer.
+
+The accuracy of the measurement could have increased if a lower grating line separation was used (by using a DVD or blu-ray disk) because that would have meant more lines which in turn increases the resolution.
+\begin{table}
+  \centering
+  \begin{tabular}{|l|l|}\hline
+    $L_\text{red}$ & $\SI{21.5}{\centi\metre}$ \\
+    $x_\text{red}$ & $\SI{32.5}{\centi\metre}$ \\
+    $L_\text{orange}$ & $\SI{25.4}{\centi\metre}$ \\
+    $x_\text{orange}$ & $\SI{38.9}{\centi\metre}$ \\ \hline
+  \end{tabular}
+  \caption{The quantities measured during the measurement of the wavelength of the orange laser.}
+  \label{tab:diffraction_orange_vals}
+\end{table}
+\begin{table}
+  \centering
+  \begin{tabular}{|l|l|}\hline
+    $\theta_{1,\text{red}}$ & $56.5^\text{o}$ \\
+    $\Lambda_\text{CD}$ & $\SI{759}{\nano\metre}$ \\
+    $\theta_{1,\text{orange}}$ & $56.9^\text{o}$ \\
+    $\lambda$ & $\SI{636}{\nano\metre}$ \\ \hline
+  \end{tabular}
+  \caption{The quantities calculated during the measurement of the wavelength of the orange laser.}
+  \label{tab:diffraction_orange_calcs}
+\end{table}
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/diffraction_orange.pdf_t}}}
+  \caption{The setup used when measuring the wavelength of the orange laser.}
+  \label{fig:diffraction_orange}
+\end{figure}
 \section{Gaussian beam propagation}
-//TODO
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/gauss_setup.pdf_t}}}
+  \caption{The setup used when performing measurement on a gaussian beam.}
+  \label{fig:diffraction_orange}
+\end{figure}
+\subsection{Knife-edge}
+A central part of this method is the rule of thumb (\ref{eq:rot}), where $x_{90\%-10\%}$ is the beam diameter that starts where their knife blocks 10\% of the beam and ends where the knife blocks 90\% of the beam (and thus contains 80\% of the beam).
+\begin{equation}
+  \label{eq:rot}
+  x_{90\%-10\%}=1.28W_0
+\end{equation}
+\subsubsection{Without a beam expander}
+Without using a beam expander ($L_1$ and $L_2$), $x_{90\%-10\%}$ was measured at the output of the laser using a knife attached to a mm-screw to be $\SI{475}{\micro\metre}$. Using (\ref{eq:rot}) the beam diameter was $\SI{740}{\micro\metre}$. A (very) rough estimate of the beam diameter was measured to be \textasciitilde$\SI{2}{mm}$ using a ruler which indicates that the knife-edge method works.
+
+\subsubsection{With a beam expander}
+Using a beam expander ($L_1$ and $L_2$), $x_{90\%-10\%}$ was measured at the output of the laser using a knife attached to a mm-screw to be $\SI{3.15}{\milli\metre}$. Using (\ref{eq:rot}) the beam diameter was $\SI{4.92}{\milli\metre}$.
+
+\subsection{Circular aperture}
+//TODO.
 \section{Fourier Optics}
 \subsection{Experimental setup}\label{sec:setup}
 The available lenses that was used in this lab can be seen in Table~\ref{tab:lenses} and the setup that was initially used by combining the lenses can be seen in Figure~\ref{fig:setup0}.
