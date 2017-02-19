@@ -24,20 +24,24 @@ class Handin4():
     text
     """
 
-    def __init__(self, nz=30, nt=30, mu_r=1, eps_r=1):
+    def __init__(self, nz=30, nt=30, mu_r=1, eps_r=np.array([1], dtype=float),
+                 lbda_0=633e-9):
         """
         Class instantiation
         """
         self.E = None  # E-field
         self.H = None  # H-field
+        if (len(np.shape(eps_r)) == 0):
+            eps_r = np.array([eps_r], dtype=float)
         self.eps = eps_0*eps_r  # spacial refractive index
         self.mu = mu_0*mu_r  # magnetic permeability
         self.EBounds = None  # Boundary condition for E-field
         self.nz = nz  # Number of z-points
         self.nt = nt  # Number of time-steps
+        self.lbda_0 = lbda_0  # wavelength in vacuum
 
-    def incField(self, period, envWidth, periodOffs,
-                 peakField, q, dt, m):
+    def initField(self, period, envWidth, periodOffs,
+                  peakField, q, dt, m):
         """
         Calculates incident field in one position in time step m
 
@@ -72,29 +76,33 @@ class Handin4():
         # incident field at time step m
         return np.cos(2*pi*f*m*dt)*envelope
 
-    def DielMirrorNVec(self, nPairs, nLow, nHigh, nSurround,
-                       zVec, zMirrorStart, lbda_0):
+    def DielMirrorNVec(self, nPairs, nLow, nHigh,
+                       nSurround, zVec, zMirrorStart):
         """
         Calculates them number of vectors for the dielectric mirror.
 
         Parameters
         ----------
         nPairs : int
+            ???
         nLow : int
+            ???
         nHigh : int
+            ???
         nSurround : int
+            ???
         zVec : float
+            ???
         zMirrorStart : float
-        lbda_0 : float
-            Wavelength in vacuum
+            ???
 
         Returns
         -------
         int
             The number of vectors used in them dielectric mirror.
         """
-        thickLow = lbda_0/(4*nLow)
-        thickHigh = lbda_0/(4*nHigh)
+        thickLow = self.lbda_0/(4*nLow)
+        thickHigh = self.lbda_0/(4*nHigh)
         thickPair = thickLow + thickHigh
         zMirrorEnd = zMirrorStart + nPairs*thickPair
         return (((zVec - zMirrorStart) % thickPair) <= thickHigh) *\
@@ -143,9 +151,32 @@ class Handin4():
         self.E = np.zeros((self.nt, self.nz+1))
         # h-field in space
         self.H = np.zeros((self.nt, self.nz))
+        timeSetps = np.linspace(0, 5e-13, 10000)
+        self.E = self.initField(period=self.lbda_0/c_0, envWidth=50,
+                                periodOffs=150, peakField=1, q=1,
+                                dt=timeSetps, m=1)
+        ax1.axis([0, timeSetps[len(timeSetps)-1]/np.sqrt(eps_0*mu_0), -1, 1])
+        ax1.plot(timeSetps/np.sqrt(eps_0*mu_0), self.E)
 
 
 if __name__ == "__main__":
     """
     Called when the script runs.
     """
+    fig = plt.figure()  # new figure
+    hi4 = None
+    if (len(sys.argv) > 1):
+        args = sys.argv[1:]
+        if (args[0] == "1"):
+            ax1 = fig.add_subplot(111)
+            hi4 = Handin4()  # the simulation class
+            hi4.initTask1()  # method for task 1
+        else:
+            sys.stdout.write("Usage: python <filename.py> <task_nbr>")
+            sys.stdout.flush()
+            sys.exit()
+    else:
+        sys.stdout.write("Usage: python <filename.py> <task_nbr>")
+        sys.stdout.flush()
+        sys.exit()
+    plt.show()  # plot figure
