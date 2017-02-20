@@ -29,7 +29,7 @@ class Handin4():
         """
         Class instantiation
         """
-        self.txt_tmpl = "Time: %.3f ps, velocity: %.0f Mm/s"
+        self.txt_tmpl = "Time: %.3f ps, velocity: %.0f Mm/s, impedance: %.0f ohm"
         self.img_txt = None
         self.E = None  # E-field
         self.H = None  # H-field
@@ -181,7 +181,8 @@ class Handin4():
         if (True):
             E, iter_idx = simData[0], simData[1]
             self.line.set_data(self.dist, E)
-            dst = self.txt_tmpl % (iter_idx*self.dt*1e12, self.dz/self.dt/1e6)
+            dst = self.txt_tmpl % (iter_idx*self.dt*1e12, self.dz/self.dt/1e6,
+                                   np.sum(abs(self.E))/np.sum(np.abs(self.H)))
             self.img_txt.set_text(dst)
             return self.line, self.img_txt
 
@@ -231,5 +232,4 @@ if __name__ == "__main__":
     # the function handling the the animation itself
     ani = animation.FuncAnimation(fig, hi4.updatefig, hi4.simData,
                                   interval=2, blit=False, repeat=False)
-    print(np.sum(hi4.E)/sum(hi4.H))
     plt.show()  # plot figure
