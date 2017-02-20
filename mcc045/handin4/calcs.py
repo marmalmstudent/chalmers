@@ -24,13 +24,16 @@ class Handin4():
     text
     """
 
-    def __init__(self, nz=3500, nt=3500, mu_r=1,
+    def __init__(self, nz=2000, nt=2000, mu_r=1,
                  eps_r=np.array([1], dtype=float), lbda_0=633e-9):
         """
         Class instantiation
         """
+        self.txt_tmpl = "Time: %.3f ps"
+        self.img_txt = None
         self.E = None  # E-field
         self.H = None  # H-field
+        self.dist = None  # Distance traveled
         if (len(np.shape(eps_r)) == 0):
             eps_r = np.array([eps_r], dtype=float)
         self.eps = eps_0*eps_r  # spacial refractive index
@@ -40,11 +43,12 @@ class Handin4():
         self.nt = nt  # Number of time-steps
         self.lbda_0 = lbda_0  # wavelength in vacuum
         self.period = self.lbda_0/c_0
-        self.dt = self.period/self.nt
-        self.dz = self.lbda_0/self.nz
+        self.dt = self.period/30
+        self.dz = self.lbda_0/30
+        self.line = None
 
     def initField(self, envWidth, periodOffs,
-                  peakField, dt, q, m):
+                  peakField, q, m):
         """
         Calculates incident field in one position in time step m
 
@@ -57,8 +61,6 @@ class Handin4():
             1.5*envWidth)
         peakField : float
             max value of incident field (e.g. =1 V/m)
-        dt : float
-            something
         q : int
             supergauss coefficient; the higher the flatter the envelope, q=1 is
             Gaussian (e.g. =4)
@@ -73,9 +75,10 @@ class Handin4():
         f = 1/self.period
         envWidth = envWidth*self.period
         offset = periodOffs*self.period
-        envelope = peakField*np.exp(-(m*dt-offset)**(2*q)/(envWidth/2)**(2*q))
+        envelope = peakField*np.exp(-(m*self.dt-offset)**(2*q) /
+                                    (envWidth/2)**(2*q))
         # incident field at time step m
-        return np.cos(2*pi*f*m*dt)*envelope
+        return np.cos(2*pi*f*m*self.dt)*envelope
 
     def DielMirrorNVec(self, nPairs, nLow, nHigh,
                        nSurround, zVec, zMirrorStart):
@@ -133,37 +136,76 @@ class Handin4():
             return None
         return vec[1:len(vec)] - vec[:len(vec)-1]
 
-    def yeeAlg(self):
+    def simData(self):
         """
-        Implements the Yee algorithm
+        This method updates the data that is to be plotted onto the figure.
+
+        The function yields different values for different tasks:
+        Yields
+        ------
+        numpy.ndarray
+            The E-field.
+        int
+            The current iteration number.
         """
-        if (np.size(self.eps) != 1 and np.size(self.eps) != self.nz+1):
-            print("Size mismatch for E-field and spacial refractive index")
-            return
-        for i in range(0, self.nt):
-            self.E[0] = self.initField(envWidth=20, periodOffs=30,
-                                       peakField=1, q=1, m=i,
-                                       dt=self.period/30)
-            self.H += self.diff(self.E)*self.dt/(self.dz*self.mu)
-            self.E[1:self.nz] += self.diff(self.H) /\
-                self.eps*(self.dt/self.dz)
+        if (True):
+            if (np.size(self.eps) != 1 and np.size(self.eps) != self.nz+1):
+                print("Size mismatch for E-field and spacial refractive index")
+                return
+            for i in range(0, self.nt):
+                self.E[0] = self.initField(envWidth=20, periodOffs=30,
+                                           peakField=1, q=1, m=i)
+                self.H += self.diff(self.E)*self.dt/(self.dz*self.mu)
+                self.E[1:self.nz] += self.diff(self.H) /\
+                    self.eps*(self.dt/self.dz)
+                yield self.E, i
+
+    def updatefig(self, simData):
+        """
+        Handles setting the new image/graph and info text for the simulation.
+        Used by the animation function.
+
+        Parameters
+        ----------
+        simData : tuple
+            simData[0] : The E-field
+            simData[1] : The iteration index
+
+        Returns
+        -------
+        matplotlib.lines.Line2D
+            The plot containing the E-field.
+        matplotlib.text.Text
+            The text presenting how much time has elapsed.
+        """
+        if (True):
+            E, iter_idx = simData[0], simData[1]
+            self.line.set_data(self.dist, E)
+            dst = self.txt_tmpl % (iter_idx*self.dt*1e12)
+            self.img_txt.set_text(dst)
+            return self.line, self.img_txt
+
+    def initializePlot(self):
+        """
+        Initializes the 2D plot of them beam diameter vs iteration number.
+        """
+        ymax = 2
+        self.img_txt = ax1.text(0, 1.1*ymax, "", color="#000000")
+        self.line, = ax1.plot([], [], linestyle="-", color="black")
+        ax1.set_ylim(-ymax, ymax)
+        ax1.set_xlabel("$z-position [\mu m]$", size=16)
+        ax1.set_ylabel("$Amplitude$", size=16)
+        ax1.set_xlim(0, self.dist[np.size(self.dist, axis=0)-1])
 
     def initTask1(self):
-        # e-field in space (note extra point!)
+        """
+        Initializes task 1.
+        """
         self.E = np.zeros(self.nz+1)
-        # h-field in space
         self.H = np.zeros(self.nz)
-        # timeSetps = np.linspace(0, 5e-13, 10000)
-        """
-        self.E = self.initField(envWidth=15, periodOffs=1.5*15, peakField=1,
-                                q=4,
-                                m=np.arange(0, 10000), dt=self.period/30)
-
-        """
-        self.yeeAlg()
-        #ax1.axis([0, timeSetps[len(timeSetps)-1]/np.sqrt(eps_0*mu_0), -1, 1])
-        #ax1.plot(timeSetps/np.sqrt(eps_0*mu_0), self.E)
-        ax1.plot(self.E)
+        self.dist = np.linspace(0, self.dz*self.nz,
+                                np.size(self.E, axis=0))*1e6
+        self.initializePlot()
 
 
 if __name__ == "__main__":
@@ -186,4 +228,7 @@ if __name__ == "__main__":
         sys.stdout.write("Usage: python <filename.py> <task_nbr>")
         sys.stdout.flush()
         sys.exit()
+    # the function handling the the animation itself
+    ani = animation.FuncAnimation(fig, hi4.updatefig, hi4.simData,
+                                  interval=2, blit=False, repeat=False)
     plt.show()  # plot figure
