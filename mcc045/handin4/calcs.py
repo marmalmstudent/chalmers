@@ -29,13 +29,15 @@ class Handin4():
         """
         Class instantiation
         """
-        self.txt_tmpl = "Time: %.3f ps, velocity: %.0f Mm/s, impedance: %.0f ohm"
-        self.img_txt = None
+        self.txtTmpl = "Time: %.3f ps, velocity: %.0f Mm/s, imp: %.0f ohm"
+        self.taskNbr = None
+        self.figTxt = None
         self.E = None  # E-field
         self.H = None  # H-field
         self.dist = None  # Distance traveled
         if (len(np.shape(eps_r)) == 0):
             eps_r = np.array([eps_r], dtype=float)
+        self.eps_r = eps_r
         self.eps = eps_0*eps_r  # spacial refractive index
         self.mu = mu_0*mu_r  # magnetic permeability
         self.EBounds = None  # Boundary condition for E-field
@@ -46,6 +48,8 @@ class Handin4():
         self.dt = self.period/30
         self.dz = self.lbda_0/30
         self.line = None
+        self.line2 = None
+        self.nItrPlot = 10  # nbr of iterations per plot
 
     def initField(self, envWidth, periodOffs,
                   peakField, q, m):
@@ -152,12 +156,15 @@ class Handin4():
             if (np.size(self.eps) != 1 and np.size(self.eps) != self.nz+1):
                 print("Size mismatch for E-field and spacial refractive index")
                 return
-            for i in range(0, self.nt):
-                self.E[0] = self.initField(envWidth=20, periodOffs=30,
-                                           peakField=1, q=1, m=i)
-                self.H += self.diff(self.E)*self.dt/(self.dz*self.mu)
-                self.E[1:self.nz] += self.diff(self.H) /\
-                    self.eps*(self.dt/self.dz)
+            for i in range(0, self.nt, self.nItrPlot):
+                for j in range(0, self.nItrPlot):
+                    self.E[0] = self.initField(envWidth=20,
+                                               periodOffs=30,
+                                               peakField=1, q=1, m=i+j) /\
+                                               self.eps_r[0]
+                    self.H += self.diff(self.E)*self.dt/(self.dz*self.mu)
+                    self.E[1:self.nz] += self.diff(self.H) /\
+                        self.eps*(self.dt/self.dz)
                 yield self.E, i
 
     def updatefig(self, simData):
@@ -178,20 +185,30 @@ class Handin4():
         matplotlib.text.Text
             The text presenting how much time has elapsed.
         """
-        if (True):
+        if (self.taskNbr == 1 or self.taskNbr == 3):
             E, iter_idx = simData[0], simData[1]
             self.line.set_data(self.dist, E)
-            dst = self.txt_tmpl % (iter_idx*self.dt*1e12, self.dz/self.dt/1e6,
-                                   np.sum(abs(self.E))/np.sum(np.abs(self.H)))
-            self.img_txt.set_text(dst)
-            return self.line, self.img_txt
+            dst = self.txtTmpl % (iter_idx*self.dt*1e12, self.dz/self.dt/1e6,
+                                  np.sum(abs(self.E))/np.sum(np.abs(self.H)))
+            self.figTxt.set_text(dst)
+            return self.line, self.figTxt
+        elif (self.taskNbr == 2):
+            E, iter_idx = simData[0], simData[1]
+            self.line.set_data(self.dist, E)
+            # Note the minus sign
+            self.line2.set_data(self.dist[:len(self.H)],
+                                -self.E[:len(self.H)]*self.H)
+            dst = self.txtTmpl % (iter_idx*self.dt*1e12, self.dz/self.dt/1e6,
+                                  np.sum(abs(self.E))/np.sum(np.abs(self.H)))
+            self.figTxt.set_text(dst)
+            return self.line, self.figTxt
 
     def initializePlot(self):
         """
         Initializes the 2D plot of them beam diameter vs iteration number.
         """
         ymax = 2
-        self.img_txt = ax1.text(0, 1.1*ymax, "", color="#000000")
+        self.figTxt = ax1.text(0, 1.1*ymax, "", color="#000000")
         self.line, = ax1.plot([], [], linestyle="-", color="black")
         ax1.set_ylim(-ymax, ymax)
         ax1.set_xlabel("$z-position [\mu m]$", size=16)
@@ -202,11 +219,54 @@ class Handin4():
         """
         Initializes task 1.
         """
+        self.taskNbr = 1
+        self.nz = 2000
+        self.nt = 2000
         self.E = np.zeros(self.nz+1)
         self.H = np.zeros(self.nz)
         self.dist = np.linspace(0, self.dz*self.nz,
                                 np.size(self.E, axis=0))*1e6
         self.initializePlot()
+
+    def initTask2(self):
+        """
+        Initializes task 2
+
+        If self.nz > self.nt the wave will propagate to the right side
+        and be reflected back. this is because them final point of the
+        E-field is always zero so the second to last value will be mirrored.
+        """
+        self.taskNbr = 2
+        self.nz = 1000
+        self.nt = 2000
+        self.E = np.zeros(self.nz+1)
+        self.H = np.zeros(self.nz)
+        self.dist = np.linspace(0, self.dz*self.nz,
+                                np.size(self.E, axis=0))*1e6
+        self.initializePlot()
+        ymax = 0.01
+        self.line2, = ax2.plot([], [], linestyle="-", color="black")
+        ax2.set_ylim(-ymax, ymax)
+        ax2.set_xlabel("$z-position [\mu m]$", size=16)
+        ax2.set_ylabel("$Amplitude$", size=16)
+        ax2.set_xlim(0, self.dist[np.size(self.dist, axis=0)-1])
+
+    def initTask3(self):
+        """
+        Initializes task 3.
+        """
+        self.taskNbr = 3
+        self.nz = 2000
+        self.nt = 2000
+        self.E = np.zeros(self.nz+1)
+        self.H = np.zeros(self.nz)
+        self.dist = np.linspace(0, self.dz*self.nz,
+                                np.size(self.E, axis=0))*1e6
+        self.initializePlot()
+        self.eps_r = np.ones(self.nz)
+        self.eps_r[int(self.nz/2):] = 1.33**2
+        #self.eps = self.eps_r*eps_0
+        #print(len(self.eps), self.nz)
 
 
 if __name__ == "__main__":
@@ -221,6 +281,15 @@ if __name__ == "__main__":
             ax1 = fig.add_subplot(111)
             hi4 = Handin4()  # the simulation class
             hi4.initTask1()  # method for task 1
+        elif (args[0] == "2"):
+            ax1 = fig.add_subplot(121)
+            ax2 = fig.add_subplot(122)
+            hi4 = Handin4()  # the simulation class
+            hi4.initTask2()  # method for task 2
+        elif (args[0] == "3"):
+            ax1 = fig.add_subplot(111)
+            hi4 = Handin4()  # the simulation class
+            hi4.initTask3()  # method for task 2
         else:
             sys.stdout.write("Usage: python <filename.py> <task_nbr>")
             sys.stdout.flush()
@@ -231,5 +300,5 @@ if __name__ == "__main__":
         sys.exit()
     # the function handling the the animation itself
     ani = animation.FuncAnimation(fig, hi4.updatefig, hi4.simData,
-                                  interval=2, blit=False, repeat=False)
+                                  interval=20, blit=False, repeat=False)
     plt.show()  # plot figure
