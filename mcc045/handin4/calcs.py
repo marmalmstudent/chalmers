@@ -43,6 +43,7 @@ class Handin4():
         self.EBounds = None  # Boundary condition for E-field
         self.nz = nz  # Number of z-points
         self.nt = nt  # Number of time-steps
+        self.n = np.sqrt(self.eps_r)
         self.lbda_0 = lbda_0  # wavelength in vacuum
         self.period = self.lbda_0/c_0
         self.dt = self.period/300
@@ -215,11 +216,12 @@ class Handin4():
             E, iter_idx = simData[0], simData[1]
             self.line2.set_data(self.dist[:len(self.H)],
                                 -self.E[:len(self.H)]*self.H)
+            rx = np.sum(np.abs(self.E[:len(self.H)]*self.H)[:int(self.nz/4)])
+            tx = np.sum(np.abs(self.E[:len(self.H)]*self.H)[int(self.nz/4):])
             dst = self.txtTmpl % (iter_idx, iter_idx*self.dt*1e12,
-                                  np.sum(np.abs(self.E[:len(self.H)]*self.H)[:int(self.nz/4)]) /\
-                                  np.sum(np.abs(self.E[:len(self.H)]*self.H))*100,
-                                  np.sum(np.abs(self.E[:len(self.H)]*self.H)[int(self.nz/4):]) /\
-                                  np.sum(np.abs(self.E[:len(self.H)]*self.H))*100)
+                                  rx/(rx+tx*self.n[int(self.nz/4)])*100,
+                                  tx*self.n[int(self.nz/4)] /
+                                  (rx+tx*self.n[int(self.nz/4)])*100)
             self.figTxt.set_text(dst)
             return self.line, self.figTxt
 
@@ -295,7 +297,8 @@ class Handin4():
                                 np.size(self.E, axis=0))*1e6
         self.initializePPlot(True)
         self.eps_r = np.ones(self.nz)
-        self.eps_r[int(self.nz/4):] = 1.5**2
+        self.eps_r[int(self.nz/4):] = 3.5**2
+        self.n = np.sqrt(self.eps_r)
         self.eps = self.eps_r*eps_0
 
 
