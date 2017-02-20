@@ -24,8 +24,8 @@ class Handin4():
     text
     """
 
-    def __init__(self, nz=30, nt=30, mu_r=1, eps_r=np.array([1], dtype=float),
-                 lbda_0=633e-9):
+    def __init__(self, nz=3500, nt=3500, mu_r=1,
+                 eps_r=np.array([1], dtype=float), lbda_0=633e-9):
         """
         Class instantiation
         """
@@ -39,16 +39,17 @@ class Handin4():
         self.nz = nz  # Number of z-points
         self.nt = nt  # Number of time-steps
         self.lbda_0 = lbda_0  # wavelength in vacuum
+        self.period = self.lbda_0/c_0
+        self.dt = self.period/self.nt
+        self.dz = self.lbda_0/self.nz
 
-    def initField(self, period, envWidth, periodOffs,
-                  peakField, q, dt, m):
+    def initField(self, envWidth, periodOffs,
+                  peakField, dt, q, m):
         """
         Calculates incident field in one position in time step m
 
         Parameters
         ----------
-        period : float
-            some period i guess
         envWidth : float
             width of envelope measured in periods (e.g. =20)
         periodOffs : float
@@ -56,11 +57,11 @@ class Handin4():
             1.5*envWidth)
         peakField : float
             max value of incident field (e.g. =1 V/m)
+        dt : float
+            something
         q : int
             supergauss coefficient; the higher the flatter the envelope, q=1 is
             Gaussian (e.g. =4)
-        dt : float
-            time step in FDTD
         m : int
             time step number
 
@@ -69,9 +70,9 @@ class Handin4():
         numpy.ndarray
             The incident field at time setp m.
         """
-        f = 1/period
-        envWidth = envWidth*period
-        offset = periodOffs*period
+        f = 1/self.period
+        envWidth = envWidth*self.period
+        offset = periodOffs*self.period
         envelope = peakField*np.exp(-(m*dt-offset)**(2*q)/(envWidth/2)**(2*q))
         # incident field at time step m
         return np.cos(2*pi*f*m*dt)*envelope
@@ -136,27 +137,33 @@ class Handin4():
         """
         Implements the Yee algorithm
         """
-        if (np.size(self.eps) != 1 or np.size(self.eps) != self.nz+1):
+        if (np.size(self.eps) != 1 and np.size(self.eps) != self.nz+1):
             print("Size mismatch for E-field and spacial refractive index")
             return
-        # set_array boundary condition for all time steps
-        np.transpose(self.E)[0] = self.EBounds
-        for m in range(0, self.nt):
-            self.H[m] += self.diff(self.E[m])*self.dt/(self.dz*self.mu)
-            self.E[m, 1:self.nz] += self.diff(self.H[m]) /\
+        for i in range(0, self.nt):
+            self.E[0] = self.initField(envWidth=20, periodOffs=30,
+                                       peakField=1, q=1, m=i,
+                                       dt=self.period/30)
+            self.H += self.diff(self.E)*self.dt/(self.dz*self.mu)
+            self.E[1:self.nz] += self.diff(self.H) /\
                 self.eps*(self.dt/self.dz)
 
     def initTask1(self):
         # e-field in space (note extra point!)
-        self.E = np.zeros((self.nt, self.nz+1))
+        self.E = np.zeros(self.nz+1)
         # h-field in space
-        self.H = np.zeros((self.nt, self.nz))
-        timeSetps = np.linspace(0, 5e-13, 10000)
-        self.E = self.initField(period=self.lbda_0/c_0, envWidth=50,
-                                periodOffs=150, peakField=1, q=1,
-                                dt=timeSetps, m=1)
-        ax1.axis([0, timeSetps[len(timeSetps)-1]/np.sqrt(eps_0*mu_0), -1, 1])
-        ax1.plot(timeSetps/np.sqrt(eps_0*mu_0), self.E)
+        self.H = np.zeros(self.nz)
+        # timeSetps = np.linspace(0, 5e-13, 10000)
+        """
+        self.E = self.initField(envWidth=15, periodOffs=1.5*15, peakField=1,
+                                q=4,
+                                m=np.arange(0, 10000), dt=self.period/30)
+
+        """
+        self.yeeAlg()
+        #ax1.axis([0, timeSetps[len(timeSetps)-1]/np.sqrt(eps_0*mu_0), -1, 1])
+        #ax1.plot(timeSetps/np.sqrt(eps_0*mu_0), self.E)
+        ax1.plot(self.E)
 
 
 if __name__ == "__main__":
