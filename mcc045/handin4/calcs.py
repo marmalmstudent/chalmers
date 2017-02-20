@@ -29,7 +29,7 @@ class Handin4():
         """
         Class instantiation
         """
-        self.txt_tmpl = "Time: %.3f ps"
+        self.txt_tmpl = "Time: %.3f ps, velocity: %.0f Mm/s"
         self.img_txt = None
         self.E = None  # E-field
         self.H = None  # H-field
@@ -181,7 +181,7 @@ class Handin4():
         if (True):
             E, iter_idx = simData[0], simData[1]
             self.line.set_data(self.dist, E)
-            dst = self.txt_tmpl % (iter_idx*self.dt*1e12)
+            dst = self.txt_tmpl % (iter_idx*self.dt*1e12, self.dz/self.dt/1e6)
             self.img_txt.set_text(dst)
             return self.line, self.img_txt
 
