@@ -231,4 +231,5 @@ if __name__ == "__main__":
     # the function handling the the animation itself
     ani = animation.FuncAnimation(fig, hi4.updatefig, hi4.simData,
                                   interval=2, blit=False, repeat=False)
+    print(np.sum(hi4.E)/sum(hi4.H))
     plt.show()  # plot figure
