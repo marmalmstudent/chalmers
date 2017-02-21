@@ -305,6 +305,7 @@ class Handin4():
     def initTask5(self):
         """
         Initializes task 5
+        longer pulses yields values closer to them theoretical.
         """
         self.txtTmpl = "Iterations: %.0f, Time: %.3f ps, RXPWR: %.1f percent, TXPWR: %.1f percent"
         self.taskNbr = 5
