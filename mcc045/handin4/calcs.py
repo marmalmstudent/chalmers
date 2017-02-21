@@ -162,20 +162,19 @@ class Handin4():
         int
             The current iteration number.
         """
-        if (True):
-            if (np.size(self.eps) != 1 and np.size(self.eps) != self.nz):
-                print("Size mismatch for E-field and spacial refractive index")
-                return
-            for i in range(0, self.nt, self.nItrPlot):
-                for j in range(0, self.nItrPlot):
-                    self.E[0] = self.initField(envWidth=10,
-                                               periodOffs=15,
-                                               peakField=1, q=4, m=i+j) /\
-                                               self.eps_r[0]
-                    self.H += self.diff(self.E)*self.dt/(self.dz*self.mu)
-                    self.E[1:self.nz] += self.diff(self.H) /\
-                        self.eps[:self.nz-1]*(self.dt/self.dz)
-                yield self.E, i
+        if (np.size(self.eps) != 1 and np.size(self.eps) != self.nz):
+            print("Size mismatch for E-field and spacial refractive index")
+            return
+        for i in range(0, self.nt, self.nItrPlot):
+            for j in range(0, self.nItrPlot):
+                self.E[0] = self.initField(envWidth=10,
+                                           periodOffs=15,
+                                           peakField=1, q=4, m=i+j) /\
+                                           self.eps_r[0]
+                self.H += self.diff(self.E)*self.dt/(self.dz*self.mu)
+                self.E[1:self.nz] += self.diff(self.H) /\
+                    self.eps[:self.nz-1]*(self.dt/self.dz)
+            yield self.E, i
 
     def updatefig(self, simData):
         """
@@ -212,7 +211,7 @@ class Handin4():
                                   np.sum(abs(self.E))/np.sum(np.abs(self.H)))
             self.figTxt.set_text(dst)
             return self.line, self.figTxt
-        elif (self.taskNbr == 3):
+        elif (self.taskNbr == 3 or self.taskNbr == 4):
             E, iter_idx = simData[0], simData[1]
             self.line2.set_data(self.dist[:len(self.H)],
                                 -self.E[:len(self.H)]*self.H)
@@ -301,6 +300,34 @@ class Handin4():
         self.n = np.sqrt(self.eps_r)
         self.eps = self.eps_r*eps_0
 
+    def initTask4(self):
+        """
+        Initializes task 4
+        """
+        self.txtTmpl = "Iterations: %.0f, Time: %.3f ps, RXPWR: %.1f percent, TXPWR: %.1f percent"
+        self.taskNbr = 4
+        self.setNT(12000)
+        self.setNZ(20000)
+        self.E = np.zeros(self.nz+1)
+        self.H = np.zeros(self.nz)
+        self.dist = np.linspace(0, self.dz*self.nz,
+                                np.size(self.E, axis=0))*1e6
+        self.initializePPlot(True)
+        self.eps_r = np.ones(self.nz)
+        n_sub = 1.5
+        n_coat = np.sqrt(n_sub)
+        nARSampl = self.lbda_0/(4*n_coat*self.dz)
+        print(nARSampl)
+        self.eps_r[int(self.nz/4):int(self.nz/4+nARSampl)] = n_coat**2
+        self.eps_r[int(self.nz/4+nARSampl):] = n_sub**2
+        self.n = np.sqrt(self.eps_r)
+        self.eps = self.eps_r*eps_0
+
+    def initTask5(self):
+        """
+        Initializes task 5
+        """
+
 
 if __name__ == "__main__":
     """
@@ -322,7 +349,11 @@ if __name__ == "__main__":
         elif (args[0] == "3"):
             ax2 = fig.add_subplot(111)
             hi4 = Handin4()  # the simulation class
-            hi4.initTask3()  # method for task 2
+            hi4.initTask3()  # method for task 3
+        elif (args[0] == "4"):
+            ax2 = fig.add_subplot(111)
+            hi4 = Handin4()  # the simulation class
+            hi4.initTask4()  # method for task 4
         else:
             sys.stdout.write("Usage: python <filename.py> <task_nbr>")
             sys.stdout.flush()
