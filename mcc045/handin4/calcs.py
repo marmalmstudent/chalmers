@@ -17,6 +17,7 @@ pi = np.pi
 c_0 = 2.99792458e8
 mu_0 = pi*4e-7
 eps_0 = 1/(mu_0*c_0**2)
+eta_0 = 377
 
 
 class Handin4():
@@ -33,6 +34,7 @@ class Handin4():
         self.taskNbr = None
         self.figTxt = None
         self.E = None  # E-field
+        self.E_init = None
         self.H = None  # H-field
         self.dist = None  # Distance traveled
         if (len(np.shape(eps_r)) == 0):
@@ -53,6 +55,8 @@ class Handin4():
         self.nItrPlot = 10  # nbr of iterations per plot
         self.pulseWidth = 10
         self.pulseOffs = 15
+        self.sigma = 0
+        self.mirrorStartIdx = 1
 
     def setNT(self, newNT):
         self.nt = newNT
@@ -62,6 +66,11 @@ class Handin4():
         self.nz = newNZ
         self.dt = self.period/(0.015*newNZ)
         self.dz = self.lbda_0/(0.015*newNZ)
+
+    def setDZ(self, newDZ):
+        self.dz = newDZ
+        self.nz = int(self.lbda_0/(0.015*self.dz))
+        self.dt = self.period/(0.015*self.nz)
 
     def initField(self, envWidth, periodOffs,
                   peakField, q, m):
@@ -95,6 +104,50 @@ class Handin4():
                                     (envWidth/2)**(2*q))
         # incident field at time step m
         return np.cos(2*pi*f*m*self.dt)*envelope
+
+    def applyDielMirr(self, zStartIdx, nHigh, nLow, nPairs):
+        """
+        """
+        for i in range(0, nPairs):
+            segmLen = int(self.lbda_0/(4*nHigh*self.dz))
+            self.eps_r[zStartIdx:zStartIdx+segmLen] = nHigh**2
+            zStartIdx += segmLen
+            segmLen = int(self.lbda_0/(4*nLow*self.dz))
+            self.eps_r[zStartIdx:zStartIdx+segmLen] = nLow**2
+            zStartIdx += segmLen
+        return zStartIdx
+
+    def calcZSalmpDist(self, n1, n2, nSamplMin, lbdaFrac):
+        """
+        Calculates the spacial sampling distance to make fraction of lambda
+        equal an integer number of sampling points for both indices.
+
+        Parameters
+        ----------
+        n1 : double
+            The first refractive index
+        n2 : double
+            The second refractive index
+        nSamplMin : int
+            The minimum amount of sampling points per wavelength
+        lbdaFrac : float
+            The fraction of the wavelength (in the material) that will be
+            the width of the material.
+        """
+        nSamplPtsMin = np.ceil(nSamplMin*lbdaFrac)
+        # n1 will have fewer points
+        samplDefault = np.array([np.ceil(nSamplPtsMin/np.min((n1, n2)))],
+                                dtype=np.uint32)
+        nIters = 0
+        while(True):
+            if (((samplDefault/n1) % 1 == 0) and ((samplDefault/n2) % 1 == 0)):
+                break
+            samplDefault += 1
+            nIters += 1
+            if (nIters > 1e3):
+                print("Could not find a reasonable sample distance")
+                return
+        self.setDZ(self.lbda_0*lbdaFrac/samplDefault)
 
     def diff(self, vec):
         """
@@ -139,8 +192,9 @@ class Handin4():
                                            peakField=1, q=4, m=i+j) /\
                                            self.eps_r[0]
                 self.H += self.diff(self.E)*self.dt/(self.dz*self.mu)
-                self.E[1:self.nz] += self.diff(self.H) /\
-                    self.eps[:self.nz-1]*(self.dt/self.dz)
+                self.E[1:self.nz] += (self.dt/self.eps[:self.nz-1]) *\
+                                     (self.diff(self.H)/self.dz -
+                                      self.sigma[:self.nz-1]*self.E[1:self.nz])
             yield self.E, i
 
     def updatefig(self, simData):
@@ -200,6 +254,17 @@ class Handin4():
                                   rx/(rx+tx*self.n[int(self.nz/4)])*100,
                                   tx*self.n[int(self.nz/4)] /
                                   (rx+tx*self.n[int(self.nz/4)])*100)
+            self.figTxt.set_text(dst)
+            return self.line, self.figTxt
+        elif (self.taskNbr == 6):
+            E, iter_idx = simData[0], simData[1]
+            self.line2.set_data(self.dist[:len(self.H)],
+                                -self.E[:len(self.H)]*self.H)
+            # these are the amplitudes
+            rx = np.max(np.abs(self.E[:self.mirrorStartIdx]))**2/(2*eta_0)
+            tot = np.max(np.abs(self.E_init))**2/(2*eta_0)
+            dst = self.txtTmpl % (iter_idx, iter_idx*self.dt*1e12,
+                                  rx/tot*100)
             self.figTxt.set_text(dst)
             return self.line, self.figTxt
 
@@ -275,7 +340,8 @@ class Handin4():
                                 np.size(self.E, axis=0))*1e6
         self.initializePPlot(True)
         self.eps_r = np.ones(self.nz)
-        self.eps_r[int(self.nz/4):] = 1.5**2
+        self.mirrorStartIdx = int(self.nz/4)
+        self.eps_r[self.mirrorStartIdx:] = 1.5**2
         self.n = np.sqrt(self.eps_r)
         self.eps = self.eps_r*eps_0
 
@@ -297,8 +363,9 @@ class Handin4():
         n_coat = np.sqrt(n_sub)
         nARSampl = self.lbda_0/(4*n_coat*self.dz)
         print(nARSampl)
-        self.eps_r[int(self.nz/4):int(self.nz/4+nARSampl)] = n_coat**2
-        self.eps_r[int(self.nz/4+nARSampl):] = n_sub**2
+        self.mirrorStartIdx = int(self.nz/4)
+        self.eps_r[self.mirrorStartIdx:self.mirrorStartIdx+int(nARSampl)] = n_coat**2
+        self.eps_r[self.mirrorStartIdx+int(nARSampl):] = n_sub**2
         self.n = np.sqrt(self.eps_r)
         self.eps = self.eps_r*eps_0
 
@@ -323,58 +390,38 @@ class Handin4():
                                 np.size(self.E, axis=0))*1e6
         self.initializePPlot(True)
         self.eps_r = np.ones(self.nz)
-        self.applyDielMirr(int(self.nz/3), nHigh, nLow, 20)
+        self.mirrorStartIdx = int(self.nz/3)
+        self.applyDielMirr(self.mirrorStartIdx, nHigh, nLow, 20)
         self.n = np.sqrt(self.eps_r)
         self.eps = self.eps_r*eps_0
 
-    def applyDielMirr(self, zStartIdx, nHigh, nLow, nPairs):
+    def initTask6(self):
         """
+        Initializes task 6
         """
-        for i in range(0, nPairs):
-            segmLen = int(self.lbda_0/(4*nHigh*self.dz))
-            self.eps_r[zStartIdx:zStartIdx+segmLen] = nHigh**2
-            zStartIdx += segmLen
-            segmLen = int(self.lbda_0/(4*nLow*self.dz))
-            self.eps_r[zStartIdx:zStartIdx+segmLen] = nLow**2
-            zStartIdx += segmLen
-        return zStartIdx
-
-    def calcZSalmpDist(self, n1, n2, nSamplMin, lbdaFrac):
-        """
-        Calculates the spacial sampling distance to make fraction of lambda
-        equal an integer number of sampling points for both indices.
-
-        Parameters
-        ----------
-        n1 : double
-            The first refractive index
-        n2 : double
-            The second refractive index
-        nSamplMin : int
-            The minimum amount of sampling points per wavelength
-        lbdaFrac : float
-            The fraction of the wavelength (in the material) that will be
-            the width of the material.
-        """
-        nSamplPtsMin = np.ceil(nSamplMin*lbdaFrac)
-        # n1 will have fewer points
-        samplDefault = np.array([np.ceil(nSamplPtsMin/np.min((n1, n2)))],
-                                dtype=np.uint32)
-        nIters = 0
-        while(True):
-            if (((samplDefault/n1) % 1 == 0) and ((samplDefault/n2) % 1 == 0)):
-                break
-            samplDefault += 1
-            nIters += 1
-            if (nIters > 1e3):
-                print("Could not find a reasonable sample distance")
-                return
-        self.setDZ(self.lbda_0*lbdaFrac/samplDefault)
-
-    def setDZ(self, newDZ):
-        self.dz = newDZ
-        self.nz = int(self.lbda_0/(0.015*self.dz))
-        self.dt = self.period/(0.015*self.nz)
+        self.txtTmpl = "Iterations: %.0f, Time: %.3f ps, RXPWR: %.1f percent"
+        self.taskNbr = 6
+        self.pulseWidth = 20
+        self.pulseOffs = 30
+        self.setNT(3000)
+        self.setNZ(2000)
+        self.nz = 2*self.nz
+        self.E_init = self.initField(envWidth=self.pulseWidth,
+                                     periodOffs=self.pulseOffs,
+                                     peakField=1, q=4, m=np.arange(0, self.nt))
+        self.E = np.zeros(self.nz+1)
+        self.H = np.zeros(self.nz)
+        self.dist = np.linspace(0, self.dz*self.nz,
+                                np.size(self.E, axis=0))*1e6
+        self.initializePPlot(True)
+        self.eps_r = np.ones(self.nz)
+        self.sigma = np.zeros(self.nz)
+        n_sub = 1.5
+        self.mirrorStartIdx = int(self.nz/3)
+        self.eps_r[self.mirrorStartIdx:] = n_sub**2
+        self.sigma[self.mirrorStartIdx:] = 1e4
+        self.n = np.sqrt(self.eps_r)
+        self.eps = self.eps_r*eps_0
 
 
 if __name__ == "__main__":
@@ -406,6 +453,10 @@ if __name__ == "__main__":
             ax2 = fig.add_subplot(111)
             hi4 = Handin4()
             hi4.initTask5()
+        elif (args[0] == "6"):
+            ax2 = fig.add_subplot(111)
+            hi4 = Handin4()  # the simulation class
+            hi4.initTask6()  # method for task 4
         else:
             sys.stdout.write("Usage: python <filename.py> <task_nbr>")
             sys.stdout.flush()
