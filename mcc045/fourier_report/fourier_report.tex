@@ -86,7 +86,7 @@ Using the values from Table~\ref{tab:diffraction_red_vals}, the angles depicted 
   \caption{The quantities calculated during the measurement of the wavelength of the red laser.}
   \label{tab:diffraction_red_calcs}
 \end{table}
-\begin{figure}
+\begin{figure}[h]
   \centering
   \noindent\makebox[\textwidth]{\scalebox{0.80}{\input{figures/diffraction_red.pdf_t}}}
   \caption{The setup used when measuring the wavelength of the red laser.}
@@ -122,7 +122,7 @@ The accuracy of the measurement could have increased if a lower grating line sep
   \caption{The quantities calculated during the measurement of the wavelength of the orange laser.}
   \label{tab:diffraction_orange_calcs}
 \end{table}
-\begin{figure}
+\begin{figure}[h]
   \centering
   \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/diffraction_orange.pdf_t}}}
   \caption{The setup used when measuring the wavelength of the orange laser.}
@@ -153,7 +153,7 @@ The beam radius can be calculated using (\ref{eq:bw}).
   \label{eq:bw}
   w(z)=w_0\sqrt{1+\Big(\frac{z}{z_0}\Big)^2}
 \end{equation}
-\begin{figure}
+\begin{figure}[h]
   \centering
   \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/gauss_setup.pdf_t}}}
   \caption{The setup used when measuring the beam width on a gaussian beam.}
@@ -211,13 +211,13 @@ In order to see a larger image on the screen, $L_2$ was removed and $L_3$ was mo
   \caption{The Available lenses and their focal lengths.}
   \label{tab:lenses}
 \end{table}
-\begin{figure}
+\begin{figure}[h]
   \centering
   \noindent\makebox[\textwidth]{\scalebox{0.70}{\input{figures/lense_setup.pdf_t}}}
   \caption{The inital setup using a compound lens between the fourier plane and the image plane. Values for the focal lengths can be seen in Table~\ref{tab:lenses}.}
   \label{fig:setup0}
 \end{figure}
-\begin{figure}
+\begin{figure}[h]
   \centering
   \noindent\makebox[\textwidth]{\scalebox{0.70}{\input{figures/lense_setup2.pdf_t}}}
   \caption{The final setup using a compound lens between the fourier plane and the image plane. Values for the focal lengths can be seen in Table~\ref{tab:lenses}.}
@@ -228,7 +228,7 @@ In order to see a larger image on the screen, $L_2$ was removed and $L_3$ was mo
 Amplitude modulation simply means that an object is placed in front of the beam that have parts that let through varying intensity. In these experiments the amplitude modulation was either full transmission or no transmission.
 \subsubsection{Linear grating}
 When a linear grating with vertical lines was placed in the object plane dots appeared along the horizontal axis on the image plane. The $0^\text{th}$ order was brightest and higher order spots less so. The even order spots had notable less intensity than their odd order modes. This is caused by the linewidth being very close to the line separation and the lines act as a bandpass filter. The object and the image plane can be seen in Figure~\ref{fig:linear_grating}.
-\begin{figure}
+\begin{figure}[h]
   \centering
   \noindent\makebox[\textwidth]{\scalebox{0.70}{\input{figures/linear_grating.pdf_t}}}
   \caption{Linear grating.}
@@ -237,7 +237,7 @@ When a linear grating with vertical lines was placed in the object plane dots ap
 
 \subsubsection{Circular grating}
 When a circular grating was placed in the object plane circles appeared on the image plane. Much like the case with the linear grating the $0^\text{th}$ order was brightest and the brightness decreased with higher order. The even order rings also had notably less intensity compared to the odd order rings and the reason is the same; their width of the rings is very close to the separation of the rings. The object and the image plane can be sen inbetween Figure~\ref{fig:circular_grating}.
-\begin{figure}
+\begin{figure}[h]
   \centering
   \noindent\makebox[\textwidth]{\scalebox{0.70}{\input{figures/circular_grating.pdf_t}}}
   \caption{circular grating.}
@@ -246,7 +246,7 @@ When a circular grating was placed in the object plane circles appeared on the i
 
 \subsubsection{Chess-board grating}
 When a chess-board grating was placed in the object plane both horizontal and vertical dots appeared on the image plane. The $0^\text{th}$ order was brightest and the brightness decreased with higher order. Unlike the other gratings the even orders was not visibly less bright than the odd orders. This is because the chess board is not quite a bandpass filter. The object and the image plane can be seen in Figure~\ref{fig:chess_board}
-\begin{figure}
+\begin{figure}[h]
   \centering
   \noindent\makebox[\textwidth]{\scalebox{0.70}{\input{figures/chess_board.pdf_t}}}
   \caption{chess borad.}
@@ -255,7 +255,7 @@ When a chess-board grating was placed in the object plane both horizontal and ve
 
 \subsubsection{Two gratings}
 When two gratings were placed in the object plane (linear with vertical lines and circular) rings appeared along the horizontal axis. Much like the case when linear and circular gratings were used the even order spots andhelp even order circles was less bright than odd orders. This is because placing two gratings in their object plane yields a grating that is the convolution between the gratings. A convolution in the spatial domain corresponds to multiplication on the frequency domains which results in the circular pattern from the circular grating appears where the spots from the linear grating would be. The object and the image plane can be seen in Figure~\ref{fig:lin_circ_grating}.
-\begin{figure}
+\begin{figure}[h]
   \centering
   \noindent\makebox[\textwidth]{\scalebox{0.70}{\input{figures/lin_circ_grating.pdf_t}}}
   \caption{linear and circular grating.}
@@ -273,7 +273,7 @@ Two-dimensional filters are created by blocking light some distance from the cen
 The resulting image will have the sharp edges between bright and dark areas (high contrast) for low pass filter but for high-pass filter the areas with very low variation in brightness (low contrast) will be removed.
 
 The filters can be seen in Figure~\ref{fig:filters}.
-\begin{figure}
+\begin{figure}[h]
   \centering
   \begin{subfigure}[b]{0.45\textwidth}
     \includegraphics[width=0.9\textwidth]{figures/1dlp.pdf}
@@ -304,13 +304,13 @@ In order to filter out the disturbances a one-dimensional low pass filter was us
 In order to filter out the linear grating a one-dimensional slit was placed horizontally.
 
 The filters can be seen in Figure~\ref{fig:filters2}.
-\begin{figure}
+\begin{figure}[h]
   \centering
-  \noindent\makebox[\textwidth]{\scalebox{0.70}{\input{figures/disturbance.pdf_t}}}
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/disturbance.pdf_t}}}
   \caption{linear grating with some disturbance.}
   \label{fig:disturbance}
 \end{figure}
-\begin{figure}
+\begin{figure}[h]
   \centering
   \begin{subfigure}[b]{0.45\textwidth}
     \includegraphics[width=0.9\textwidth]{figures/1dlp.pdf}

@@ -15,11 +15,11 @@
 \contentsline {section}{\numberline {4}Fourier Optics}{6}{section.4}
 \contentsline {subsection}{\numberline {4.1}Experimental setup}{6}{subsection.4.1}
 \contentsline {subsection}{\numberline {4.2}Amplitude modulation}{6}{subsection.4.2}
-\contentsline {subsubsection}{\numberline {4.2.1}Linear grating}{8}{subsubsection.4.2.1}
+\contentsline {subsubsection}{\numberline {4.2.1}Linear grating}{7}{subsubsection.4.2.1}
 \contentsline {subsubsection}{\numberline {4.2.2}Circular grating}{8}{subsubsection.4.2.2}
-\contentsline {subsubsection}{\numberline {4.2.3}Chess-board grating}{9}{subsubsection.4.2.3}
-\contentsline {subsubsection}{\numberline {4.2.4}Two gratings}{10}{subsubsection.4.2.4}
-\contentsline {subsection}{\numberline {4.3}Spatial filtering}{10}{subsection.4.3}
-\contentsline {subsubsection}{\numberline {4.3.1}One- and two-dimensional low pass and high pass}{10}{subsubsection.4.3.1}
-\contentsline {subsubsection}{\numberline {4.3.2}Image filtering}{11}{subsubsection.4.3.2}
-\contentsline {subsubsection}{\numberline {4.3.3}Disturbance filtering}{12}{subsubsection.4.3.3}
+\contentsline {subsubsection}{\numberline {4.2.3}Chess-board grating}{8}{subsubsection.4.2.3}
+\contentsline {subsubsection}{\numberline {4.2.4}Two gratings}{8}{subsubsection.4.2.4}
+\contentsline {subsection}{\numberline {4.3}Spatial filtering}{9}{subsection.4.3}
+\contentsline {subsubsection}{\numberline {4.3.1}One- and two-dimensional low pass and high pass}{9}{subsubsection.4.3.1}
+\contentsline {subsubsection}{\numberline {4.3.2}Image filtering}{10}{subsubsection.4.3.2}
+\contentsline {subsubsection}{\numberline {4.3.3}Disturbance filtering}{11}{subsubsection.4.3.3}
