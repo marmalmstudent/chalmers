@@ -256,8 +256,11 @@ class Handin4():
             """
             E, iter_idx = simData[0], simData[1]
             self.line.set_data(self.dist[:len(self.H)], E[:len(self.H)])
+            waveImp = 0
+            if (np.sum(np.abs(self.H)) != 0):
+                waveImp = np.sum(abs(self.E))/np.sum(np.abs(self.H))
             dst = self.txtTmpl % (iter_idx, iter_idx*self.dt*1e12,
-                                  self.dz/self.dt/1e6)
+                                  self.dz/self.dt/1e6, waveImp)
             self.figTxt.set_text(dst)
             return self.line, self.figTxt
         elif (self.taskNbr == 2):
@@ -350,27 +353,28 @@ class Handin4():
         self.line, = ax1.plot([], [], linestyle="-", color="black")
         ax1.set_ylim(-ymax, ymax)
         ax1.set_xlabel("$z-position [\mu m]$", size=16)
-        ax1.set_ylabel("$Amplitude$", size=16)
+        ax1.set_ylabel("$E-field$", size=16)
         ax1.set_xlim(0, self.dist[np.size(self.dist, axis=0)-1])
 
     def initializePPlot(self, dispTxt):
         """
         Initializes the 2D plot of the poynting vecotr vs propagated distance.
         """
-        ymax = 0.003
+        ymax = 0.004
         if (dispTxt):
             self.figTxt = ax2.text(0, 1.1*ymax, "", color="#000000")
         self.line2, = ax2.plot([], [], linestyle="-", color="black")
         ax2.set_ylim(-ymax, ymax)
         ax2.set_xlabel("$z-position [\mu m]$", size=16)
-        ax2.set_ylabel("$Amplitude$", size=16)
+        ax2.set_ylabel("$Poynting$ $vector$", size=16)
         ax2.set_xlim(0, self.dist[np.size(self.dist, axis=0)-1])
 
     def initTask1(self):
         """
         Initializes task 1.
         """
-        self.txtTmpl = "Iterations: %.0f, Time: %.3f ps, velocity: %.0f Mm/s"
+        self.txtTmpl = "Iterations: %.0f, Time: %.3f ps, velocity: " +\
+                       "%.0f Mm/s, imp: %.0f ohm"
         self.taskNbr = 1
         self.setNT(2000)
         self.setNZ(2000)
@@ -390,7 +394,7 @@ class Handin4():
         """
         self.txtTmpl = "Iterations: %.0f, Time: %.3f ps, imp: %.0f ohm"
         self.taskNbr = 2
-        self.setNT(20000)
+        self.setNT(11000)
         self.setNZ(11500)
         self.E = np.zeros(self.nz+1)
         self.H = np.zeros(self.nz)
@@ -407,7 +411,7 @@ class Handin4():
                        "percent, TXPWR: %.1f percent"
         self.taskNbr = 3
         self.setNT(12000)
-        self.setNZ(20000)
+        self.setNZ(15000)
         self.E_init = self.initField(peakField=1, q=4, m=np.arange(0, self.nt))
         self.H_init = self.diff(self.E_init)*self.dt/(self.dz*self.mu)
         self.E = np.zeros(self.nz+1)
@@ -416,9 +420,9 @@ class Handin4():
                                 np.size(self.E, axis=0))*1e6
         self.initializePPlot(True)
         self.eps_r = np.ones(self.nz)
-        self.mirrBegIdx = int(self.nz/4)
-        self.mirrEndIdx = int(self.nz/4)
-        self.eps_r[self.mirrBegIdx:] = 1.5**2
+        self.mirrBegIdx = int(self.nz/3)
+        self.mirrEndIdx = int(self.nz/3)
+        self.eps_r[self.mirrBegIdx:] = 3.5**2
         self.n = np.sqrt(self.eps_r)
         self.eps = self.eps_r*eps_0
 
@@ -431,7 +435,7 @@ class Handin4():
                        "percent, TXPWR: %.1f percent"
         self.taskNbr = 4
         self.setNT(12000)
-        self.setNZ(20000)
+        self.setNZ(15000)
         self.E_init = self.initField(peakField=1, q=4, m=np.arange(0, self.nt))
         self.H_init = self.diff(self.E_init)*self.dt/(self.dz*self.mu)
         self.E = np.zeros(self.nz+1)
@@ -443,7 +447,7 @@ class Handin4():
         n_coat = np.sqrt(n_sub)
         nARSampl = self.lbda_0/(4*n_coat*self.dz)
         print(nARSampl)
-        self.mirrBegIdx = int(self.nz/4)
+        self.mirrBegIdx = int(self.nz/3)
         self.mirrEndIdx = self.mirrBegIdx + int(nARSampl)
         self.eps_r = np.ones(self.nz)
         self.eps_r[self.mirrBegIdx:self.mirrEndIdx] = n_coat**2
@@ -461,11 +465,13 @@ class Handin4():
         self.taskNbr = 5
         nHigh = 1.7
         nLow = 1.5
-        self.pulseWidth = 20
-        self.pulseOffs = 30
+        self.pulseWidth = 10
+        self.pulseOffs = 15
         self.calcZSalmpDist(nLow, nHigh, 200, 0.25)
-        self.nz = 2*self.nz
-        self.setNT(int(self.nz*0.75))
+        self.setNT(38000)
+        self.setNZ(20000)
+        self.nz = 3*self.nz
+        #self.setNT(int(self.nz*0.75))
         self.E_init = self.initField(peakField=1, q=4, m=np.arange(0, self.nt))
         self.H_init = self.diff(self.E_init)*self.dt/(self.dz*self.mu)
         self.E = np.zeros(self.nz+1)

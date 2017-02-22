@@ -1,0 +1,159 @@
+\documentclass[12pt,a4paper]{article}
+
+%\pdfoutput=1
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{mathabx}
+\usepackage{lmodern}
+\usepackage{listings}
+\usepackage{units}
+\usepackage{siunitx}
+\usepackage{icomma}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{color}
+\usepackage{pgf}
+\DeclareMathOperator{\acosh}{arccosh}
+\newcommand{\N}{\ensuremath{\mathbbm{N}}}
+\newcommand{\Z}{\ensuremath{\mathbbm{Z}}}
+\newcommand{\Q}{\ensuremath{\mathbbm{Q}}}
+\newcommand{\R}{\ensuremath{\mathbbm{R}}}
+\newcommand{\C}{\ensuremath{\mathbbm{C}}}
+\newcommand{\rd}{\ensuremath{\mathrm{d}}}
+\newcommand{\id}{\ensuremath{\,\rd}}
+\usepackage{hyperref}
+%\usepackage{a4wide} % puts the page numbering further down the page.
+\usepackage{pdfpages}
+\usepackage{epstopdf}
+\DeclareGraphicsExtensions{.eps}
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist
+
+\title{Handin 4}
+\author{Marcus Malmquist, marmalm}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Task 1}\label{sec:1}
+All of the requested data can be read from Figure~\ref{fig:task1}. The velocity and the wave impeedance seem to be correct.
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/Task1.pgf}}}
+  \caption{Simulation result from task 1.}
+  \label{fig:task1}
+\end{figure}
+
+\section{Task 2}\label{sec:2}
+The direction in which the pulse moved can be read from the poynting vector. In Figure\ref{fig:task2} a Poynting vector with positive amplitude move from left to right. As seen when comparing Figure\ref{fig:task2_1} (before reaching the right end) to Figure\ref{fig:task2} (after reaching the right end), it appears that the wave has bounced back and is now propagating from right to left. This is because the final index in the $E$-field is never changed so it remains 0. This is equivalend to the right wall being an infinite impedance so the wave is reflected and the amplitude is negated.
+\begin{figure}
+  \centering
+    \begin{subfigure}[b]{0.5\textwidth}
+        \noindent\makebox[\textwidth]{\scalebox{0.5}{\input{figures/Task2Before.pgf}}}
+        \subcaption{Simulation before the wave hit the right side of the numerical window.}
+        \label{fig:task2_1}
+    \end{subfigure}\\
+    \begin{subfigure}[b]{0.5\textwidth}
+        \noindent\makebox[\textwidth]{\scalebox{0.5}{\input{figures/Task2After.pgf}}}
+        \subcaption{Simulation after the wave hit the right side of the numerical window.}
+        \label{fig:task2_2}
+    \end{subfigure}
+  \caption{Simulation results from task 2.}
+  \label{fig:task2}
+\end{figure}
+
+\section{Task 3}\label{sec:3}
+The result from the simulation can be seen in Figure~\ref{fig:task3} and it is in accordance with the Fresnel equations.
+
+The energy is conserved since there are no components that absorbs energy. This can be verified by adding the reflected and transmitted energy in Figure~\ref{fig:task3_1} and Figure~\ref{fig:task3_2}
+\begin{figure}
+  \centering
+    \begin{subfigure}[b]{0.7\textwidth}
+        \noindent\makebox[\textwidth]{\scalebox{0.7}{\input{figures/Task3_15.pgf}}}
+        \subcaption{Simulation using a refractive index of 1.5.}
+        \label{fig:task3_1}
+    \end{subfigure}\\
+    \begin{subfigure}[b]{0.7\textwidth}
+        \noindent\makebox[\textwidth]{\scalebox{0.7}{\input{figures/Task3_35.pgf}}}
+        \subcaption{Simulation using a refractive index of 3.5.}
+        \label{fig:task3_2}
+    \end{subfigure}
+  \caption{Simulation results from task 3.}
+  \label{fig:task3}
+\end{figure}
+
+\section{Task 4}\label{sec:4}
+Since we are using a single wavelength the AR-coating can completely remove the reflection (granted the sampling distance aligns with a quarter wavelength, which it can be set to). See Figure~\ref{fig:task4}
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/Task4.pgf}}}
+  \caption{Simulation results from task 4 using 20 pairs of high and low refractiv indices.}
+  \label{fig:task4}
+\end{figure}
+
+\section{Task 5}\label{sec:5}
+There is a difference between long and short pulses. There are two numerical components that affect the resolution of the simulation: sampling distance and pulse length.
+
+The sampling distance can improves the resolution of them pulse and lower sampling distance (higher resolution) decreases the difference between the discrete function used in a computer and the continous function found in reality
+
+The pulse length decreases the oscilating effect (from the cosine part of the wave) and makes the pule look more like a pure super-Gaussian function.
+
+Another explanation could be that shord pulses typically contain more high frequency components with higher amplitudes that long pulses. The high frequency components may not be as strongly affected by the thickness of the layers.
+\\
+\noindent The simulation results are closer to the theoretical result if the pulse length increases. This can be seen when comparing the reflected and transmitted power in Figure~\ref{fig:task5_1} and Figure~\ref{fig:task5_2}.
+\begin{figure}
+  \centering
+    \begin{subfigure}[b]{0.7\textwidth}
+        \noindent\makebox[\textwidth]{\scalebox{0.7}{\input{figures/Task5_10.pgf}}}
+        \subcaption{Simulation results using a wave with 10 peroids.}
+        \label{fig:task5_1}
+    \end{subfigure}\\
+    \begin{subfigure}[b]{0.49\textwidth}
+        \noindent\makebox[\textwidth]{\scalebox{0.7}{\input{figures/Task5_40.pgf}}}
+        \subcaption{Simulation results using a wave with 40 periods.}
+        \label{fig:task5_2}
+    \end{subfigure}
+  \caption{Simulation results from task 5.}
+  \label{fig:task5}
+\end{figure}
+
+\section{Task 6}\label{sec:6}
+The simulation results can be seen in Figure~\ref{fig:task6}.
+\subsection{a}
+The $\vec{J}$ component should be added to the part where them $E$-field is updated. Since the differentiation process is done forward \Big($\frac{f(x_{i+1})-f(x_{i})}{x_{i+1}-x_{i}}$ rather than $\frac{f(x_{i})-f(x_{i-1})}{x_{i}-x_{i-1}}$ \Big) and the forward value is sought. This means the $\vec{J}=\sigma E_{i}$ part is not sought and the expression will look similar to what it did without $\vec{J}$.
+\subsection{b}
+The wave rapidly decays as it propagates into the conducting material
+\subsection{c}
+It can be seen in Figure~\ref{fig:task6_1} that the energy is not conserved. The wave in the conduction material gives rise to currents in the conducting materials so it looses its energy.
+\subsection{d}
+The wave gets amplified as it propagates into the material with negative conductivity. This means that energy is added to the wave and in order for this to comply with the law of energy conservation this energy must come from the outside world.
+\subsection{e}
+This would be and optical amplifier. if the borders allowed some of the wave to escape it could be a laser.
+\begin{figure}
+  \centering
+    \begin{subfigure}[b]{0.7\textwidth}
+        \noindent\makebox[\textwidth]{\scalebox{0.7}{\input{figures/Task6_pos.pgf}}}
+        \subcaption{Simulation using a material with positive conductivity.}
+        \label{fig:task6_1}
+    \end{subfigure}\\
+    \begin{subfigure}[b]{0.49\textwidth}
+        \noindent\makebox[\textwidth]{\scalebox{0.7}{\input{figures/Task6_neg.pgf}}}
+        \subcaption{Simulation using a material with negative conductivity.}
+        \label{fig:task6_2}
+    \end{subfigure}
+  \caption{Simulation results from task 6.}
+  \label{fig:task6}
+\end{figure}
+
+\newpage
+\appendix
+\section{Code}
+\begin{changemargin}{-3cm}{0.5cm}
+\lstinputlisting[language=Python]{calcs.py}
+\end{changemargin}
+\end{document}
