@@ -1438,7 +1438,9 @@ static const char __pyx_k_ValueError[] = "ValueError";
 static const char __pyx_k_complex128[] = "complex128";
 static const char __pyx_k_ImportError[] = "ImportError";
 static const char __pyx_k_RuntimeError[] = "RuntimeError";
+static const char __pyx_k_vecMatDot_line_82[] = "vecMatDot (line 82)";
 static const char __pyx_k_ndarray_is_not_C_contiguous[] = "ndarray is not C contiguous";
+static const char __pyx_k_Performs_the_dot_product_for_tw[] = "\n    Performs the dot product for two matrices whose elements are vectors.\n    Axis 0 are treated as the rows, axis 1 are treated as the columns and\n    axis 2 are the matrix elements. The dot product is performed on axis 0\n    and axis 1 while multiplication with axis 2 will be elementwise.\n\n    Parameters\n    ----------\n    dims : numpy.ndarray[numpy.int32_t, ndim=1]\n        The dimensions of the returned array; [row, col, arrLen].\n    mat1 : numpy.ndarray[numpy.complex128_t, ndim=3]\n        The left matrix.\n    mat2 : numpy.ndarray[numpy.complex128_t, ndim=3]\n        The right matrix.\n\n    Returns\n    -------\n    numpy.ndarray[numpy.complex128_t, ndim=3]\n        A matrix whose elements are vectors and is the result of the dot\n        product.\n\n    Example\n    -------\n    >>> import ha5utils\n    >>> import numpy as np\n    >>> mat=np.arange(0, 12, dtype=np.float64).reshape((2,2,3))\n    >>> dim=np.array([mat.shape[0], mat.shape[1], mat.shape[2]], dtype=np.int32)\n    >>> mat\n    array([[[  0.,   1.,   2.],\n            [  3.,   4.,   5.]],\n\n           [[  6.,   7.,   8.],\n            [  9.,  10.,  11.]]])\n    >>> ha5utils.vecMatDot(dim, mat, mat)\n    array([[[  18.,   29.,   44.],\n            [  27.,   44.,   65.]],\n\n           [[  54.,   77.,  104.],\n            [  99.,  128.,  161.]]])\n    ";
 static const char __pyx_k_This_code_is_adapted_for_80_col[] = "\nThis code is adapted for 80 columns\n|------------------------------------------------------------------------------|\n";
 static const char __pyx_k_numpy_core_multiarray_failed_to[] = "numpy.core.multiarray failed to import";
 static const char __pyx_k_unknown_dtype_code_in_numpy_pxd[] = "unknown dtype code in numpy.pxd (%d)";
@@ -1451,6 +1453,7 @@ static PyObject *__pyx_kp_u_Format_string_allocated_too_shor;
 static PyObject *__pyx_kp_u_Format_string_allocated_too_shor_2;
 static PyObject *__pyx_n_s_ImportError;
 static PyObject *__pyx_kp_u_Non_native_byte_order_not_suppor;
+static PyObject *__pyx_kp_u_Performs_the_dot_product_for_tw;
 static PyObject *__pyx_n_s_RuntimeError;
 static PyObject *__pyx_n_s_ValueError;
 static PyObject *__pyx_n_s_complex128;
@@ -1470,6 +1473,7 @@ static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_shape;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_kp_u_unknown_dtype_code_in_numpy_pxd;
+static PyObject *__pyx_kp_u_vecMatDot_line_82;
 static PyObject *__pyx_n_s_zeros;
 static PyObject *__pyx_pf_8ha5utils_vecMatDot(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_dims, PyArrayObject *__pyx_v_mat1, PyArrayObject *__pyx_v_mat2); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
@@ -1577,28 +1581,28 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot33(PyArrayObject *__pyx_v_dims,
   }
   __pyx_pybuffernd_mat2.diminfo[0].strides = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mat2.diminfo[0].shape = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_mat2.diminfo[1].strides = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_mat2.diminfo[1].shape = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.shape[1]; __pyx_pybuffernd_mat2.diminfo[2].strides = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.strides[2]; __pyx_pybuffernd_mat2.diminfo[2].shape = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.shape[2];
 
-  /* "ha5utils.pyx":59
+  /* "ha5utils.pyx":22
  *     cdef numpy.ndarray[numpy.complex128_t, ndim=3] out
  *     cdef int i,j, k, l
  *     out = numpy.zeros((dims[0], dims[1], dims[2]),             # <<<<<<<<<<<<<<
  * 		      dtype=numpy.complex128)
  *     for i in range(dims[0]):
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_numpy); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_numpy); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = 0;
-  __pyx_t_1 = __Pyx_PyInt_From_npy_int32((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_3, __pyx_pybuffernd_dims.diminfo[0].strides))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_npy_int32((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_3, __pyx_pybuffernd_dims.diminfo[0].strides))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_4 = 1;
-  __pyx_t_5 = __Pyx_PyInt_From_npy_int32((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_dims.diminfo[0].strides))); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_npy_int32((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_dims.diminfo[0].strides))); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_6 = 2;
-  __pyx_t_7 = __Pyx_PyInt_From_npy_int32((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_dims.diminfo[0].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyInt_From_npy_int32((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_dims.diminfo[0].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_8 = PyTuple_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_8 = PyTuple_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_1);
@@ -1609,42 +1613,42 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot33(PyArrayObject *__pyx_v_dims,
   __pyx_t_1 = 0;
   __pyx_t_5 = 0;
   __pyx_t_7 = 0;
-  __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_8);
   PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_8);
   __pyx_t_8 = 0;
 
-  /* "ha5utils.pyx":60
+  /* "ha5utils.pyx":23
  *     cdef int i,j, k, l
  *     out = numpy.zeros((dims[0], dims[1], dims[2]),
  * 		      dtype=numpy.complex128)             # <<<<<<<<<<<<<<
  *     for i in range(dims[0]):
  *         for j in range(dims[1]):
  */
-  __pyx_t_8 = PyDict_New(); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_8 = PyDict_New(); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 23, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_numpy); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_numpy); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 23, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_complex128); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_complex128); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 23, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_dtype, __pyx_t_1) < 0) __PYX_ERR(0, 60, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_dtype, __pyx_t_1) < 0) __PYX_ERR(0, 23, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ha5utils.pyx":59
+  /* "ha5utils.pyx":22
  *     cdef numpy.ndarray[numpy.complex128_t, ndim=3] out
  *     cdef int i,j, k, l
  *     out = numpy.zeros((dims[0], dims[1], dims[2]),             # <<<<<<<<<<<<<<
  * 		      dtype=numpy.complex128)
  *     for i in range(dims[0]):
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 22, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 59, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 22, __pyx_L1_error)
   __pyx_t_9 = ((PyArrayObject *)__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -1660,13 +1664,13 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot33(PyArrayObject *__pyx_v_dims,
       }
     }
     __pyx_pybuffernd_out.diminfo[0].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out.diminfo[0].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_out.diminfo[1].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_out.diminfo[1].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[1]; __pyx_pybuffernd_out.diminfo[2].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[2]; __pyx_pybuffernd_out.diminfo[2].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[2];
-    if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 59, __pyx_L1_error)
+    if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 22, __pyx_L1_error)
   }
   __pyx_t_9 = 0;
   __pyx_v_out = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ha5utils.pyx":61
+  /* "ha5utils.pyx":24
  *     out = numpy.zeros((dims[0], dims[1], dims[2]),
  * 		      dtype=numpy.complex128)
  *     for i in range(dims[0]):             # <<<<<<<<<<<<<<
@@ -1678,7 +1682,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot33(PyArrayObject *__pyx_v_dims,
   for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_15; __pyx_t_10+=1) {
     __pyx_v_i = __pyx_t_10;
 
-    /* "ha5utils.pyx":62
+    /* "ha5utils.pyx":25
  * 		      dtype=numpy.complex128)
  *     for i in range(dims[0]):
  *         for j in range(dims[1]):             # <<<<<<<<<<<<<<
@@ -1690,7 +1694,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot33(PyArrayObject *__pyx_v_dims,
     for (__pyx_t_18 = 0; __pyx_t_18 < __pyx_t_17; __pyx_t_18+=1) {
       __pyx_v_j = __pyx_t_18;
 
-      /* "ha5utils.pyx":63
+      /* "ha5utils.pyx":26
  *     for i in range(dims[0]):
  *         for j in range(dims[1]):
  *             for k in range(dims[0]):             # <<<<<<<<<<<<<<
@@ -1702,7 +1706,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot33(PyArrayObject *__pyx_v_dims,
       for (__pyx_t_21 = 0; __pyx_t_21 < __pyx_t_20; __pyx_t_21+=1) {
         __pyx_v_k = __pyx_t_21;
 
-        /* "ha5utils.pyx":64
+        /* "ha5utils.pyx":27
  *         for j in range(dims[1]):
  *             for k in range(dims[0]):
  *                 for l in range(dims[2]):             # <<<<<<<<<<<<<<
@@ -1714,7 +1718,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot33(PyArrayObject *__pyx_v_dims,
         for (__pyx_t_24 = 0; __pyx_t_24 < __pyx_t_23; __pyx_t_24+=1) {
           __pyx_v_l = __pyx_t_24;
 
-          /* "ha5utils.pyx":65
+          /* "ha5utils.pyx":28
  *             for k in range(dims[0]):
  *                 for l in range(dims[2]):
  *                     out[i,j, l] = out[i,j, l] + mat1[i, k, l]*mat2[k, j, l]             # <<<<<<<<<<<<<<
@@ -1739,7 +1743,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot33(PyArrayObject *__pyx_v_dims,
     }
   }
 
-  /* "ha5utils.pyx":66
+  /* "ha5utils.pyx":29
  *                 for l in range(dims[2]):
  *                     out[i,j, l] = out[i,j, l] + mat1[i, k, l]*mat2[k, j, l]
  *     return out             # <<<<<<<<<<<<<<
@@ -1790,7 +1794,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot33(PyArrayObject *__pyx_v_dims,
   return __pyx_r;
 }
 
-/* "ha5utils.pyx":73
+/* "ha5utils.pyx":36
  * # turn off negative index wrapping for entire function
  * @cython.wraparound(False)
  * cdef numpy.ndarray[numpy.complex128_t, ndim=3] \             # <<<<<<<<<<<<<<
@@ -1868,42 +1872,42 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot23(PyArrayObject *__pyx_v_dims,
   __pyx_pybuffernd_mat2.rcbuffer = &__pyx_pybuffer_mat2;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_dims.rcbuffer->pybuffer, (PyObject*)__pyx_v_dims, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 73, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_dims.rcbuffer->pybuffer, (PyObject*)__pyx_v_dims, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 36, __pyx_L1_error)
   }
   __pyx_pybuffernd_dims.diminfo[0].strides = __pyx_pybuffernd_dims.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_dims.diminfo[0].shape = __pyx_pybuffernd_dims.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mat1.rcbuffer->pybuffer, (PyObject*)__pyx_v_mat1, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 73, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mat1.rcbuffer->pybuffer, (PyObject*)__pyx_v_mat1, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 36, __pyx_L1_error)
   }
   __pyx_pybuffernd_mat1.diminfo[0].strides = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mat1.diminfo[0].shape = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_mat1.diminfo[1].strides = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_mat1.diminfo[1].shape = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.shape[1];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mat2.rcbuffer->pybuffer, (PyObject*)__pyx_v_mat2, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_STRIDES, 3, 0, __pyx_stack) == -1)) __PYX_ERR(0, 73, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mat2.rcbuffer->pybuffer, (PyObject*)__pyx_v_mat2, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_STRIDES, 3, 0, __pyx_stack) == -1)) __PYX_ERR(0, 36, __pyx_L1_error)
   }
   __pyx_pybuffernd_mat2.diminfo[0].strides = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mat2.diminfo[0].shape = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_mat2.diminfo[1].strides = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_mat2.diminfo[1].shape = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.shape[1]; __pyx_pybuffernd_mat2.diminfo[2].strides = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.strides[2]; __pyx_pybuffernd_mat2.diminfo[2].shape = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.shape[2];
 
-  /* "ha5utils.pyx":82
+  /* "ha5utils.pyx":45
  *     cdef numpy.ndarray[numpy.complex128_t, ndim=3] out
  *     cdef int i,j, k, l
  *     out = numpy.zeros((dims[0], dims[1], dims[2]),             # <<<<<<<<<<<<<<
  * 		      dtype=numpy.complex128)
  *     for i in range(dims[0]):
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_numpy); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_numpy); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = 0;
-  __pyx_t_1 = __Pyx_PyInt_From_npy_int32((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_3, __pyx_pybuffernd_dims.diminfo[0].strides))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_npy_int32((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_3, __pyx_pybuffernd_dims.diminfo[0].strides))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_4 = 1;
-  __pyx_t_5 = __Pyx_PyInt_From_npy_int32((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_dims.diminfo[0].strides))); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_npy_int32((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_dims.diminfo[0].strides))); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_6 = 2;
-  __pyx_t_7 = __Pyx_PyInt_From_npy_int32((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_dims.diminfo[0].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyInt_From_npy_int32((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_dims.diminfo[0].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_8 = PyTuple_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_8 = PyTuple_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_1);
@@ -1914,42 +1918,42 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot23(PyArrayObject *__pyx_v_dims,
   __pyx_t_1 = 0;
   __pyx_t_5 = 0;
   __pyx_t_7 = 0;
-  __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_8);
   PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_8);
   __pyx_t_8 = 0;
 
-  /* "ha5utils.pyx":83
+  /* "ha5utils.pyx":46
  *     cdef int i,j, k, l
  *     out = numpy.zeros((dims[0], dims[1], dims[2]),
  * 		      dtype=numpy.complex128)             # <<<<<<<<<<<<<<
  *     for i in range(dims[0]):
  *         for j in range(dims[1]):
  */
-  __pyx_t_8 = PyDict_New(); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 83, __pyx_L1_error)
+  __pyx_t_8 = PyDict_New(); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_numpy); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 83, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_numpy); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_complex128); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 83, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_complex128); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_dtype, __pyx_t_1) < 0) __PYX_ERR(0, 83, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_dtype, __pyx_t_1) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ha5utils.pyx":82
+  /* "ha5utils.pyx":45
  *     cdef numpy.ndarray[numpy.complex128_t, ndim=3] out
  *     cdef int i,j, k, l
  *     out = numpy.zeros((dims[0], dims[1], dims[2]),             # <<<<<<<<<<<<<<
  * 		      dtype=numpy.complex128)
  *     for i in range(dims[0]):
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 82, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 45, __pyx_L1_error)
   __pyx_t_9 = ((PyArrayObject *)__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -1965,13 +1969,13 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot23(PyArrayObject *__pyx_v_dims,
       }
     }
     __pyx_pybuffernd_out.diminfo[0].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out.diminfo[0].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_out.diminfo[1].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_out.diminfo[1].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[1]; __pyx_pybuffernd_out.diminfo[2].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[2]; __pyx_pybuffernd_out.diminfo[2].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[2];
-    if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 82, __pyx_L1_error)
+    if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 45, __pyx_L1_error)
   }
   __pyx_t_9 = 0;
   __pyx_v_out = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ha5utils.pyx":84
+  /* "ha5utils.pyx":47
  *     out = numpy.zeros((dims[0], dims[1], dims[2]),
  * 		      dtype=numpy.complex128)
  *     for i in range(dims[0]):             # <<<<<<<<<<<<<<
@@ -1983,7 +1987,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot23(PyArrayObject *__pyx_v_dims,
   for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_15; __pyx_t_10+=1) {
     __pyx_v_i = __pyx_t_10;
 
-    /* "ha5utils.pyx":85
+    /* "ha5utils.pyx":48
  * 		      dtype=numpy.complex128)
  *     for i in range(dims[0]):
  *         for j in range(dims[1]):             # <<<<<<<<<<<<<<
@@ -1995,7 +1999,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot23(PyArrayObject *__pyx_v_dims,
     for (__pyx_t_18 = 0; __pyx_t_18 < __pyx_t_17; __pyx_t_18+=1) {
       __pyx_v_j = __pyx_t_18;
 
-      /* "ha5utils.pyx":86
+      /* "ha5utils.pyx":49
  *     for i in range(dims[0]):
  *         for j in range(dims[1]):
  *             for k in range(dims[0]):             # <<<<<<<<<<<<<<
@@ -2007,7 +2011,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot23(PyArrayObject *__pyx_v_dims,
       for (__pyx_t_21 = 0; __pyx_t_21 < __pyx_t_20; __pyx_t_21+=1) {
         __pyx_v_k = __pyx_t_21;
 
-        /* "ha5utils.pyx":87
+        /* "ha5utils.pyx":50
  *         for j in range(dims[1]):
  *             for k in range(dims[0]):
  *                 for l in range(dims[2]):             # <<<<<<<<<<<<<<
@@ -2019,7 +2023,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot23(PyArrayObject *__pyx_v_dims,
         for (__pyx_t_24 = 0; __pyx_t_24 < __pyx_t_23; __pyx_t_24+=1) {
           __pyx_v_l = __pyx_t_24;
 
-          /* "ha5utils.pyx":88
+          /* "ha5utils.pyx":51
  *             for k in range(dims[0]):
  *                 for l in range(dims[2]):
  *                     out[i,j, l] = out[i,j, l] + mat1[i, k]*mat2[k, j, l]             # <<<<<<<<<<<<<<
@@ -2043,7 +2047,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot23(PyArrayObject *__pyx_v_dims,
     }
   }
 
-  /* "ha5utils.pyx":89
+  /* "ha5utils.pyx":52
  *                 for l in range(dims[2]):
  *                     out[i,j, l] = out[i,j, l] + mat1[i, k]*mat2[k, j, l]
  *     return out             # <<<<<<<<<<<<<<
@@ -2055,7 +2059,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot23(PyArrayObject *__pyx_v_dims,
   __pyx_r = ((PyArrayObject *)__pyx_v_out);
   goto __pyx_L0;
 
-  /* "ha5utils.pyx":73
+  /* "ha5utils.pyx":36
  * # turn off negative index wrapping for entire function
  * @cython.wraparound(False)
  * cdef numpy.ndarray[numpy.complex128_t, ndim=3] \             # <<<<<<<<<<<<<<
@@ -2094,7 +2098,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot23(PyArrayObject *__pyx_v_dims,
   return __pyx_r;
 }
 
-/* "ha5utils.pyx":96
+/* "ha5utils.pyx":59
  * # turn off negative index wrapping for entire function
  * @cython.wraparound(False)
  * cdef numpy.ndarray[numpy.complex128_t, ndim=3] \             # <<<<<<<<<<<<<<
@@ -2172,42 +2176,42 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot32(PyArrayObject *__pyx_v_dims,
   __pyx_pybuffernd_mat2.rcbuffer = &__pyx_pybuffer_mat2;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_dims.rcbuffer->pybuffer, (PyObject*)__pyx_v_dims, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 96, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_dims.rcbuffer->pybuffer, (PyObject*)__pyx_v_dims, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 59, __pyx_L1_error)
   }
   __pyx_pybuffernd_dims.diminfo[0].strides = __pyx_pybuffernd_dims.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_dims.diminfo[0].shape = __pyx_pybuffernd_dims.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mat1.rcbuffer->pybuffer, (PyObject*)__pyx_v_mat1, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_STRIDES, 3, 0, __pyx_stack) == -1)) __PYX_ERR(0, 96, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mat1.rcbuffer->pybuffer, (PyObject*)__pyx_v_mat1, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_STRIDES, 3, 0, __pyx_stack) == -1)) __PYX_ERR(0, 59, __pyx_L1_error)
   }
   __pyx_pybuffernd_mat1.diminfo[0].strides = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mat1.diminfo[0].shape = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_mat1.diminfo[1].strides = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_mat1.diminfo[1].shape = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.shape[1]; __pyx_pybuffernd_mat1.diminfo[2].strides = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.strides[2]; __pyx_pybuffernd_mat1.diminfo[2].shape = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.shape[2];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mat2.rcbuffer->pybuffer, (PyObject*)__pyx_v_mat2, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 96, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mat2.rcbuffer->pybuffer, (PyObject*)__pyx_v_mat2, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 59, __pyx_L1_error)
   }
   __pyx_pybuffernd_mat2.diminfo[0].strides = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mat2.diminfo[0].shape = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_mat2.diminfo[1].strides = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_mat2.diminfo[1].shape = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.shape[1];
 
-  /* "ha5utils.pyx":105
+  /* "ha5utils.pyx":68
  *     cdef numpy.ndarray[numpy.complex128_t, ndim=3] out
  *     cdef int i,j, k, l
  *     out = numpy.zeros((dims[0], dims[1], dims[2]),             # <<<<<<<<<<<<<<
  * 		      dtype=numpy.complex128)
  *     for i in range(dims[0]):
  */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_numpy); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_numpy); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_zeros); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_3 = 0;
-  __pyx_t_1 = __Pyx_PyInt_From_npy_int32((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_3, __pyx_pybuffernd_dims.diminfo[0].strides))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_From_npy_int32((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_3, __pyx_pybuffernd_dims.diminfo[0].strides))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_4 = 1;
-  __pyx_t_5 = __Pyx_PyInt_From_npy_int32((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_dims.diminfo[0].strides))); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_PyInt_From_npy_int32((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_dims.diminfo[0].strides))); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_6 = 2;
-  __pyx_t_7 = __Pyx_PyInt_From_npy_int32((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_dims.diminfo[0].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyInt_From_npy_int32((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_dims.diminfo[0].strides))); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
-  __pyx_t_8 = PyTuple_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_8 = PyTuple_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   __Pyx_GIVEREF(__pyx_t_1);
   PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_1);
@@ -2218,42 +2222,42 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot32(PyArrayObject *__pyx_v_dims,
   __pyx_t_1 = 0;
   __pyx_t_5 = 0;
   __pyx_t_7 = 0;
-  __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_7 = PyTuple_New(1); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_GIVEREF(__pyx_t_8);
   PyTuple_SET_ITEM(__pyx_t_7, 0, __pyx_t_8);
   __pyx_t_8 = 0;
 
-  /* "ha5utils.pyx":106
+  /* "ha5utils.pyx":69
  *     cdef int i,j, k, l
  *     out = numpy.zeros((dims[0], dims[1], dims[2]),
  * 		      dtype=numpy.complex128)             # <<<<<<<<<<<<<<
  *     for i in range(dims[0]):
  *         for j in range(dims[1]):
  */
-  __pyx_t_8 = PyDict_New(); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_8 = PyDict_New(); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
-  __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_numpy); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_numpy); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_complex128); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 106, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_complex128); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-  if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_dtype, __pyx_t_1) < 0) __PYX_ERR(0, 106, __pyx_L1_error)
+  if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_dtype, __pyx_t_1) < 0) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "ha5utils.pyx":105
+  /* "ha5utils.pyx":68
  *     cdef numpy.ndarray[numpy.complex128_t, ndim=3] out
  *     cdef int i,j, k, l
  *     out = numpy.zeros((dims[0], dims[1], dims[2]),             # <<<<<<<<<<<<<<
  * 		      dtype=numpy.complex128)
  *     for i in range(dims[0]):
  */
-  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 105, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 68, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 105, __pyx_L1_error)
+  if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_ptype_5numpy_ndarray))))) __PYX_ERR(0, 68, __pyx_L1_error)
   __pyx_t_9 = ((PyArrayObject *)__pyx_t_1);
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
@@ -2269,13 +2273,13 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot32(PyArrayObject *__pyx_v_dims,
       }
     }
     __pyx_pybuffernd_out.diminfo[0].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_out.diminfo[0].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_out.diminfo[1].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_out.diminfo[1].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[1]; __pyx_pybuffernd_out.diminfo[2].strides = __pyx_pybuffernd_out.rcbuffer->pybuffer.strides[2]; __pyx_pybuffernd_out.diminfo[2].shape = __pyx_pybuffernd_out.rcbuffer->pybuffer.shape[2];
-    if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 105, __pyx_L1_error)
+    if (unlikely(__pyx_t_10 < 0)) __PYX_ERR(0, 68, __pyx_L1_error)
   }
   __pyx_t_9 = 0;
   __pyx_v_out = ((PyArrayObject *)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "ha5utils.pyx":107
+  /* "ha5utils.pyx":70
  *     out = numpy.zeros((dims[0], dims[1], dims[2]),
  * 		      dtype=numpy.complex128)
  *     for i in range(dims[0]):             # <<<<<<<<<<<<<<
@@ -2287,7 +2291,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot32(PyArrayObject *__pyx_v_dims,
   for (__pyx_t_10 = 0; __pyx_t_10 < __pyx_t_15; __pyx_t_10+=1) {
     __pyx_v_i = __pyx_t_10;
 
-    /* "ha5utils.pyx":108
+    /* "ha5utils.pyx":71
  * 		      dtype=numpy.complex128)
  *     for i in range(dims[0]):
  *         for j in range(dims[1]):             # <<<<<<<<<<<<<<
@@ -2299,7 +2303,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot32(PyArrayObject *__pyx_v_dims,
     for (__pyx_t_18 = 0; __pyx_t_18 < __pyx_t_17; __pyx_t_18+=1) {
       __pyx_v_j = __pyx_t_18;
 
-      /* "ha5utils.pyx":109
+      /* "ha5utils.pyx":72
  *     for i in range(dims[0]):
  *         for j in range(dims[1]):
  *             for k in range(dims[0]):             # <<<<<<<<<<<<<<
@@ -2311,7 +2315,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot32(PyArrayObject *__pyx_v_dims,
       for (__pyx_t_21 = 0; __pyx_t_21 < __pyx_t_20; __pyx_t_21+=1) {
         __pyx_v_k = __pyx_t_21;
 
-        /* "ha5utils.pyx":110
+        /* "ha5utils.pyx":73
  *         for j in range(dims[1]):
  *             for k in range(dims[0]):
  *                 for l in range(dims[2]):             # <<<<<<<<<<<<<<
@@ -2323,7 +2327,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot32(PyArrayObject *__pyx_v_dims,
         for (__pyx_t_24 = 0; __pyx_t_24 < __pyx_t_23; __pyx_t_24+=1) {
           __pyx_v_l = __pyx_t_24;
 
-          /* "ha5utils.pyx":111
+          /* "ha5utils.pyx":74
  *             for k in range(dims[0]):
  *                 for l in range(dims[2]):
  *                     out[i,j, l] = out[i,j, l] + mat1[i, k, l]*mat2[k, j]             # <<<<<<<<<<<<<<
@@ -2347,7 +2351,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot32(PyArrayObject *__pyx_v_dims,
     }
   }
 
-  /* "ha5utils.pyx":112
+  /* "ha5utils.pyx":75
  *                 for l in range(dims[2]):
  *                     out[i,j, l] = out[i,j, l] + mat1[i, k, l]*mat2[k, j]
  *     return out             # <<<<<<<<<<<<<<
@@ -2359,7 +2363,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot32(PyArrayObject *__pyx_v_dims,
   __pyx_r = ((PyArrayObject *)__pyx_v_out);
   goto __pyx_L0;
 
-  /* "ha5utils.pyx":96
+  /* "ha5utils.pyx":59
  * # turn off negative index wrapping for entire function
  * @cython.wraparound(False)
  * cdef numpy.ndarray[numpy.complex128_t, ndim=3] \             # <<<<<<<<<<<<<<
@@ -2398,7 +2402,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot32(PyArrayObject *__pyx_v_dims,
   return __pyx_r;
 }
 
-/* "ha5utils.pyx":119
+/* "ha5utils.pyx":82
  * # turn off negative index wrapping for entire function
  * @cython.wraparound(False)
  * cpdef numpy.ndarray[numpy.complex128_t, ndim=3] \             # <<<<<<<<<<<<<<
@@ -2427,12 +2431,12 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, P
   __pyx_pybuffernd_dims.rcbuffer = &__pyx_pybuffer_dims;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_dims.rcbuffer->pybuffer, (PyObject*)__pyx_v_dims, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 119, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_dims.rcbuffer->pybuffer, (PyObject*)__pyx_v_dims, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 82, __pyx_L1_error)
   }
   __pyx_pybuffernd_dims.diminfo[0].strides = __pyx_pybuffernd_dims.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_dims.diminfo[0].shape = __pyx_pybuffernd_dims.rcbuffer->pybuffer.shape[0];
 
   /* "ha5utils.pyx":126
- *     Right matrix is 2-dimensional
+ *             [  99.,  128.,  161.]]])
  *     """
  *     if (len(numpy.shape(mat1)) == 3 and len(numpy.shape(mat2)) == 3):             # <<<<<<<<<<<<<<
  *         return vecMatDot33(dims, mat1, mat2)
@@ -2564,7 +2568,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, P
     goto __pyx_L0;
 
     /* "ha5utils.pyx":126
- *     Right matrix is 2-dimensional
+ *             [  99.,  128.,  161.]]])
  *     """
  *     if (len(numpy.shape(mat1)) == 3 and len(numpy.shape(mat2)) == 3):             # <<<<<<<<<<<<<<
  *         return vecMatDot33(dims, mat1, mat2)
@@ -3040,7 +3044,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, P
  */
   }
 
-  /* "ha5utils.pyx":119
+  /* "ha5utils.pyx":82
  * # turn off negative index wrapping for entire function
  * @cython.wraparound(False)
  * cpdef numpy.ndarray[numpy.complex128_t, ndim=3] \             # <<<<<<<<<<<<<<
@@ -3075,7 +3079,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, P
 
 /* Python wrapper */
 static PyObject *__pyx_pw_8ha5utils_1vecMatDot(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_8ha5utils_vecMatDot[] = "\n    Right matrix is 2-dimensional\n    ";
+static char __pyx_doc_8ha5utils_vecMatDot[] = "\n    Performs the dot product for two matrices whose elements are vectors.\n    Axis 0 are treated as the rows, axis 1 are treated as the columns and\n    axis 2 are the matrix elements. The dot product is performed on axis 0\n    and axis 1 while multiplication with axis 2 will be elementwise.\n\n    Parameters\n    ----------\n    dims : numpy.ndarray[numpy.int32_t, ndim=1]\n        The dimensions of the returned array; [row, col, arrLen].\n    mat1 : numpy.ndarray[numpy.complex128_t, ndim=3]\n        The left matrix.\n    mat2 : numpy.ndarray[numpy.complex128_t, ndim=3]\n        The right matrix.\n\n    Returns\n    -------\n    numpy.ndarray[numpy.complex128_t, ndim=3]\n        A matrix whose elements are vectors and is the result of the dot\n        product.\n\n    Example\n    -------\n    >>> import ha5utils\n    >>> import numpy as np\n    >>> mat=np.arange(0, 12, dtype=np.float64).reshape((2,2,3))\n    >>> dim=np.array([mat.shape[0], mat.shape[1], mat.shape[2]], dtype=np.int32)\n    >>> mat\n    array([[[  0.,   1.,   2.],\n            [  3.,   4.,   5.]],\n\n           [[  6.,   7.,   8.],\n            [  9.,  10.,  11.]]])\n    >>> ha5utils.vecMatDot(dim, mat, mat)\n    array([[[  18.,   29.,   44.],\n            [  27.,   44.,   65.]],\n\n           [[  54.,   77.,  104.],\n            [  99.,  128.,  161.]]])\n    ";
 static PyObject *__pyx_pw_8ha5utils_1vecMatDot(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_dims = 0;
   PyArrayObject *__pyx_v_mat1 = 0;
@@ -3104,16 +3108,16 @@ static PyObject *__pyx_pw_8ha5utils_1vecMatDot(PyObject *__pyx_self, PyObject *_
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mat1)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("vecMatDot", 1, 3, 3, 1); __PYX_ERR(0, 119, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("vecMatDot", 1, 3, 3, 1); __PYX_ERR(0, 82, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mat2)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("vecMatDot", 1, 3, 3, 2); __PYX_ERR(0, 119, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("vecMatDot", 1, 3, 3, 2); __PYX_ERR(0, 82, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "vecMatDot") < 0)) __PYX_ERR(0, 119, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "vecMatDot") < 0)) __PYX_ERR(0, 82, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -3128,15 +3132,15 @@ static PyObject *__pyx_pw_8ha5utils_1vecMatDot(PyObject *__pyx_self, PyObject *_
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("vecMatDot", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 119, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("vecMatDot", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 82, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("ha5utils.vecMatDot", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_dims), __pyx_ptype_5numpy_ndarray, 1, "dims", 0))) __PYX_ERR(0, 120, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mat1), __pyx_ptype_5numpy_ndarray, 1, "mat1", 0))) __PYX_ERR(0, 121, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mat2), __pyx_ptype_5numpy_ndarray, 1, "mat2", 0))) __PYX_ERR(0, 122, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_dims), __pyx_ptype_5numpy_ndarray, 1, "dims", 0))) __PYX_ERR(0, 83, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mat1), __pyx_ptype_5numpy_ndarray, 1, "mat1", 0))) __PYX_ERR(0, 84, __pyx_L1_error)
+  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mat2), __pyx_ptype_5numpy_ndarray, 1, "mat2", 0))) __PYX_ERR(0, 85, __pyx_L1_error)
   __pyx_r = __pyx_pf_8ha5utils_vecMatDot(__pyx_self, __pyx_v_dims, __pyx_v_mat1, __pyx_v_mat2);
 
   /* function exit code */
@@ -3161,11 +3165,11 @@ static PyObject *__pyx_pf_8ha5utils_vecMatDot(CYTHON_UNUSED PyObject *__pyx_self
   __pyx_pybuffernd_dims.rcbuffer = &__pyx_pybuffer_dims;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_dims.rcbuffer->pybuffer, (PyObject*)__pyx_v_dims, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 119, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_dims.rcbuffer->pybuffer, (PyObject*)__pyx_v_dims, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 82, __pyx_L1_error)
   }
   __pyx_pybuffernd_dims.diminfo[0].strides = __pyx_pybuffernd_dims.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_dims.diminfo[0].shape = __pyx_pybuffernd_dims.rcbuffer->pybuffer.shape[0];
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((PyObject *)__pyx_f_8ha5utils_vecMatDot(__pyx_v_dims, __pyx_v_mat1, __pyx_v_mat2, 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 119, __pyx_L1_error)
+  __pyx_t_1 = ((PyObject *)__pyx_f_8ha5utils_vecMatDot(__pyx_v_dims, __pyx_v_mat1, __pyx_v_mat2, 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 82, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
@@ -5733,6 +5737,7 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_Format_string_allocated_too_shor_2, __pyx_k_Format_string_allocated_too_shor_2, sizeof(__pyx_k_Format_string_allocated_too_shor_2), 0, 1, 0, 0},
   {&__pyx_n_s_ImportError, __pyx_k_ImportError, sizeof(__pyx_k_ImportError), 0, 0, 1, 1},
   {&__pyx_kp_u_Non_native_byte_order_not_suppor, __pyx_k_Non_native_byte_order_not_suppor, sizeof(__pyx_k_Non_native_byte_order_not_suppor), 0, 1, 0, 0},
+  {&__pyx_kp_u_Performs_the_dot_product_for_tw, __pyx_k_Performs_the_dot_product_for_tw, sizeof(__pyx_k_Performs_the_dot_product_for_tw), 0, 1, 0, 0},
   {&__pyx_n_s_RuntimeError, __pyx_k_RuntimeError, sizeof(__pyx_k_RuntimeError), 0, 0, 1, 1},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
   {&__pyx_n_s_complex128, __pyx_k_complex128, sizeof(__pyx_k_complex128), 0, 0, 1, 1},
@@ -5752,11 +5757,12 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_shape, __pyx_k_shape, sizeof(__pyx_k_shape), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_kp_u_unknown_dtype_code_in_numpy_pxd, __pyx_k_unknown_dtype_code_in_numpy_pxd, sizeof(__pyx_k_unknown_dtype_code_in_numpy_pxd), 0, 1, 0, 0},
+  {&__pyx_kp_u_vecMatDot_line_82, __pyx_k_vecMatDot_line_82, sizeof(__pyx_k_vecMatDot_line_82), 0, 1, 0, 0},
   {&__pyx_n_s_zeros, __pyx_k_zeros, sizeof(__pyx_k_zeros), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 61, __pyx_L1_error)
+  __pyx_builtin_range = __Pyx_GetBuiltinName(__pyx_n_s_range); if (!__pyx_builtin_range) __PYX_ERR(0, 24, __pyx_L1_error)
   __pyx_builtin_ValueError = __Pyx_GetBuiltinName(__pyx_n_s_ValueError); if (!__pyx_builtin_ValueError) __PYX_ERR(1, 218, __pyx_L1_error)
   __pyx_builtin_RuntimeError = __Pyx_GetBuiltinName(__pyx_n_s_RuntimeError); if (!__pyx_builtin_RuntimeError) __PYX_ERR(1, 799, __pyx_L1_error)
   __pyx_builtin_ImportError = __Pyx_GetBuiltinName(__pyx_n_s_ImportError); if (!__pyx_builtin_ImportError) __PYX_ERR(1, 989, __pyx_L1_error)
@@ -6002,6 +6008,7 @@ PyMODINIT_FUNC PyInit_ha5utils(void)
  */
   __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
+  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_vecMatDot_line_82, __pyx_kp_u_Performs_the_dot_product_for_tw) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 

@@ -15,44 +15,7 @@ cdef numpy.ndarray[numpy.complex128_t, ndim=3] \
               numpy.ndarray[numpy.complex128_t, ndim=3] mat1,
               numpy.ndarray[numpy.complex128_t, ndim=3] mat2):
     """
-    Performs the dot product for two matrices whose elements are vectors.
-    Axis 0 are treated as the rows, axis 1 are treated as the columns and
-    axis 2 are the matrix elements. The dot product is performed on axis 0
-    and axis 1 while multiplication with axis 2 will be elementwise.
-
-    Parameters
-    ----------
-    dims : numpy.ndarray[numpy.int32_t, ndim=1]
-        The dimensions of the returned array; [row, col, arrLen].
-    mat1 : numpy.ndarray[numpy.complex128_t, ndim=3]
-        The left matrix.
-    mat2 : numpy.ndarray[numpy.complex128_t, ndim=3]
-        The right matrix.
-
-    Returns
-    -------
-    numpy.ndarray[numpy.complex128_t, ndim=3]
-        A matrix whose elements are vectors and is the result of the dot
-        product.
-
-    Example
-    -------
-    >>> import ha5utils
-    >>> import numpy as np
-    >>> mat=np.arange(0, 12, dtype=np.float64).reshape((2,2,3))
-    >>> dim=np.array([mat.shape[0], mat.shape[1], mat.shape[2]], dtype=np.int32)
-    >>> mat
-    array([[[  0.,   1.,   2.],
-            [  3.,   4.,   5.]],
-
-           [[  6.,   7.,   8.],
-            [  9.,  10.,  11.]]])
-    >>> ha5utils.vecMatDot(dim, mat, mat)
-    array([[[  18.,   29.,   44.],
-            [  27.,   44.,   65.]],
-
-           [[  54.,   77.,  104.],
-            [  99.,  128.,  161.]]])
+    Both matrices are 3-dimensional
     """
     cdef numpy.ndarray[numpy.complex128_t, ndim=3] out
     cdef int i,j, k, l
@@ -121,7 +84,44 @@ cpdef numpy.ndarray[numpy.complex128_t, ndim=3] \
               numpy.ndarray mat1,
               numpy.ndarray mat2):
     """
-    Right matrix is 2-dimensional
+    Performs the dot product for two matrices whose elements are vectors.
+    Axis 0 are treated as the rows, axis 1 are treated as the columns and
+    axis 2 are the matrix elements. The dot product is performed on axis 0
+    and axis 1 while multiplication with axis 2 will be elementwise.
+
+    Parameters
+    ----------
+    dims : numpy.ndarray[numpy.int32_t, ndim=1]
+        The dimensions of the returned array; [row, col, arrLen].
+    mat1 : numpy.ndarray[numpy.complex128_t, ndim=3]
+        The left matrix.
+    mat2 : numpy.ndarray[numpy.complex128_t, ndim=3]
+        The right matrix.
+
+    Returns
+    -------
+    numpy.ndarray[numpy.complex128_t, ndim=3]
+        A matrix whose elements are vectors and is the result of the dot
+        product.
+
+    Example
+    -------
+    >>> import ha5utils
+    >>> import numpy as np
+    >>> mat=np.arange(0, 12, dtype=np.float64).reshape((2,2,3))
+    >>> dim=np.array([mat.shape[0], mat.shape[1], mat.shape[2]], dtype=np.int32)
+    >>> mat
+    array([[[  0.,   1.,   2.],
+            [  3.,   4.,   5.]],
+
+           [[  6.,   7.,   8.],
+            [  9.,  10.,  11.]]])
+    >>> ha5utils.vecMatDot(dim, mat, mat)
+    array([[[  18.,   29.,   44.],
+            [  27.,   44.,   65.]],
+
+           [[  54.,   77.,  104.],
+            [  99.,  128.,  161.]]])
     """
     if (len(numpy.shape(mat1)) == 3 and len(numpy.shape(mat2)) == 3):
         return vecMatDot33(dims, mat1, mat2)
