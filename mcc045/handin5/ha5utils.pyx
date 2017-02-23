@@ -11,7 +11,7 @@ cimport cython
 # turn off negative index wrapping for entire function
 @cython.wraparound(False)
 cdef numpy.ndarray[numpy.complex128_t, ndim=3] \
-    vecMatDot(numpy.ndarray[numpy.int32_t, ndim=1] dims,
+    vecMatDot33(numpy.ndarray[numpy.int32_t, ndim=1] dims,
               numpy.ndarray[numpy.complex128_t, ndim=3] mat1,
               numpy.ndarray[numpy.complex128_t, ndim=3] mat2):
     """
@@ -64,3 +64,70 @@ cdef numpy.ndarray[numpy.complex128_t, ndim=3] \
                 for l in range(dims[2]):
                     out[i,j, l] = out[i,j, l] + mat1[i, k, l]*mat2[k, j, l]
     return out
+
+
+# turn off bounds-checking for entire function
+@cython.boundscheck(False)
+# turn off negative index wrapping for entire function
+@cython.wraparound(False)
+cdef numpy.ndarray[numpy.complex128_t, ndim=3] \
+    vecMatDot23(numpy.ndarray[numpy.int32_t, ndim=1] dims,
+              numpy.ndarray[numpy.complex128_t, ndim=2] mat1,
+              numpy.ndarray[numpy.complex128_t, ndim=3] mat2):
+    """
+    Left matrix is 2-dimensional
+    """
+    cdef numpy.ndarray[numpy.complex128_t, ndim=3] out
+    cdef int i,j, k, l
+    out = numpy.zeros((dims[0], dims[1], dims[2]),
+		      dtype=numpy.complex128)
+    for i in range(dims[0]):
+        for j in range(dims[1]):
+            for k in range(dims[0]):
+                for l in range(dims[2]):
+                    out[i,j, l] = out[i,j, l] + mat1[i, k]*mat2[k, j, l]
+    return out
+
+
+# turn off bounds-checking for entire function
+@cython.boundscheck(False)
+# turn off negative index wrapping for entire function
+@cython.wraparound(False)
+cdef numpy.ndarray[numpy.complex128_t, ndim=3] \
+    vecMatDot32(numpy.ndarray[numpy.int32_t, ndim=1] dims,
+              numpy.ndarray[numpy.complex128_t, ndim=3] mat1,
+              numpy.ndarray[numpy.complex128_t, ndim=2] mat2):
+    """
+    Right matrix is 2-dimensional
+    """
+    cdef numpy.ndarray[numpy.complex128_t, ndim=3] out
+    cdef int i,j, k, l
+    out = numpy.zeros((dims[0], dims[1], dims[2]),
+		      dtype=numpy.complex128)
+    for i in range(dims[0]):
+        for j in range(dims[1]):
+            for k in range(dims[0]):
+                for l in range(dims[2]):
+                    out[i,j, l] = out[i,j, l] + mat1[i, k, l]*mat2[k, j]
+    return out
+
+
+# turn off bounds-checking for entire function
+@cython.boundscheck(False)
+# turn off negative index wrapping for entire function
+@cython.wraparound(False)
+cpdef numpy.ndarray[numpy.complex128_t, ndim=3] \
+    vecMatDot(numpy.ndarray[numpy.int32_t, ndim=1] dims,
+              numpy.ndarray mat1,
+              numpy.ndarray mat2):
+    """
+    Right matrix is 2-dimensional
+    """
+    if (len(numpy.shape(mat1)) == 3 and len(numpy.shape(mat2)) == 3):
+        return vecMatDot33(dims, mat1, mat2)
+    elif (len(numpy.shape(mat1)) == 2 and len(numpy.shape(mat2)) == 3):
+        return vecMatDot23(dims, mat1, mat2)
+    elif (len(numpy.shape(mat1)) == 3 and len(numpy.shape(mat2)) == 2):
+        return vecMatDot32(dims, mat1, mat2)
+    elif (len(numpy.shape(mat1)) == 2 and len(numpy.shape(mat2)) == 2):
+        return numpy.dot(mat1, mat2)
