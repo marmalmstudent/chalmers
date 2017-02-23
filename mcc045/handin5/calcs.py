@@ -114,7 +114,8 @@ class Handin5(object):
                          [nRight-nLeft, nRight+nLeft]],
                         dtype=np.complex128)/(2*nRight)
 
-    def setupDBR(self, nStart, nHigh, nLow, nEnd, nbrPairs):
+    def setupDBR(self, nStart, nHigh, nLow, nEnd, nbrPairs,
+                 highestIdxFist=True, matrices=[]):
         """
         Sets up the matrices for propagating from the staring material to the
         end material through a dielectric mirror with given parameters.
@@ -133,6 +134,9 @@ class Handin5(object):
             Refractive index of the material after the DBR.
         nbrPairs : float
             Number of pairs of high and low refractive index in the DBR.
+        highestIdxFist : bool
+            True if the mirror starts with the high refractive index.
+            False if the misrror starts with the low refractive index.
 
         Returns
         -------
@@ -140,23 +144,28 @@ class Handin5(object):
             A list containing numpy.ndarray types that are the transfer
             matrices.
         """
-        dHigh = self.lbdaZero/(4*nHigh)
-        dLow = self.lbdaZero/(4*nLow)
+        nMirrFirst = nHigh
+        nMirrLast = nLow
+        if (not highestIdxFist):
+            nMirrFirst = nLow
+            nMirrLast = nHigh
+        dMirrFirst = self.lbdaZero/(4*nMirrFirst)
+        dMirrLast = self.lbdaZero/(4*nMirrLast)
         # propagate from border between start material and first layer to just
         # before border between first and second pair.
-        matrices = [self.BorderTX(nStart, nHigh),
-                    self.PropTX(dHigh, nHigh, self.lbda_0),
-                    self.BorderTX(nHigh, nLow),
-                    self.PropTX(dLow, nLow, self.lbda_0)]
+        matrices.extend([self.BorderTX(nStart, nMirrFirst),
+                         self.PropTX(dMirrFirst, nMirrFirst, self.lbda_0),
+                         self.BorderTX(nMirrFirst, nMirrLast),
+                         self.PropTX(dMirrLast, nMirrLast, self.lbda_0)])
         # propagate from the border between first and second pair to border
         # between last pair and end material.
         for i in range(nbrPairs-1):
-            matrices.extend([self.BorderTX(nLow, nHigh),
-                             self.PropTX(dHigh, nHigh, self.lbda_0),
-                             self.BorderTX(nHigh, nLow),
-                             self.PropTX(dLow, nLow, self.lbda_0)])
+            matrices.extend([self.BorderTX(nMirrLast, nMirrFirst),
+                             self.PropTX(dMirrFirst, nMirrFirst, self.lbda_0),
+                             self.BorderTX(nMirrFirst, nMirrLast),
+                             self.PropTX(dMirrLast, nMirrLast, self.lbda_0)])
         # propagate through the border between last pair and end material.
-        matrices.extend([self.BorderTX(nLow, nEnd)])
+        matrices.extend([self.BorderTX(nMirrLast, nEnd)])
         return matrices
 
     def calcTX(self, matrices):
@@ -211,7 +220,6 @@ class Handin5(object):
         self.lbdaZero = 550e-9  # center wavelength
         self.lbda_0 = np.arange(self.lbdaMin, self.lbdaMax, 1e-10,
                                 dtype=np.float64)
-        self.initializePlot()
         nStart = 1
         nSubst = 1.5  # substrate refr idx
         nAR = np.sqrt(nSubst)  # anti-reflection coating refr idx
@@ -221,6 +229,7 @@ class Handin5(object):
                     self.PropTX(dAR, nAR, self.lbda_0),
                     self.BorderTX(nAR, nSubst)]
         refl = self.calcTX(matrices)
+        self.initializePlot()
         self.line.set_data(self.lbda_0*1e9, refl)
         maxidx = self.findMaxIdx(refl)[0]
         ax1.set_ylim(0, refl[maxidx])
@@ -238,14 +247,15 @@ class Handin5(object):
         nEnd = 1
         nHigh = 1.7
         nLow = 1.5
-        self.initializePlot()
-        matrices = self.setupDBR(nStart, nHigh, nLow, nEnd, 20)
+        matrices = self.setupDBR(nStart=nStart, nHigh=nHigh, nLow=nLow,
+                                 nEnd=nEnd, nbrPairs=20)
         refl = self.calcTX(matrices)
 
         maxidx = self.findMaxIdx(refl)[0]
         txts = self.txtTmpl % (refl[maxidx]*100, self.lbda_0[maxidx]*1e9)
 
         # plot data
+        self.initializePlot()
         self.figTxt.set_text(txts)
         self.line.set_data(self.lbda_0*1e9, refl)
 
