@@ -29,6 +29,7 @@ class Handin5(object):
         self.taskNbr = None
         self.figTxt = None  # the figure text object
         self.line = None  # plot
+        self.line_2 = None  # plot 2
         self.lbda_0 = None
         self.lbdaZero = 550e-9  # center wavelength
         self.lbdaMax = 700e-9
@@ -64,6 +65,18 @@ class Handin5(object):
         ax1.set_xlabel("$wavelength [nm]$", size=16)
         ax1.set_ylabel("$Reflectance$", size=16)
         ax1.set_xlim(self.lbdaMin*1e9, self.lbdaMax*1e9)
+
+    def initializePlot_2(self):
+        """
+        Initializes the 2D plot of the E-field amplitude vs propagated
+        distance.
+        """
+        ymax = 1
+        self.line_2, = ax2.plot([], [], linestyle="-", color="black")
+        ax2.set_ylim(0, ymax)
+        ax2.set_xlabel("$wavelength [nm]$", size=16)
+        ax2.set_ylabel("$Reflectance$", size=16)
+        ax2.set_xlim(self.lbdaMin*1e9, self.lbdaMax*1e9)
 
     def PropTX(self, d, n, lambda_zero):
         """
@@ -137,6 +150,11 @@ class Handin5(object):
         highestIdxFist : bool
             True if the mirror starts with the high refractive index.
             False if the misrror starts with the low refractive index.
+            Default value is True.
+        matrices : list
+            A list containing numpy.ndarray types that are the transfer
+            matrices up to this point.
+            Default value is [].
 
         Returns
         -------
@@ -193,8 +211,9 @@ class Handin5(object):
             matTot = ha5utils.vecMatDot(dims, matrices[i-1], matTot)
         return np.abs(matTot[1, 0]/matTot[1, 1])**2
 
-    def findMaxIdx(self, arr):
+    def findMaxIdx(self, arr, startIdxHint=0):
         """
+        TODO: Cythonize
         Finds the index in the given array where the maximum value of the array
         is found.
 
@@ -202,6 +221,9 @@ class Handin5(object):
         ----------
         arr : array_like
             The array where the index of the maximum value is sought.
+        startIdxHint : int
+            A hint as to what index in them array the search should start from.
+            Default value is 0.
 
         Returns
         -------
@@ -210,7 +232,42 @@ class Handin5(object):
             is found.
         """
         m = np.max(arr)
-        return [i for i, j in enumerate(arr) if j == m]
+        for idx, val in enumerate(arr[startIdxHint:]):
+            if (val == m):
+                return startIdxHint + idx
+
+    def findBandWidth(self, arr, peakValIdx, bwBounds):
+        """
+        TODO: Cythonize
+        Attempts to find the bandwidth given the center point of the band and
+        the lower bound of the band.
+
+        Parameters
+        ----------
+        arr : array_like
+            The array where the index of the maximum value is sought.
+        peakValIdx : int
+            The index peak value in the band (i.e. the center point of the
+            band) in arr.
+        bwBounds : float
+            The lower bound of the band, i.e. any values in arr are considered
+            to be outside the band.
+
+        Returns
+        -------
+        """
+        if (arr[peakValIdx] < bwBounds):
+            # peak value is lower than them bounds
+            return 0
+        upperBound = peakValIdx
+        lowerBound = peakValIdx
+        for i in range(peakValIdx, len(arr)):
+            if (arr[i] < bwBounds):
+                upperBound = i
+        for i in range(peakValIdx, 0, -1):
+            if (arr[i] < bwBounds):
+                lowerBound = i
+        return upperBound - lowerBound
 
     def initTask1(self):
         """
@@ -221,8 +278,8 @@ class Handin5(object):
         self.lbda_0 = np.arange(self.lbdaMin, self.lbdaMax, 1e-10,
                                 dtype=np.float64)
         nStart = 1
-        nSubst = 1.5  # substrate refr idx
-        nAR = np.sqrt(nSubst)  # anti-reflection coating refr idx
+        nSubst = 1.5  # substrate refr i
+        nAR = np.sqrt(nSubst)  # anti-reflection coating refr i
         dAR = self.lbdaZero/(4*nAR)  # AR thickness
         # propagate from from start material through AR-coating to end material
         matrices = [self.BorderTX(nStart, nAR),
@@ -251,7 +308,7 @@ class Handin5(object):
                                  nEnd=nEnd, nbrPairs=20)
         refl = self.calcTX(matrices)
 
-        maxidx = self.findMaxIdx(refl)[0]
+        maxidx = self.findMaxIdx(refl)
         txts = self.txtTmpl % (refl[maxidx]*100, self.lbda_0[maxidx]*1e9)
 
         # plot data
@@ -260,7 +317,61 @@ class Handin5(object):
         self.line.set_data(self.lbda_0*1e9, refl)
 
     def initTask3(self):
-        pass
+        """
+        Initializes and executes task 3
+        """
+        self.taskNbr = 3
+        self.txtTmpl = "Max refl pwr, w/o error: %.2f percent at %.1f nm; " +\
+                       "Bandwidth @ %.1f nm: %.1f nm\n" +\
+                       "Max refl pwr, w/ error: %.2f percent at %.1f nm; " +\
+                       "Bandwidth @ %.1f nm: %.1f nm"
+        self.lbdaZero = 980e-9
+        self.lbdaMax = 1300e-9
+        self.lbdaMin = 700e-9
+        step = 1e-11
+        self.lbda_0 = np.arange(self.lbdaMin, self.lbdaMax, step,
+                                dtype=np.float64)
+        nStart = 3.2
+        nEnd = 1
+        nHigh = 3.6
+        nLow = 3.1
+        
+        matrices = self.setupDBR(nStart=nStart, nHigh=nHigh, nLow=nLow,
+                                 nEnd=nEnd, nbrPairs=30)
+        refl = self.calcTX(matrices)
+        maxidx = self.findMaxIdx(refl, startIdxHint=5000)
+        bw = self.findBandWidth(arr=refl, peakValIdx=maxidx,
+                                bwBounds=0.99)*step
+
+        matrices_2 = self.setupDBR(nStart=nStart, nHigh=nHigh, nLow=nLow,
+                                   nEnd=nHigh, nbrPairs=15)
+        # propagate from border between low index and high index with double
+        # width to the border between low index with normal width and the next
+        # pair.
+        matrices.extend([self.PropTX(self.lbdaZero/(2*nHigh),
+                                     nHigh, self.lbda_0),
+                         self.BorderTX(nHigh, nLow),
+                         self.PropTX(self.lbdaZero/(2*nLow),
+                                     nLow, self.lbda_0)])
+        matrices_2 = self.setupDBR(nStart=nLow, nHigh=nHigh, nLow=nLow,
+                                   nEnd=nEnd, nbrPairs=14,
+                                   matrices=matrices_2)
+        refl_2 = self.calcTX(matrices_2)
+        maxidx_2 = self.findMaxIdx(refl_2, startIdxHint=5000)
+        bw_2 = self.findBandWidth(arr=refl_2, peakValIdx=maxidx_2,
+                                  bwBounds=0.99)*step
+        # plot data
+        self.initializePlot()
+        self.initializePlot_2()
+        ax1.set_ylabel("$Reflectance$ $w/o$ $error$")
+        ax2.set_ylabel("$Reflectance$ $w/$ $error$")
+        txts = self.txtTmpl % (refl[maxidx]*100, self.lbda_0[maxidx]*1e9,
+                               self.lbda_0[maxidx]*1e9, bw*1e9,
+                               refl[maxidx_2]*100, self.lbda_0[maxidx_2]*1e9,
+                               self.lbda_0[maxidx_2]*1e9, bw_2*1e9)
+        self.figTxt.set_text(txts)
+        self.line.set_data(self.lbda_0*1e9, refl)
+        self.line_2.set_data(self.lbda_0*1e9, refl_2)
 
 
 if __name__ == "__main__":
@@ -280,7 +391,8 @@ if __name__ == "__main__":
             hi5 = Handin5()  # the simulation class
             hi5.initTask2()  # method for task 2
         elif (args[0] == "3"):
-            ax1 = fig.add_subplot(111)
+            ax1 = fig.add_subplot(121)
+            ax2 = fig.add_subplot(122)
             hi5 = Handin5()  # the simulation class
             hi5.initTask3()  # method for task 3
         else:
