@@ -1086,22 +1086,6 @@ static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject 
 #define __Pyx_ErrFetch(type, value, tb)  PyErr_Fetch(type, value, tb)
 #endif
 
-/* RaiseArgTupleInvalid.proto */
-static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
-    Py_ssize_t num_min, Py_ssize_t num_max, Py_ssize_t num_found);
-
-/* RaiseDoubleKeywords.proto */
-static void __Pyx_RaiseDoubleKeywordsError(const char* func_name, PyObject* kw_name);
-
-/* ParseKeywords.proto */
-static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
-    PyObject *kwds2, PyObject *values[], Py_ssize_t num_pos_args,\
-    const char* function_name);
-
-/* ArgTypeTest.proto */
-static CYTHON_INLINE int __Pyx_ArgTypeTest(PyObject *obj, PyTypeObject *type, int none_allowed,
-    const char *name, int exact);
-
 /* RaiseException.proto */
 static void __Pyx_Raise(PyObject *type, PyObject *value, PyObject *tb, PyObject *cause);
 
@@ -1381,9 +1365,8 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *, cha
 /* Module declarations from 'cython' */
 
 /* Module declarations from 'ha5utils' */
-static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *, PyArrayObject *, PyArrayObject *, int __pyx_skip_dispatch); /*proto*/
 static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t = { "int32_t", NULL, sizeof(__pyx_t_5numpy_int32_t), { 0 }, 0, IS_UNSIGNED(__pyx_t_5numpy_int32_t) ? 'U' : 'I', IS_UNSIGNED(__pyx_t_5numpy_int32_t), 0 };
-static __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_double_t = { "double_t", NULL, sizeof(__pyx_t_5numpy_double_t), { 0 }, 0, 'R', 0, 0 };
+static __Pyx_TypeInfo __Pyx_TypeInfo___pyx_t_double_complex = { "double complex", NULL, sizeof(__pyx_t_double_complex), { 0 }, 0, 'C', 0, 0 };
 #define __Pyx_MODULE_NAME "ha5utils"
 int __pyx_module_is_main_ha5utils = 0;
 
@@ -1392,23 +1375,18 @@ static PyObject *__pyx_builtin_range;
 static PyObject *__pyx_builtin_ValueError;
 static PyObject *__pyx_builtin_RuntimeError;
 static PyObject *__pyx_builtin_ImportError;
-static const char __pyx_k_dims[] = "dims";
 static const char __pyx_k_main[] = "__main__";
-static const char __pyx_k_mat1[] = "mat1";
-static const char __pyx_k_mat2[] = "mat2";
 static const char __pyx_k_test[] = "__test__";
 static const char __pyx_k_dtype[] = "dtype";
 static const char __pyx_k_numpy[] = "numpy";
 static const char __pyx_k_range[] = "range";
 static const char __pyx_k_zeros[] = "zeros";
-static const char __pyx_k_double[] = "double";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_ValueError[] = "ValueError";
+static const char __pyx_k_complex128[] = "complex128";
 static const char __pyx_k_ImportError[] = "ImportError";
 static const char __pyx_k_RuntimeError[] = "RuntimeError";
-static const char __pyx_k_vecMatDot_line_13[] = "vecMatDot (line 13)";
 static const char __pyx_k_ndarray_is_not_C_contiguous[] = "ndarray is not C contiguous";
-static const char __pyx_k_Performs_the_dot_product_for_tw[] = "\n    Performs the dot product for two matrices whose elements are vectors.\n    Axis 0 are treated as the rows, axis 1 are treated as the columns and\n    axis 2 are the matrix elements. The dot product is performed on axis 0\n    and axis 1 while multiplication with axis 2 will be elementwise.\n\n    Parameters\n    ----------\n    dims : numpy.ndarray[numpy.int32_t, ndim=1]\n        The dimensions of the returned array; [row, col, arrLen].\n    mat1 : numpy.ndarray[numpy.double_t, ndim=3]\n        The left matrix.\n    mat2 : numpy.ndarray[numpy.double_t, ndim=3]\n        The right matrix.\n\n    Returns\n    -------\n    numpy.ndarray[numpy.double_t, ndim=3]\n        A matrix whose elements are vectors and is the result of the dot\n        product.\n\n    Example\n    -------\n    >>> import ha5utils\n    >>> import numpy as np\n    >>> mat=np.arange(0, 12, dtype=np.float64).reshape((2,2,3))\n    >>> dim=np.array([mat.shape[0], mat.shape[1], mat.shape[2]], dtype=np.int32)\n    >>> mat\n    array([[[  0.,   1.,   2.],\n            [  3.,   4.,   5.]],\n\n           [[  6.,   7.,   8.],\n            [  9.,  10.,  11.]]])\n    >>> ha5utils.vecMatDot(dim, mat, mat)\n    array([[[  18.,   29.,   44.],\n            [  27.,   44.,   65.]],\n\n           [[  54.,   77.,  104.],\n            [  99.,  128.,  161.]]])\n    ";
 static const char __pyx_k_This_code_is_adapted_for_80_col[] = "\nThis code is adapted for 80 columns\n|------------------------------------------------------------------------------|\n";
 static const char __pyx_k_numpy_core_multiarray_failed_to[] = "numpy.core.multiarray failed to import";
 static const char __pyx_k_unknown_dtype_code_in_numpy_pxd[] = "unknown dtype code in numpy.pxd (%d)";
@@ -1421,16 +1399,12 @@ static PyObject *__pyx_kp_u_Format_string_allocated_too_shor;
 static PyObject *__pyx_kp_u_Format_string_allocated_too_shor_2;
 static PyObject *__pyx_n_s_ImportError;
 static PyObject *__pyx_kp_u_Non_native_byte_order_not_suppor;
-static PyObject *__pyx_kp_u_Performs_the_dot_product_for_tw;
 static PyObject *__pyx_n_s_RuntimeError;
 static PyObject *__pyx_n_s_ValueError;
-static PyObject *__pyx_n_s_dims;
-static PyObject *__pyx_n_s_double;
+static PyObject *__pyx_n_s_complex128;
 static PyObject *__pyx_n_s_dtype;
 static PyObject *__pyx_n_s_import;
 static PyObject *__pyx_n_s_main;
-static PyObject *__pyx_n_s_mat1;
-static PyObject *__pyx_n_s_mat2;
 static PyObject *__pyx_kp_u_ndarray_is_not_C_contiguous;
 static PyObject *__pyx_kp_u_ndarray_is_not_Fortran_contiguou;
 static PyObject *__pyx_n_s_numpy;
@@ -1439,9 +1413,7 @@ static PyObject *__pyx_kp_s_numpy_core_umath_failed_to_impor;
 static PyObject *__pyx_n_s_range;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_kp_u_unknown_dtype_code_in_numpy_pxd;
-static PyObject *__pyx_kp_u_vecMatDot_line_13;
 static PyObject *__pyx_n_s_zeros;
-static PyObject *__pyx_pf_8ha5utils_vecMatDot(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_dims, PyArrayObject *__pyx_v_mat1, PyArrayObject *__pyx_v_mat2); /* proto */
 static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags); /* proto */
 static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_self, Py_buffer *__pyx_v_info); /* proto */
 static PyObject *__pyx_tuple_;
@@ -1457,13 +1429,12 @@ static PyObject *__pyx_tuple__9;
 /* "ha5utils.pyx":13
  * # turn off negative index wrapping for entire function
  * @cython.wraparound(False)
- * cpdef numpy.ndarray[numpy.double_t, ndim=3] \             # <<<<<<<<<<<<<<
+ * cdef numpy.ndarray[numpy.complex128_t, ndim=3] \             # <<<<<<<<<<<<<<
  *     vecMatDot(numpy.ndarray[numpy.int32_t, ndim=1] dims,
- *               numpy.ndarray[numpy.double_t, ndim=3] mat1,
+ *               numpy.ndarray[numpy.complex128_t, ndim=3] mat1,
  */
 
-static PyObject *__pyx_pw_8ha5utils_1vecMatDot(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, PyArrayObject *__pyx_v_mat1, PyArrayObject *__pyx_v_mat2, CYTHON_UNUSED int __pyx_skip_dispatch) {
+static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, PyArrayObject *__pyx_v_mat1, PyArrayObject *__pyx_v_mat2) {
   PyArrayObject *__pyx_v_out = 0;
   int __pyx_v_i;
   int __pyx_v_j;
@@ -1512,6 +1483,9 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, P
   Py_ssize_t __pyx_t_31;
   Py_ssize_t __pyx_t_32;
   Py_ssize_t __pyx_t_33;
+  Py_ssize_t __pyx_t_34;
+  Py_ssize_t __pyx_t_35;
+  Py_ssize_t __pyx_t_36;
   __Pyx_RefNannySetupContext("vecMatDot", 0);
   __pyx_pybuffer_out.pybuffer.buf = NULL;
   __pyx_pybuffer_out.refcount = 0;
@@ -1536,20 +1510,20 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, P
   __pyx_pybuffernd_dims.diminfo[0].strides = __pyx_pybuffernd_dims.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_dims.diminfo[0].shape = __pyx_pybuffernd_dims.rcbuffer->pybuffer.shape[0];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mat1.rcbuffer->pybuffer, (PyObject*)__pyx_v_mat1, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 3, 0, __pyx_stack) == -1)) __PYX_ERR(0, 13, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mat1.rcbuffer->pybuffer, (PyObject*)__pyx_v_mat1, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_STRIDES, 3, 0, __pyx_stack) == -1)) __PYX_ERR(0, 13, __pyx_L1_error)
   }
   __pyx_pybuffernd_mat1.diminfo[0].strides = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mat1.diminfo[0].shape = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_mat1.diminfo[1].strides = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_mat1.diminfo[1].shape = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.shape[1]; __pyx_pybuffernd_mat1.diminfo[2].strides = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.strides[2]; __pyx_pybuffernd_mat1.diminfo[2].shape = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.shape[2];
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mat2.rcbuffer->pybuffer, (PyObject*)__pyx_v_mat2, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 3, 0, __pyx_stack) == -1)) __PYX_ERR(0, 13, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mat2.rcbuffer->pybuffer, (PyObject*)__pyx_v_mat2, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_STRIDES, 3, 0, __pyx_stack) == -1)) __PYX_ERR(0, 13, __pyx_L1_error)
   }
   __pyx_pybuffernd_mat2.diminfo[0].strides = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mat2.diminfo[0].shape = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_mat2.diminfo[1].strides = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_mat2.diminfo[1].shape = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.shape[1]; __pyx_pybuffernd_mat2.diminfo[2].strides = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.strides[2]; __pyx_pybuffernd_mat2.diminfo[2].shape = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.shape[2];
 
   /* "ha5utils.pyx":59
- *     cdef numpy.ndarray[numpy.double_t, ndim=3] out
+ *     cdef numpy.ndarray[numpy.complex128_t, ndim=3] out
  *     cdef int i,j, k, l
  *     out = numpy.zeros((dims[0], dims[1], dims[2]),             # <<<<<<<<<<<<<<
- * 		      dtype=numpy.double)
+ * 		      dtype=numpy.complex128)
  *     for i in range(dims[0]):
  */
   __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_numpy); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
@@ -1586,7 +1560,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, P
   /* "ha5utils.pyx":60
  *     cdef int i,j, k, l
  *     out = numpy.zeros((dims[0], dims[1], dims[2]),
- * 		      dtype=numpy.double)             # <<<<<<<<<<<<<<
+ * 		      dtype=numpy.complex128)             # <<<<<<<<<<<<<<
  *     for i in range(dims[0]):
  *         for j in range(dims[1]):
  */
@@ -1594,17 +1568,17 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, P
   __Pyx_GOTREF(__pyx_t_8);
   __pyx_t_5 = __Pyx_GetModuleGlobalName(__pyx_n_s_numpy); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
-  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_double); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_5, __pyx_n_s_complex128); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_dtype, __pyx_t_1) < 0) __PYX_ERR(0, 60, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
   /* "ha5utils.pyx":59
- *     cdef numpy.ndarray[numpy.double_t, ndim=3] out
+ *     cdef numpy.ndarray[numpy.complex128_t, ndim=3] out
  *     cdef int i,j, k, l
  *     out = numpy.zeros((dims[0], dims[1], dims[2]),             # <<<<<<<<<<<<<<
- * 		      dtype=numpy.double)
+ * 		      dtype=numpy.complex128)
  *     for i in range(dims[0]):
  */
   __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_7, __pyx_t_8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 59, __pyx_L1_error)
@@ -1617,10 +1591,10 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, P
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
     __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_out.rcbuffer->pybuffer);
-    __pyx_t_10 = __Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out.rcbuffer->pybuffer, (PyObject*)__pyx_t_9, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 3, 0, __pyx_stack);
+    __pyx_t_10 = __Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out.rcbuffer->pybuffer, (PyObject*)__pyx_t_9, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 3, 0, __pyx_stack);
     if (unlikely(__pyx_t_10 < 0)) {
       PyErr_Fetch(&__pyx_t_11, &__pyx_t_12, &__pyx_t_13);
-      if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out.rcbuffer->pybuffer, (PyObject*)__pyx_v_out, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 3, 0, __pyx_stack) == -1)) {
+      if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_out.rcbuffer->pybuffer, (PyObject*)__pyx_v_out, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_STRIDES| PyBUF_WRITABLE, 3, 0, __pyx_stack) == -1)) {
         Py_XDECREF(__pyx_t_11); Py_XDECREF(__pyx_t_12); Py_XDECREF(__pyx_t_13);
         __Pyx_RaiseBufferFallbackError();
       } else {
@@ -1636,7 +1610,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, P
 
   /* "ha5utils.pyx":61
  *     out = numpy.zeros((dims[0], dims[1], dims[2]),
- * 		      dtype=numpy.double)
+ * 		      dtype=numpy.complex128)
  *     for i in range(dims[0]):             # <<<<<<<<<<<<<<
  *         for j in range(dims[1]):
  *             for k in range(dims[0]):
@@ -1647,7 +1621,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, P
     __pyx_v_i = __pyx_t_10;
 
     /* "ha5utils.pyx":62
- * 		      dtype=numpy.double)
+ * 		      dtype=numpy.complex128)
  *     for i in range(dims[0]):
  *         for j in range(dims[1]):             # <<<<<<<<<<<<<<
  *             for k in range(dims[0]):
@@ -1663,7 +1637,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, P
  *         for j in range(dims[1]):
  *             for k in range(dims[0]):             # <<<<<<<<<<<<<<
  *                 for l in range(dims[2]):
- *                     out[i,j, l] += mat1[i, k, l]*mat2[k, j, l]
+ *                     out[i,j, l] = out[i,j, l] + mat1[i, k, l]*mat2[k, j, l]
  */
       __pyx_t_19 = 0;
       __pyx_t_20 = (*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_int32_t *, __pyx_pybuffernd_dims.rcbuffer->pybuffer.buf, __pyx_t_19, __pyx_pybuffernd_dims.diminfo[0].strides));
@@ -1674,7 +1648,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, P
  *         for j in range(dims[1]):
  *             for k in range(dims[0]):
  *                 for l in range(dims[2]):             # <<<<<<<<<<<<<<
- *                     out[i,j, l] += mat1[i, k, l]*mat2[k, j, l]
+ *                     out[i,j, l] = out[i,j, l] + mat1[i, k, l]*mat2[k, j, l]
  *     return out
  */
         __pyx_t_22 = 2;
@@ -1685,19 +1659,22 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, P
           /* "ha5utils.pyx":65
  *             for k in range(dims[0]):
  *                 for l in range(dims[2]):
- *                     out[i,j, l] += mat1[i, k, l]*mat2[k, j, l]             # <<<<<<<<<<<<<<
+ *                     out[i,j, l] = out[i,j, l] + mat1[i, k, l]*mat2[k, j, l]             # <<<<<<<<<<<<<<
  *     return out
  */
           __pyx_t_25 = __pyx_v_i;
-          __pyx_t_26 = __pyx_v_k;
+          __pyx_t_26 = __pyx_v_j;
           __pyx_t_27 = __pyx_v_l;
-          __pyx_t_28 = __pyx_v_k;
-          __pyx_t_29 = __pyx_v_j;
+          __pyx_t_28 = __pyx_v_i;
+          __pyx_t_29 = __pyx_v_k;
           __pyx_t_30 = __pyx_v_l;
-          __pyx_t_31 = __pyx_v_i;
+          __pyx_t_31 = __pyx_v_k;
           __pyx_t_32 = __pyx_v_j;
           __pyx_t_33 = __pyx_v_l;
-          *__Pyx_BufPtrStrided3d(__pyx_t_5numpy_double_t *, __pyx_pybuffernd_out.rcbuffer->pybuffer.buf, __pyx_t_31, __pyx_pybuffernd_out.diminfo[0].strides, __pyx_t_32, __pyx_pybuffernd_out.diminfo[1].strides, __pyx_t_33, __pyx_pybuffernd_out.diminfo[2].strides) += ((*__Pyx_BufPtrStrided3d(__pyx_t_5numpy_double_t *, __pyx_pybuffernd_mat1.rcbuffer->pybuffer.buf, __pyx_t_25, __pyx_pybuffernd_mat1.diminfo[0].strides, __pyx_t_26, __pyx_pybuffernd_mat1.diminfo[1].strides, __pyx_t_27, __pyx_pybuffernd_mat1.diminfo[2].strides)) * (*__Pyx_BufPtrStrided3d(__pyx_t_5numpy_double_t *, __pyx_pybuffernd_mat2.rcbuffer->pybuffer.buf, __pyx_t_28, __pyx_pybuffernd_mat2.diminfo[0].strides, __pyx_t_29, __pyx_pybuffernd_mat2.diminfo[1].strides, __pyx_t_30, __pyx_pybuffernd_mat2.diminfo[2].strides)));
+          __pyx_t_34 = __pyx_v_i;
+          __pyx_t_35 = __pyx_v_j;
+          __pyx_t_36 = __pyx_v_l;
+          *__Pyx_BufPtrStrided3d(__pyx_t_double_complex *, __pyx_pybuffernd_out.rcbuffer->pybuffer.buf, __pyx_t_34, __pyx_pybuffernd_out.diminfo[0].strides, __pyx_t_35, __pyx_pybuffernd_out.diminfo[1].strides, __pyx_t_36, __pyx_pybuffernd_out.diminfo[2].strides) = __Pyx_c_sum_double((*__Pyx_BufPtrStrided3d(__pyx_t_double_complex *, __pyx_pybuffernd_out.rcbuffer->pybuffer.buf, __pyx_t_25, __pyx_pybuffernd_out.diminfo[0].strides, __pyx_t_26, __pyx_pybuffernd_out.diminfo[1].strides, __pyx_t_27, __pyx_pybuffernd_out.diminfo[2].strides)), __Pyx_c_prod_double((*__Pyx_BufPtrStrided3d(__pyx_t_double_complex *, __pyx_pybuffernd_mat1.rcbuffer->pybuffer.buf, __pyx_t_28, __pyx_pybuffernd_mat1.diminfo[0].strides, __pyx_t_29, __pyx_pybuffernd_mat1.diminfo[1].strides, __pyx_t_30, __pyx_pybuffernd_mat1.diminfo[2].strides)), (*__Pyx_BufPtrStrided3d(__pyx_t_double_complex *, __pyx_pybuffernd_mat2.rcbuffer->pybuffer.buf, __pyx_t_31, __pyx_pybuffernd_mat2.diminfo[0].strides, __pyx_t_32, __pyx_pybuffernd_mat2.diminfo[1].strides, __pyx_t_33, __pyx_pybuffernd_mat2.diminfo[2].strides))));
         }
       }
     }
@@ -1705,7 +1682,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, P
 
   /* "ha5utils.pyx":66
  *                 for l in range(dims[2]):
- *                     out[i,j, l] += mat1[i, k, l]*mat2[k, j, l]
+ *                     out[i,j, l] = out[i,j, l] + mat1[i, k, l]*mat2[k, j, l]
  *     return out             # <<<<<<<<<<<<<<
  */
   __Pyx_XDECREF(((PyObject *)__pyx_r));
@@ -1716,9 +1693,9 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, P
   /* "ha5utils.pyx":13
  * # turn off negative index wrapping for entire function
  * @cython.wraparound(False)
- * cpdef numpy.ndarray[numpy.double_t, ndim=3] \             # <<<<<<<<<<<<<<
+ * cdef numpy.ndarray[numpy.complex128_t, ndim=3] \             # <<<<<<<<<<<<<<
  *     vecMatDot(numpy.ndarray[numpy.int32_t, ndim=1] dims,
- *               numpy.ndarray[numpy.double_t, ndim=3] mat1,
+ *               numpy.ndarray[numpy.complex128_t, ndim=3] mat1,
  */
 
   /* function exit code */
@@ -1748,150 +1725,6 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, P
   __pyx_L2:;
   __Pyx_XDECREF((PyObject *)__pyx_v_out);
   __Pyx_XGIVEREF((PyObject *)__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* Python wrapper */
-static PyObject *__pyx_pw_8ha5utils_1vecMatDot(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_8ha5utils_vecMatDot[] = "\n    Performs the dot product for two matrices whose elements are vectors.\n    Axis 0 are treated as the rows, axis 1 are treated as the columns and\n    axis 2 are the matrix elements. The dot product is performed on axis 0\n    and axis 1 while multiplication with axis 2 will be elementwise.\n\n    Parameters\n    ----------\n    dims : numpy.ndarray[numpy.int32_t, ndim=1]\n        The dimensions of the returned array; [row, col, arrLen].\n    mat1 : numpy.ndarray[numpy.double_t, ndim=3]\n        The left matrix.\n    mat2 : numpy.ndarray[numpy.double_t, ndim=3]\n        The right matrix.\n\n    Returns\n    -------\n    numpy.ndarray[numpy.double_t, ndim=3]\n        A matrix whose elements are vectors and is the result of the dot\n        product.\n\n    Example\n    -------\n    >>> import ha5utils\n    >>> import numpy as np\n    >>> mat=np.arange(0, 12, dtype=np.float64).reshape((2,2,3))\n    >>> dim=np.array([mat.shape[0], mat.shape[1], mat.shape[2]], dtype=np.int32)\n    >>> mat\n    array([[[  0.,   1.,   2.],\n            [  3.,   4.,   5.]],\n\n           [[  6.,   7.,   8.],\n            [  9.,  10.,  11.]]])\n    >>> ha5utils.vecMatDot(dim, mat, mat)\n    array([[[  18.,   29.,   44.],\n            [  27.,   44.,   65.]],\n\n           [[  54.,   77.,  104.],\n            [  99.,  128.,  161.]]])\n    ";
-static PyObject *__pyx_pw_8ha5utils_1vecMatDot(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
-  PyArrayObject *__pyx_v_dims = 0;
-  PyArrayObject *__pyx_v_mat1 = 0;
-  PyArrayObject *__pyx_v_mat2 = 0;
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("vecMatDot (wrapper)", 0);
-  {
-    static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_dims,&__pyx_n_s_mat1,&__pyx_n_s_mat2,0};
-    PyObject* values[3] = {0,0,0};
-    if (unlikely(__pyx_kwds)) {
-      Py_ssize_t kw_args;
-      const Py_ssize_t pos_args = PyTuple_GET_SIZE(__pyx_args);
-      switch (pos_args) {
-        case  3: values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-        case  2: values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-        case  1: values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-        case  0: break;
-        default: goto __pyx_L5_argtuple_error;
-      }
-      kw_args = PyDict_Size(__pyx_kwds);
-      switch (pos_args) {
-        case  0:
-        if (likely((values[0] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_dims)) != 0)) kw_args--;
-        else goto __pyx_L5_argtuple_error;
-        case  1:
-        if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mat1)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("vecMatDot", 1, 3, 3, 1); __PYX_ERR(0, 13, __pyx_L3_error)
-        }
-        case  2:
-        if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_mat2)) != 0)) kw_args--;
-        else {
-          __Pyx_RaiseArgtupleInvalid("vecMatDot", 1, 3, 3, 2); __PYX_ERR(0, 13, __pyx_L3_error)
-        }
-      }
-      if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "vecMatDot") < 0)) __PYX_ERR(0, 13, __pyx_L3_error)
-      }
-    } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
-      goto __pyx_L5_argtuple_error;
-    } else {
-      values[0] = PyTuple_GET_ITEM(__pyx_args, 0);
-      values[1] = PyTuple_GET_ITEM(__pyx_args, 1);
-      values[2] = PyTuple_GET_ITEM(__pyx_args, 2);
-    }
-    __pyx_v_dims = ((PyArrayObject *)values[0]);
-    __pyx_v_mat1 = ((PyArrayObject *)values[1]);
-    __pyx_v_mat2 = ((PyArrayObject *)values[2]);
-  }
-  goto __pyx_L4_argument_unpacking_done;
-  __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("vecMatDot", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 13, __pyx_L3_error)
-  __pyx_L3_error:;
-  __Pyx_AddTraceback("ha5utils.vecMatDot", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __Pyx_RefNannyFinishContext();
-  return NULL;
-  __pyx_L4_argument_unpacking_done:;
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_dims), __pyx_ptype_5numpy_ndarray, 1, "dims", 0))) __PYX_ERR(0, 14, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mat1), __pyx_ptype_5numpy_ndarray, 1, "mat1", 0))) __PYX_ERR(0, 15, __pyx_L1_error)
-  if (unlikely(!__Pyx_ArgTypeTest(((PyObject *)__pyx_v_mat2), __pyx_ptype_5numpy_ndarray, 1, "mat2", 0))) __PYX_ERR(0, 16, __pyx_L1_error)
-  __pyx_r = __pyx_pf_8ha5utils_vecMatDot(__pyx_self, __pyx_v_dims, __pyx_v_mat1, __pyx_v_mat2);
-
-  /* function exit code */
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __pyx_r = NULL;
-  __pyx_L0:;
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_8ha5utils_vecMatDot(CYTHON_UNUSED PyObject *__pyx_self, PyArrayObject *__pyx_v_dims, PyArrayObject *__pyx_v_mat1, PyArrayObject *__pyx_v_mat2) {
-  __Pyx_LocalBuf_ND __pyx_pybuffernd_dims;
-  __Pyx_Buffer __pyx_pybuffer_dims;
-  __Pyx_LocalBuf_ND __pyx_pybuffernd_mat1;
-  __Pyx_Buffer __pyx_pybuffer_mat1;
-  __Pyx_LocalBuf_ND __pyx_pybuffernd_mat2;
-  __Pyx_Buffer __pyx_pybuffer_mat2;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  PyObject *__pyx_t_1 = NULL;
-  __Pyx_RefNannySetupContext("vecMatDot", 0);
-  __pyx_pybuffer_dims.pybuffer.buf = NULL;
-  __pyx_pybuffer_dims.refcount = 0;
-  __pyx_pybuffernd_dims.data = NULL;
-  __pyx_pybuffernd_dims.rcbuffer = &__pyx_pybuffer_dims;
-  __pyx_pybuffer_mat1.pybuffer.buf = NULL;
-  __pyx_pybuffer_mat1.refcount = 0;
-  __pyx_pybuffernd_mat1.data = NULL;
-  __pyx_pybuffernd_mat1.rcbuffer = &__pyx_pybuffer_mat1;
-  __pyx_pybuffer_mat2.pybuffer.buf = NULL;
-  __pyx_pybuffer_mat2.refcount = 0;
-  __pyx_pybuffernd_mat2.data = NULL;
-  __pyx_pybuffernd_mat2.rcbuffer = &__pyx_pybuffer_mat2;
-  {
-    __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_dims.rcbuffer->pybuffer, (PyObject*)__pyx_v_dims, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_STRIDES, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 13, __pyx_L1_error)
-  }
-  __pyx_pybuffernd_dims.diminfo[0].strides = __pyx_pybuffernd_dims.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_dims.diminfo[0].shape = __pyx_pybuffernd_dims.rcbuffer->pybuffer.shape[0];
-  {
-    __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mat1.rcbuffer->pybuffer, (PyObject*)__pyx_v_mat1, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 3, 0, __pyx_stack) == -1)) __PYX_ERR(0, 13, __pyx_L1_error)
-  }
-  __pyx_pybuffernd_mat1.diminfo[0].strides = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mat1.diminfo[0].shape = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_mat1.diminfo[1].strides = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_mat1.diminfo[1].shape = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.shape[1]; __pyx_pybuffernd_mat1.diminfo[2].strides = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.strides[2]; __pyx_pybuffernd_mat1.diminfo[2].shape = __pyx_pybuffernd_mat1.rcbuffer->pybuffer.shape[2];
-  {
-    __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_mat2.rcbuffer->pybuffer, (PyObject*)__pyx_v_mat2, &__Pyx_TypeInfo_nn___pyx_t_5numpy_double_t, PyBUF_FORMAT| PyBUF_STRIDES, 3, 0, __pyx_stack) == -1)) __PYX_ERR(0, 13, __pyx_L1_error)
-  }
-  __pyx_pybuffernd_mat2.diminfo[0].strides = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_mat2.diminfo[0].shape = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_mat2.diminfo[1].strides = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_mat2.diminfo[1].shape = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.shape[1]; __pyx_pybuffernd_mat2.diminfo[2].strides = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.strides[2]; __pyx_pybuffernd_mat2.diminfo[2].shape = __pyx_pybuffernd_mat2.rcbuffer->pybuffer.shape[2];
-  __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = ((PyObject *)__pyx_f_8ha5utils_vecMatDot(__pyx_v_dims, __pyx_v_mat1, __pyx_v_mat2, 0)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = __pyx_t_1;
-  __pyx_t_1 = 0;
-  goto __pyx_L0;
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
-    __Pyx_PyThreadState_declare
-    __Pyx_PyThreadState_assign
-    __Pyx_ErrFetch(&__pyx_type, &__pyx_value, &__pyx_tb);
-    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_dims.rcbuffer->pybuffer);
-    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mat1.rcbuffer->pybuffer);
-    __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mat2.rcbuffer->pybuffer);
-  __Pyx_ErrRestore(__pyx_type, __pyx_value, __pyx_tb);}
-  __Pyx_AddTraceback("ha5utils.vecMatDot", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  goto __pyx_L2;
-  __pyx_L0:;
-  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_dims.rcbuffer->pybuffer);
-  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mat1.rcbuffer->pybuffer);
-  __Pyx_SafeReleaseBuffer(&__pyx_pybuffernd_mat2.rcbuffer->pybuffer);
-  __pyx_L2:;
-  __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
@@ -4411,7 +4244,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
 }
 
 static PyMethodDef __pyx_methods[] = {
-  {"vecMatDot", (PyCFunction)__pyx_pw_8ha5utils_1vecMatDot, METH_VARARGS|METH_KEYWORDS, __pyx_doc_8ha5utils_vecMatDot},
   {0, 0, 0, 0}
 };
 
@@ -4438,16 +4270,12 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_kp_u_Format_string_allocated_too_shor_2, __pyx_k_Format_string_allocated_too_shor_2, sizeof(__pyx_k_Format_string_allocated_too_shor_2), 0, 1, 0, 0},
   {&__pyx_n_s_ImportError, __pyx_k_ImportError, sizeof(__pyx_k_ImportError), 0, 0, 1, 1},
   {&__pyx_kp_u_Non_native_byte_order_not_suppor, __pyx_k_Non_native_byte_order_not_suppor, sizeof(__pyx_k_Non_native_byte_order_not_suppor), 0, 1, 0, 0},
-  {&__pyx_kp_u_Performs_the_dot_product_for_tw, __pyx_k_Performs_the_dot_product_for_tw, sizeof(__pyx_k_Performs_the_dot_product_for_tw), 0, 1, 0, 0},
   {&__pyx_n_s_RuntimeError, __pyx_k_RuntimeError, sizeof(__pyx_k_RuntimeError), 0, 0, 1, 1},
   {&__pyx_n_s_ValueError, __pyx_k_ValueError, sizeof(__pyx_k_ValueError), 0, 0, 1, 1},
-  {&__pyx_n_s_dims, __pyx_k_dims, sizeof(__pyx_k_dims), 0, 0, 1, 1},
-  {&__pyx_n_s_double, __pyx_k_double, sizeof(__pyx_k_double), 0, 0, 1, 1},
+  {&__pyx_n_s_complex128, __pyx_k_complex128, sizeof(__pyx_k_complex128), 0, 0, 1, 1},
   {&__pyx_n_s_dtype, __pyx_k_dtype, sizeof(__pyx_k_dtype), 0, 0, 1, 1},
   {&__pyx_n_s_import, __pyx_k_import, sizeof(__pyx_k_import), 0, 0, 1, 1},
   {&__pyx_n_s_main, __pyx_k_main, sizeof(__pyx_k_main), 0, 0, 1, 1},
-  {&__pyx_n_s_mat1, __pyx_k_mat1, sizeof(__pyx_k_mat1), 0, 0, 1, 1},
-  {&__pyx_n_s_mat2, __pyx_k_mat2, sizeof(__pyx_k_mat2), 0, 0, 1, 1},
   {&__pyx_kp_u_ndarray_is_not_C_contiguous, __pyx_k_ndarray_is_not_C_contiguous, sizeof(__pyx_k_ndarray_is_not_C_contiguous), 0, 1, 0, 0},
   {&__pyx_kp_u_ndarray_is_not_Fortran_contiguou, __pyx_k_ndarray_is_not_Fortran_contiguou, sizeof(__pyx_k_ndarray_is_not_Fortran_contiguou), 0, 1, 0, 0},
   {&__pyx_n_s_numpy, __pyx_k_numpy, sizeof(__pyx_k_numpy), 0, 0, 1, 1},
@@ -4456,7 +4284,6 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_range, __pyx_k_range, sizeof(__pyx_k_range), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_kp_u_unknown_dtype_code_in_numpy_pxd, __pyx_k_unknown_dtype_code_in_numpy_pxd, sizeof(__pyx_k_unknown_dtype_code_in_numpy_pxd), 0, 1, 0, 0},
-  {&__pyx_kp_u_vecMatDot_line_13, __pyx_k_vecMatDot_line_13, sizeof(__pyx_k_vecMatDot_line_13), 0, 1, 0, 0},
   {&__pyx_n_s_zeros, __pyx_k_zeros, sizeof(__pyx_k_zeros), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
@@ -4707,7 +4534,6 @@ PyMODINIT_FUNC PyInit_ha5utils(void)
  */
   __pyx_t_1 = PyDict_New(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  if (PyDict_SetItem(__pyx_t_1, __pyx_kp_u_vecMatDot_line_13, __pyx_kp_u_Performs_the_dot_product_for_tw) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
@@ -5403,175 +5229,6 @@ static CYTHON_INLINE void __Pyx_ErrFetchInState(PyThreadState *tstate, PyObject 
     tstate->curexc_traceback = 0;
 }
 #endif
-
-/* RaiseArgTupleInvalid */
-    static void __Pyx_RaiseArgtupleInvalid(
-    const char* func_name,
-    int exact,
-    Py_ssize_t num_min,
-    Py_ssize_t num_max,
-    Py_ssize_t num_found)
-{
-    Py_ssize_t num_expected;
-    const char *more_or_less;
-    if (num_found < num_min) {
-        num_expected = num_min;
-        more_or_less = "at least";
-    } else {
-        num_expected = num_max;
-        more_or_less = "at most";
-    }
-    if (exact) {
-        more_or_less = "exactly";
-    }
-    PyErr_Format(PyExc_TypeError,
-                 "%.200s() takes %.8s %" CYTHON_FORMAT_SSIZE_T "d positional argument%.1s (%" CYTHON_FORMAT_SSIZE_T "d given)",
-                 func_name, more_or_less, num_expected,
-                 (num_expected == 1) ? "" : "s", num_found);
-}
-
-/* RaiseDoubleKeywords */
-    static void __Pyx_RaiseDoubleKeywordsError(
-    const char* func_name,
-    PyObject* kw_name)
-{
-    PyErr_Format(PyExc_TypeError,
-        #if PY_MAJOR_VERSION >= 3
-        "%s() got multiple values for keyword argument '%U'", func_name, kw_name);
-        #else
-        "%s() got multiple values for keyword argument '%s'", func_name,
-        PyString_AsString(kw_name));
-        #endif
-}
-
-/* ParseKeywords */
-    static int __Pyx_ParseOptionalKeywords(
-    PyObject *kwds,
-    PyObject **argnames[],
-    PyObject *kwds2,
-    PyObject *values[],
-    Py_ssize_t num_pos_args,
-    const char* function_name)
-{
-    PyObject *key = 0, *value = 0;
-    Py_ssize_t pos = 0;
-    PyObject*** name;
-    PyObject*** first_kw_arg = argnames + num_pos_args;
-    while (PyDict_Next(kwds, &pos, &key, &value)) {
-        name = first_kw_arg;
-        while (*name && (**name != key)) name++;
-        if (*name) {
-            values[name-argnames] = value;
-            continue;
-        }
-        name = first_kw_arg;
-        #if PY_MAJOR_VERSION < 3
-        if (likely(PyString_CheckExact(key)) || likely(PyString_Check(key))) {
-            while (*name) {
-                if ((CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**name) == PyString_GET_SIZE(key))
-                        && _PyString_Eq(**name, key)) {
-                    values[name-argnames] = value;
-                    break;
-                }
-                name++;
-            }
-            if (*name) continue;
-            else {
-                PyObject*** argname = argnames;
-                while (argname != first_kw_arg) {
-                    if ((**argname == key) || (
-                            (CYTHON_COMPILING_IN_PYPY || PyString_GET_SIZE(**argname) == PyString_GET_SIZE(key))
-                             && _PyString_Eq(**argname, key))) {
-                        goto arg_passed_twice;
-                    }
-                    argname++;
-                }
-            }
-        } else
-        #endif
-        if (likely(PyUnicode_Check(key))) {
-            while (*name) {
-                int cmp = (**name == key) ? 0 :
-                #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
-                    (PyUnicode_GET_SIZE(**name) != PyUnicode_GET_SIZE(key)) ? 1 :
-                #endif
-                    PyUnicode_Compare(**name, key);
-                if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
-                if (cmp == 0) {
-                    values[name-argnames] = value;
-                    break;
-                }
-                name++;
-            }
-            if (*name) continue;
-            else {
-                PyObject*** argname = argnames;
-                while (argname != first_kw_arg) {
-                    int cmp = (**argname == key) ? 0 :
-                    #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION >= 3
-                        (PyUnicode_GET_SIZE(**argname) != PyUnicode_GET_SIZE(key)) ? 1 :
-                    #endif
-                        PyUnicode_Compare(**argname, key);
-                    if (cmp < 0 && unlikely(PyErr_Occurred())) goto bad;
-                    if (cmp == 0) goto arg_passed_twice;
-                    argname++;
-                }
-            }
-        } else
-            goto invalid_keyword_type;
-        if (kwds2) {
-            if (unlikely(PyDict_SetItem(kwds2, key, value))) goto bad;
-        } else {
-            goto invalid_keyword;
-        }
-    }
-    return 0;
-arg_passed_twice:
-    __Pyx_RaiseDoubleKeywordsError(function_name, key);
-    goto bad;
-invalid_keyword_type:
-    PyErr_Format(PyExc_TypeError,
-        "%.200s() keywords must be strings", function_name);
-    goto bad;
-invalid_keyword:
-    PyErr_Format(PyExc_TypeError,
-    #if PY_MAJOR_VERSION < 3
-        "%.200s() got an unexpected keyword argument '%.200s'",
-        function_name, PyString_AsString(key));
-    #else
-        "%s() got an unexpected keyword argument '%U'",
-        function_name, key);
-    #endif
-bad:
-    return -1;
-}
-
-/* ArgTypeTest */
-    static void __Pyx_RaiseArgumentTypeInvalid(const char* name, PyObject *obj, PyTypeObject *type) {
-    PyErr_Format(PyExc_TypeError,
-        "Argument '%.200s' has incorrect type (expected %.200s, got %.200s)",
-        name, type->tp_name, Py_TYPE(obj)->tp_name);
-}
-static CYTHON_INLINE int __Pyx_ArgTypeTest(PyObject *obj, PyTypeObject *type, int none_allowed,
-    const char *name, int exact)
-{
-    if (unlikely(!type)) {
-        PyErr_SetString(PyExc_SystemError, "Missing type object");
-        return 0;
-    }
-    if (none_allowed && obj == Py_None) return 1;
-    else if (exact) {
-        if (likely(Py_TYPE(obj) == type)) return 1;
-        #if PY_MAJOR_VERSION == 2
-        else if ((type == &PyBaseString_Type) && likely(__Pyx_PyBaseString_CheckExact(obj))) return 1;
-        #endif
-    }
-    else {
-        if (likely(PyObject_TypeCheck(obj, type))) return 1;
-    }
-    __Pyx_RaiseArgumentTypeInvalid(name, obj, type);
-    return 0;
-}
 
 /* RaiseException */
     #if PY_MAJOR_VERSION < 3

@@ -10,10 +10,10 @@ cimport cython
 @cython.boundscheck(False)
 # turn off negative index wrapping for entire function
 @cython.wraparound(False)
-cpdef numpy.ndarray[numpy.double_t, ndim=3] \
+cdef numpy.ndarray[numpy.complex128_t, ndim=3] \
     vecMatDot(numpy.ndarray[numpy.int32_t, ndim=1] dims,
-              numpy.ndarray[numpy.double_t, ndim=3] mat1,
-              numpy.ndarray[numpy.double_t, ndim=3] mat2):
+              numpy.ndarray[numpy.complex128_t, ndim=3] mat1,
+              numpy.ndarray[numpy.complex128_t, ndim=3] mat2):
     """
     Performs the dot product for two matrices whose elements are vectors.
     Axis 0 are treated as the rows, axis 1 are treated as the columns and
@@ -24,14 +24,14 @@ cpdef numpy.ndarray[numpy.double_t, ndim=3] \
     ----------
     dims : numpy.ndarray[numpy.int32_t, ndim=1]
         The dimensions of the returned array; [row, col, arrLen].
-    mat1 : numpy.ndarray[numpy.double_t, ndim=3]
+    mat1 : numpy.ndarray[numpy.complex128_t, ndim=3]
         The left matrix.
-    mat2 : numpy.ndarray[numpy.double_t, ndim=3]
+    mat2 : numpy.ndarray[numpy.complex128_t, ndim=3]
         The right matrix.
 
     Returns
     -------
-    numpy.ndarray[numpy.double_t, ndim=3]
+    numpy.ndarray[numpy.complex128_t, ndim=3]
         A matrix whose elements are vectors and is the result of the dot
         product.
 
@@ -54,13 +54,13 @@ cpdef numpy.ndarray[numpy.double_t, ndim=3] \
            [[  54.,   77.,  104.],
             [  99.,  128.,  161.]]])
     """
-    cdef numpy.ndarray[numpy.double_t, ndim=3] out
+    cdef numpy.ndarray[numpy.complex128_t, ndim=3] out
     cdef int i,j, k, l
     out = numpy.zeros((dims[0], dims[1], dims[2]),
-		      dtype=numpy.double)
+		      dtype=numpy.complex128)
     for i in range(dims[0]):
         for j in range(dims[1]):
             for k in range(dims[0]):
                 for l in range(dims[2]):
-                    out[i,j, l] += mat1[i, k, l]*mat2[k, j, l]
+                    out[i,j, l] = out[i,j, l] + mat1[i, k, l]*mat2[k, j, l]
     return out
