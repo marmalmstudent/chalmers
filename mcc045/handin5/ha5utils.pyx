@@ -131,3 +131,76 @@ cpdef numpy.ndarray[numpy.complex128_t, ndim=3] \
         return vecMatDot32(dims, mat1, mat2)
     elif (len(numpy.shape(mat1)) == 2 and len(numpy.shape(mat2)) == 2):
         return numpy.dot(mat1, mat2)
+
+
+# turn off bounds-checking for entire function
+@cython.boundscheck(False)
+# turn off negative index wrapping for entire function
+@cython.wraparound(False)
+cpdef int findMaxIdx(numpy.ndarray[numpy.float64_t, ndim=1] arr,
+                     int startIdxHint=0):
+    """
+    Finds the index in the given array where the maximum value of the array
+    is found.
+
+    Parameters
+    ----------
+    arr : numpy.ndarray[numpy.float64_t, ndim=1]
+        The array where the index of the maximum value is sought.
+    startIdxHint : int
+        A hint as to what index in them array the search should start from.
+        Default value is 0.
+
+    Returns
+    -------
+    int
+        The index where the maximum value of the array is found.
+    """
+    cdef numpy.float64_t m = max(arr[startIdxHint:])
+    cdef int i
+    for i in range(startIdxHint, len(arr)):
+        if arr[i] == m:
+            return i
+    return 0
+
+
+# turn off bounds-checking for entire function
+@cython.boundscheck(False)
+# turn off negative index wrapping for entire function
+@cython.wraparound(False)
+cpdef int findBandWidth(numpy.ndarray[numpy.float64_t, ndim=1] arr,
+                        int peakValIdx, numpy.float64_t bwBounds):
+    """
+    Attempts to find the bandwidth given the center point of the band and
+    the lower bound of the band.
+
+    Parameters
+    ----------
+    arr : array_like
+        The array where the index of the maximum value is sought.
+    peakValIdx : int
+        The index peak value in the band (i.e. the center point of the
+        band) in arr.
+    bwBounds : float
+        The lower bound of the band, i.e. any values in arr are considered
+        to be outside the band.
+
+    Returns
+    -------
+    """
+    if (peakValIdx < 0 or peakValIdx >= len(arr)
+        or arr[peakValIdx] < bwBounds):
+        # peak value is lower than the bounds
+        return 0
+    cdef int upperBound = peakValIdx
+    cdef int lowerBound = peakValIdx
+    cdef int i, j
+    for i in range(peakValIdx, len(arr)):
+        if (arr[i] < bwBounds):
+            upperBound = i
+            break
+    for j in range(peakValIdx, 0, -1):
+        if (arr[j] < bwBounds):
+            lowerBound = j
+            break
+    return upperBound - lowerBound

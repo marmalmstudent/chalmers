@@ -7,7 +7,8 @@ try:
     import numpy as np
     import matplotlib.pyplot as plt
     import matplotlib.animation as animation
-    import ha5utils
+    import ha5utils as ha5u
+    import time
 except ImportError:
     sys.stderr.write("Could not execute program: " + str(sys.exc_info()[1])
                      + ".\nPlease install the module and try again")
@@ -100,9 +101,18 @@ class Handin5(object):
             The transfer matrix for the homogeneous media
         """
         k_zero = 2*pi/lambda_zero
-        return np.array([[np.exp(1j*k_zero*n*d), np.zeros(len(lambda_zero))],
-                         [np.zeros(len(lambda_zero)), np.exp(-1j*k_zero*n*d)]],
-                        dtype=np.complex128)
+        if (len(np.shape(k_zero)) > 0):
+            return np.array([[np.exp(1j*k_zero*n*d), np.zeros(len(k_zero))],
+                             [np.zeros(len(k_zero)), np.exp(-1j*k_zero*n*d)]],
+                            dtype=np.complex128)
+        elif (len(np.shape(d)) > 0):
+            return np.array([[np.exp(1j*k_zero*n*d), np.zeros(len(d))],
+                             [np.zeros(len(d)), np.exp(-1j*k_zero*n*d)]],
+                            dtype=np.complex128)
+        else:
+            return np.array([[np.exp(1j*k_zero*n*d), 0],
+                             [0, np.exp(-1j*k_zero*n*d)]],
+                            dtype=np.complex128)
 
     def BorderTX(self, nLeft, nRight):
         """
@@ -167,26 +177,36 @@ class Handin5(object):
         if (not highestIdxFist):
             nMirrFirst = nLow
             nMirrLast = nHigh
-        dMirrFirst = self.lbdaZero/(4*nMirrFirst)
-        dMirrLast = self.lbdaZero/(4*nMirrLast)
+
+        # NODE: Not sure if this is the only place where only the real part of
+        # the refractive index should be considered. The only other part i
+        # could think of is in them BorderTX function, but it hardly makes any
+        # difference with it and it looks very strange if the layer have
+        # complex width...
+        dMirrFirst = self.lbdaZero/(4*np.real(nMirrFirst))
+        dMirrLast = self.lbdaZero/(4*np.real(nMirrLast))
+
         # propagate from border between start material and first layer to just
         # before border between first and second pair.
         matrices.extend([self.BorderTX(nStart, nMirrFirst),
                          self.PropTX(dMirrFirst, nMirrFirst, self.lbda_0),
-                         self.BorderTX(nMirrFirst, nMirrLast),
+                         self.BorderTX(nMirrFirst,
+                                       nMirrLast),
                          self.PropTX(dMirrLast, nMirrLast, self.lbda_0)])
         # propagate from the border between first and second pair to border
         # between last pair and end material.
         for i in range(nbrPairs-1):
-            matrices.extend([self.BorderTX(nMirrLast, nMirrFirst),
+            matrices.extend([self.BorderTX(nMirrLast,
+                                           nMirrFirst),
                              self.PropTX(dMirrFirst, nMirrFirst, self.lbda_0),
-                             self.BorderTX(nMirrFirst, nMirrLast),
+                             self.BorderTX(nMirrFirst,
+                                           nMirrLast),
                              self.PropTX(dMirrLast, nMirrLast, self.lbda_0)])
         # propagate through the border between last pair and end material.
         matrices.extend([self.BorderTX(nMirrLast, nEnd)])
         return matrices
 
-    def calcTX(self, matrices):
+    def calcTX(self, matrices, nPoints):
         """
         Calculates the reflected power (as a percentage of incident power)
         given the set of matrices
@@ -202,72 +222,13 @@ class Handin5(object):
         numpy.ndarray
             The reflected power as a percentage of them incident power.
         """
-        nPoints = len(self.lbda_0)
         dims = np.array([2, 2, nPoints], dtype=np.int32)
         matTot = np.array([[np.ones(nPoints), np.zeros(nPoints)],
                            [np.zeros(nPoints), np.ones(nPoints)]],
                           dtype=np.complex128)
         for i in range(len(matrices), 0, -1):
-            matTot = ha5utils.vecMatDot(dims, matrices[i-1], matTot)
+            matTot = ha5u.vecMatDot(dims, matrices[i-1], matTot)
         return np.abs(matTot[1, 0]/matTot[1, 1])**2
-
-    def findMaxIdx(self, arr, startIdxHint=0):
-        """
-        TODO: Cythonize
-        Finds the index in the given array where the maximum value of the array
-        is found.
-
-        Parameters
-        ----------
-        arr : array_like
-            The array where the index of the maximum value is sought.
-        startIdxHint : int
-            A hint as to what index in them array the search should start from.
-            Default value is 0.
-
-        Returns
-        -------
-        list
-            A list containing the indices where the maximum value of the array
-            is found.
-        """
-        m = np.max(arr)
-        for idx, val in enumerate(arr[startIdxHint:]):
-            if (val == m):
-                return startIdxHint + idx
-
-    def findBandWidth(self, arr, peakValIdx, bwBounds):
-        """
-        TODO: Cythonize
-        Attempts to find the bandwidth given the center point of the band and
-        the lower bound of the band.
-
-        Parameters
-        ----------
-        arr : array_like
-            The array where the index of the maximum value is sought.
-        peakValIdx : int
-            The index peak value in the band (i.e. the center point of the
-            band) in arr.
-        bwBounds : float
-            The lower bound of the band, i.e. any values in arr are considered
-            to be outside the band.
-
-        Returns
-        -------
-        """
-        if (arr[peakValIdx] < bwBounds):
-            # peak value is lower than them bounds
-            return 0
-        upperBound = peakValIdx
-        lowerBound = peakValIdx
-        for i in range(peakValIdx, len(arr)):
-            if (arr[i] < bwBounds):
-                upperBound = i
-        for i in range(peakValIdx, 0, -1):
-            if (arr[i] < bwBounds):
-                lowerBound = i
-        return upperBound - lowerBound
 
     def initTask1(self):
         """
@@ -285,7 +246,7 @@ class Handin5(object):
         matrices = [self.BorderTX(nStart, nAR),
                     self.PropTX(dAR, nAR, self.lbda_0),
                     self.BorderTX(nAR, nSubst)]
-        refl = self.calcTX(matrices)
+        refl = self.calcTX(matrices, nPoints=len(self.lbda_0))
         self.initializePlot()
         self.line.set_data(self.lbda_0*1e9, refl)
         maxidx = self.findMaxIdx(refl)[0]
@@ -306,7 +267,7 @@ class Handin5(object):
         nLow = 1.5
         matrices = self.setupDBR(nStart=nStart, nHigh=nHigh, nLow=nLow,
                                  nEnd=nEnd, nbrPairs=20)
-        refl = self.calcTX(matrices)
+        refl = self.calcTX(matrices, nPoints=len(self.lbda_0))
 
         maxidx = self.findMaxIdx(refl)
         txts = self.txtTmpl % (refl[maxidx]*100, self.lbda_0[maxidx]*1e9)
@@ -328,20 +289,21 @@ class Handin5(object):
         self.lbdaZero = 980e-9
         self.lbdaMax = 1300e-9
         self.lbdaMin = 700e-9
-        step = 1e-11
+        step = 1e-10
         self.lbda_0 = np.arange(self.lbdaMin, self.lbdaMax, step,
                                 dtype=np.float64)
         nStart = 3.2
         nEnd = 1
         nHigh = 3.6
         nLow = 3.1
-        
+
         matrices = self.setupDBR(nStart=nStart, nHigh=nHigh, nLow=nLow,
                                  nEnd=nEnd, nbrPairs=30)
-        refl = self.calcTX(matrices)
-        maxidx = self.findMaxIdx(refl, startIdxHint=5000)
-        bw = self.findBandWidth(arr=refl, peakValIdx=maxidx,
-                                bwBounds=0.99)*step
+        refl = self.calcTX(matrices, nPoints=len(self.lbda_0))
+        maxidx = ha5u.findMaxIdx(refl, startIdxHint=int((self.lbdaZero -
+                                                         self.lbdaMin) /
+                                                        step*0.9))
+        bw = ha5u.findBandWidth(refl, maxidx, 0.99)*step
 
         matrices_2 = self.setupDBR(nStart=nStart, nHigh=nHigh, nLow=nLow,
                                    nEnd=nHigh, nbrPairs=15)
@@ -356,9 +318,11 @@ class Handin5(object):
         matrices_2 = self.setupDBR(nStart=nLow, nHigh=nHigh, nLow=nLow,
                                    nEnd=nEnd, nbrPairs=14,
                                    matrices=matrices_2)
-        refl_2 = self.calcTX(matrices_2)
-        maxidx_2 = self.findMaxIdx(refl_2, startIdxHint=5000)
-        bw_2 = self.findBandWidth(arr=refl_2, peakValIdx=maxidx_2,
+        refl_2 = self.calcTX(matrices_2, nPoints=len(self.lbda_0))
+        maxidx_2 = ha5u.findMaxIdx(refl_2, startIdxHint=int((self.lbdaZero -
+                                                             self.lbdaMin) /
+                                                            step*0.9))
+        bw_2 = ha5u.findBandWidth(arr=refl_2, peakValIdx=maxidx_2,
                                   bwBounds=0.99)*step
         # plot data
         self.initializePlot()
@@ -372,6 +336,69 @@ class Handin5(object):
         self.figTxt.set_text(txts)
         self.line.set_data(self.lbda_0*1e9, refl)
         self.line_2.set_data(self.lbda_0*1e9, refl_2)
+        ax1.set_ylim(0, refl[maxidx]*1.01)
+        ax2.set_ylim(0, refl_2[maxidx_2]*1.01)
+
+    def initTask4(self):
+        """
+        Initializes task 4
+        """
+        print("Positive imaginary parts -> material is lossy.\n\t" +
+              "e^{1j*k_0(n\'+1j*n\")z} = e^{1j*k_0*n\'z}*e^{-k_0*n\"z)}")
+
+    def initTask5(self):
+        """
+        Initialzes task 5
+        """
+        lbda = 980e-9
+        alpha = 1e5
+        print("\tE = \te^{1j*k_0*(n\'+1j*n\")*z} = " +
+              "e^{1j*k_0*n\'*z}*e^{-k_0*n\"*z)}")
+        print("\t <=>\t|E| = e^{-k_0*n\"*z) = e^{-alpha*z}}")
+        print("\t <=>\talpha = 2*k_0*n\" = 4*pi*n\"/lambda")
+        print("\t <=>\tn\" = alpha*lambda/(4*pi)\n")
+        print("\talpha\t= 1e3 cm^-1 = 1e5 m^-1")
+        print("\tlambda\t= 980e-9 nm")
+        print("\t  =>\tn\" = %.3f" % (alpha*lbda/(4*pi)*1e3) + "e-3")
+
+    def initTask6(self):
+        """
+        Initializes task 6
+        """
+        self.taskNbr = 6
+        self.txtTmpl = "Max refl pwr, w/o error: %.2f percent at %.1f nm"
+        self.lbdaZero = 980e-9
+        self.lbda_0 = 980e-9
+        nStart = 3.2
+        nEnd = 1
+        nHigh = 3.6
+        nLow = 3.1
+        lbda = 980e-9
+        alpha = 1e5
+        nLossy = nStart + 1j*alpha*lbda/(4*pi)
+        ds = np.arange(1e-9, 1001e-9, 1e-9)
+        # propagate from border between low index and high index with double
+        # width to the border between low index with normal width and the next
+        # pair.
+        matrices = ([self.BorderTX(nStart, nLossy),
+                     self.PropTX(20e-9, nLossy, self.lbda_0),
+                     self.BorderTX(nLossy, nStart),
+                     self.PropTX(ds, nStart, self.lbda_0)])
+        matrices = self.setupDBR(nStart=nStart, nHigh=nHigh, nLow=nLow,
+                                 nEnd=nEnd, nbrPairs=30,
+                                 matrices=matrices)
+        refl = self.calcTX(matrices, nPoints=len(ds))
+        maxidx = ha5u.findMaxIdx(refl, startIdxHint=0)
+        bw = ha5u.findBandWidth(refl, maxidx, 0.99)*(ds[1]-ds[0])
+        # plot data
+        self.initializePlot()
+        ax1.set_ylabel("$Reflectance$ $w/o$ $error$")
+        txts = self.txtTmpl % (refl[maxidx]*100, bw*1e9)
+        self.figTxt.set_text(txts)
+        self.line.set_data(ds*1e9, refl)
+        ax1.set_xlabel("$s$ $[nm]$")
+        ax1.set_xlim(1, 1001)
+        ax1.set_ylim(0, 1.01)
 
 
 if __name__ == "__main__":
@@ -380,6 +407,7 @@ if __name__ == "__main__":
     """
     fig = plt.figure()  # new figure
     hi5 = None
+    plotFig = True
     if (len(sys.argv) > 1):
         args = sys.argv[1:]
         if (args[0] == "1"):
@@ -395,6 +423,18 @@ if __name__ == "__main__":
             ax2 = fig.add_subplot(122)
             hi5 = Handin5()  # the simulation class
             hi5.initTask3()  # method for task 3
+        elif (args[0] == "4"):
+            plotFig = False
+            hi5 = Handin5()  # the simulation class
+            hi5.initTask4()  # method for task 4
+        elif (args[0] == "5"):
+            plotFig = False
+            hi5 = Handin5()  # the simulation class
+            hi5.initTask5()  # method for task 5
+        elif (args[0] == "6"):
+            ax1 = fig.add_subplot(111)
+            hi5 = Handin5()  # the simulation class
+            hi5.initTask6()  # method for task 6
         else:
             sys.stdout.write("Usage: python <filename.py> <task_nbr>")
             sys.stdout.flush()
@@ -408,4 +448,5 @@ if __name__ == "__main__":
     ani = animation.FuncAnimation(fig, hi5.updatefig, hi5.simData,
                                   interval=20, blit=False, repeat=False)
     """
-    plt.show()  # plot figure
+    if (plotFig):
+        plt.show()  # plot figure
