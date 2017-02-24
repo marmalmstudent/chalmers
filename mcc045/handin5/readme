@@ -1,0 +1,5 @@
+Compile the Cython modules (.pyx) using
+	python setup.py build_ext --inplace
+
+Generate html file from the Cython file explaining what part of the C-code that belongs to what part of the python code using
+	 cython -a ha5utils.pyx
