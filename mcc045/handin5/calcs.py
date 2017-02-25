@@ -249,7 +249,7 @@ class Handin5(object):
         refl = self.calcTX(matrices, nPoints=len(self.lbda_0))
         self.initializePlot()
         self.line.set_data(self.lbda_0*1e9, refl)
-        maxidx = self.findMaxIdx(refl)[0]
+        maxidx = ha5u.findMaxIdx(refl)
         ax1.set_ylim(0, refl[maxidx])
 
     def initTask2(self):
@@ -269,7 +269,7 @@ class Handin5(object):
                                  nEnd=nEnd, nbrPairs=20)
         refl = self.calcTX(matrices, nPoints=len(self.lbda_0))
 
-        maxidx = self.findMaxIdx(refl)
+        maxidx = ha5u.findMaxIdx(refl)
         txts = self.txtTmpl % (refl[maxidx]*100, self.lbda_0[maxidx]*1e9)
 
         # plot data
