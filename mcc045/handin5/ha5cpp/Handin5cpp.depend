@@ -1,0 +1,16 @@
+# depslib dependency file v1.0
+1488127197 source:/home/marcus/git/chalmers/mcc045/handin5/ha5cpp/src/Handin5.cpp
+	"Handin5.h"
+
+1488129782 /home/marcus/git/chalmers/mcc045/handin5/ha5cpp/include/Handin5.h
+	<vector>
+	<math.h>
+	<complex>
+	<armadillo>
+	<chrono>
+
+1488127242 source:/home/marcus/git/chalmers/mcc045/handin5/ha5cpp/src/main.cpp
+	"Handin5.h"
+	<iostream>
+	<string.h>
+
