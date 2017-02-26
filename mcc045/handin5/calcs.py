@@ -106,10 +106,13 @@ class Handin5(object):
                              [np.zeros(len(k_zero)), np.exp(-1j*k_zero*n*d)]],
                             dtype=np.complex128)
         elif (len(np.shape(d)) > 0):
-            return np.array([[np.exp(1j*k_zero*n*d), np.zeros(len(d))],
-                             [np.zeros(len(d)), np.exp(-1j*k_zero*n*d)]],
+            return np.array([[np.exp(1j*k_zero*(np.real(n)+np.imag(n))*d),
+                              np.zeros(len(d))],
+                             [np.zeros(len(d)),
+                              np.exp(-1j*k_zero*(np.real(n)-np.imag(n))*d)]],
                             dtype=np.complex128)
         else:
+            print(n, d, 1j*k_zero*n*d)
             return np.array([[np.exp(1j*k_zero*n*d), 0],
                              [0, np.exp(-1j*k_zero*n*d)]],
                             dtype=np.complex128)
@@ -183,8 +186,8 @@ class Handin5(object):
         # could think of is in them BorderTX function, but it hardly makes any
         # difference with it and it looks very strange if the layer have
         # complex width...
-        dMirrFirst = self.lbdaZero/(4*np.real(nMirrFirst))
-        dMirrLast = self.lbdaZero/(4*np.real(nMirrLast))
+        dMirrFirst = self.lbdaZero/(4*np.abs(nMirrFirst))
+        dMirrLast = self.lbdaZero/(4*np.abs(nMirrLast))
 
         # propagate from border between start material and first layer to just
         # before border between first and second pair.
@@ -234,6 +237,7 @@ class Handin5(object):
         """
         Initializes and executes task 1
         """
+        t1 = time.time()
         self.taskNbr = 1
         self.lbdaZero = 550e-9  # center wavelength
         self.lbda_0 = np.arange(self.lbdaMin, self.lbdaMax, 1e-10,
@@ -247,6 +251,7 @@ class Handin5(object):
                     self.PropTX(dAR, nAR, self.lbda_0),
                     self.BorderTX(nAR, nSubst)]
         refl = self.calcTX(matrices, nPoints=len(self.lbda_0))
+        print("Pythin Time: ", (time.time() - t1)*1e9, " ns")
         self.initializePlot()
         self.line.set_data(self.lbda_0*1e9, refl)
         maxidx = ha5u.findMaxIdx(refl)
