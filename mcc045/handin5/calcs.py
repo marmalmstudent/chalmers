@@ -152,13 +152,8 @@ class Handin5(object):
             nFirstMirr = nLow
             nLastMirr = nHigh
 
-        # NOTE: Not sure if this is the only place where only the real part of
-        # the refractive index should be considered. The only other part i
-        # could think of is in the BorderTXM function, but it hardly makes any
-        # difference with it and it looks very strange if the layer have
-        # complex width...
-        dFirstMirr = self.lbdaZero/(4*np.abs(nFirstMirr))
-        dLastMirr = self.lbdaZero/(4*np.abs(nLastMirr))
+        dFirstMirr = self.lbdaZero/(4*nFirstMirr)
+        dLastMirr = self.lbdaZero/(4*nLastMirr)
 
         # propagate from border between start material and first layer to just
         # before border between first and second pair.
@@ -168,7 +163,7 @@ class Handin5(object):
                          self.PropTXM(dLastMirr, nLastMirr)])
         # propagate from the border between first and second pair to border
         # between last pair and end material.
-        for i in range(nbrPairs-1):
+        for i in range(1, nbrPairs):
             matrices.extend([self.BorderTXM(nLastMirr, nFirstMirr),
                              self.PropTXM(dFirstMirr, nFirstMirr),
                              self.BorderTXM(nFirstMirr, nLastMirr),
@@ -194,11 +189,9 @@ class Handin5(object):
             The reflected power as a percentage of them incident power.
         """
         dims = np.array([2, 2, nPoints], dtype=np.int32)
-        matTot = np.array([[np.ones(nPoints), np.zeros(nPoints)],
-                           [np.zeros(nPoints), np.ones(nPoints)]],
-                          dtype=np.complex128)
-        for i in range(len(matrices), 0, -1):
-            matTot = ha5u.vecMatDot(dims, matrices[i-1], matTot)
+        matTot = np.eye(2, dtype=np.complex128)
+        for i in range(len(matrices)):
+            matTot = ha5u.vecMatDot(dims, matrices[i], matTot)
         return np.abs(matTot[1, 0]/matTot[1, 1])**2
 
     def initTask1(self):
@@ -275,7 +268,7 @@ class Handin5(object):
         # pair.
         matrices_2.extend([self.PropTXM(self.lbdaZero/(2*nHigh), nHigh),
                            self.BorderTXM(nHigh, nLow),
-                           self.PropTXM(self.lbdaZero/(2*nLow), nLow)])
+                           self.PropTXM(self.lbdaZero/(4*nLow), nLow)])
         matrices_2 = self.setupDBR(nStart=nLow, nHigh=nHigh, nLow=nLow,
                                    nEnd=nEnd, nbrPairs=14,
                                    matrices=matrices_2)
@@ -323,13 +316,14 @@ class Handin5(object):
 
     def initTask6(self):
         self.lbda_0 = 980e-9
+        self.step = 1e-9
         nStart = 3.2
         nEnd = 1
         nHigh = 3.6
         nLow = 3.1
         alpha = 1e5
         nLossy = nStart + 1j*alpha*self.lbdaZero/(4*pi)
-        ds = np.arange(1e-9, 1001e-9, 1e-9)
+        ds = np.arange(0, 1000e-9, self.step)
 
         # propagate from border between low index and high index with double
         # width to the border between low index with normal width and the next
@@ -344,10 +338,11 @@ class Handin5(object):
         refl = self.calcTXM(matrices, nPoints=len(ds))
 
         # stup plot
-        self.txtTmpl = "Max refl pwr, w/o error: %.2f percent at %.1f nm"
+        self.txtTmpl = "Max refl pwr, w/o error: %.2f percent at $s = %.1f$ nm"
         self.initializePlot()
         ax0.set_ylabel("$Reflectance$ $@$ $980$ $nm$")
-        maxidx_1 = ha5u.findMaxIdx(refl, startIdxHint=0)
+        print(len(refl))
+        maxidx_1 = ha5u.findMaxIdx(refl, 0)
         bw_1 = ha5u.findBandWidth(refl, maxidx_1, 0.99)*(ds[1]-ds[0])
         txts = self.txtTmpl % (refl[maxidx_1]*100, bw_1*1e9)
         self.figTxt.set_text(txts)
@@ -355,6 +350,11 @@ class Handin5(object):
         ax0.set_xlabel("$s$ $[nm]$")
         ax0.set_xlim(1, 1001)
         ax0.set_ylim(0, 1.01)
+
+    def initTask7(self):
+        nHigh = 3.6
+        self.lbda_0 = 980e-9
+        print(self.PropTXM(self.lbda_0/(2*nHigh), nHigh))
 
 
 if __name__ == "__main__":
@@ -391,6 +391,9 @@ if __name__ == "__main__":
             ax0 = fig.add_subplot(111)
             hi5 = Handin5()  # the simulation class
             hi5.initTask6()  # method for task 6
+        elif (args[0] == "7"):
+            hi5 = Handin5()
+            hi5.initTask7()
         else:
             sys.stdout.write("Usage: python <filename.py> <task_nbr>")
             sys.stdout.flush()
