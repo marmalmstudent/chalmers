@@ -61,7 +61,7 @@ class Handin5(object):
         PropTXM(self, d, n)
 
         Transfer matrix for homogeneous material with thickness d
-        and refractive index n, at (vacuum) wavelength lambda_zero.
+        and refractive index n.
 
         Parameters
         ----------
@@ -186,7 +186,7 @@ class Handin5(object):
         Returns
         -------
         numpy.ndarray
-            The reflected power as a percentage of them incident power.
+            The reflected power as a percentage of the incident power.
         """
         dims = np.array([2, 2, nPoints], dtype=np.int32)
         matTot = np.eye(2, dtype=np.complex128)
@@ -195,6 +195,11 @@ class Handin5(object):
         return np.abs(matTot[1, 0]/matTot[1, 1])**2
 
     def initTask1(self):
+        """
+        Displays then reflected power relative to then incident power for a
+        wavelength spectrum. The setup uses an anti-reflective coating designed
+        for 550e nm.
+        """
         self.lbdaZero = 550e-9
         self.lbdaMax = 700e-9
         self.lbdaMin = 400e-9
@@ -218,6 +223,11 @@ class Handin5(object):
         ax0.set_ylim(0, refl_1[maxidx_1])
 
     def initTask2(self):
+        """
+        Displays the reflected power relative to the incident power for a
+        wavelength spectrum. Ths setup uses a dielectric mirror designed for
+        633 nm consisting of 20 pairs of high and low refractive indices.
+        """
         self.lbdaZero = 633e-9
         self.lbdaMax = 700e-9
         self.lbdaMin = 400e-9
@@ -243,6 +253,13 @@ class Handin5(object):
         self.line_0.set_data(self.lbda_0*1e9, refl_1)
 
     def initTask3(self):
+        """
+        Displays the reflected power relative to the incident power for a
+        wavelength spectrum. The plot consists of two figures. In then first
+        one a dielectric mirror designed for 980 nm consisting of 30 pairs of
+        high and low refractive indices is used and in then second one the same
+        mirror is used but it contains a segment with double thickness.
+        """
         self.lbda_0 = np.arange(self.lbdaMin, self.lbdaMax, self.step,
                                 dtype=np.float64)
         nStart = 3.2
@@ -299,10 +316,17 @@ class Handin5(object):
         ax1.set_ylim(0, refl_2[maxidx_2]*1.01)
 
     def initTask4(self):
+        """
+        shows how the sing of the imaginary part of the refractive index
+        affects wether the material absorbs or amplifies the signal.
+        """
         print("Positive imaginary parts -> material is lossy.\n\t" +
               "e^{1j*k_0(n\'+1j*n\")z} = e^{1j*k_0*n\'z}*e^{-k_0*n\"z)}")
 
     def initTask5(self):
+        """
+        Calculates the complex refractive index based on alpha=1000 cm^-1.
+        """
         lbda = 980e-9
         alpha = 1e5
         print("\tE = \te^{1j*k_0*(n\'+1j*n\")*z} = " +
@@ -315,6 +339,12 @@ class Handin5(object):
         print("\t  =>\tn\" = %.3f" % (alpha*lbda/(4*pi)*1e3) + "e-3")
 
     def initTask6(self):
+        """
+        Displays reflected power as a fraction of incident power for a wave
+        propagating through a 20 nm thick lossy plate, then some distance
+        varying from 0 um to 1000 nm and then through a dielectric mirror
+        designed for 980 nm with 30 layers.
+        """
         self.lbda_0 = 980e-9
         self.step = 1e-9
         nStart = 3.2
@@ -351,11 +381,6 @@ class Handin5(object):
         ax0.set_xlim(1, 1001)
         ax0.set_ylim(0, 1.01)
 
-    def initTask7(self):
-        nHigh = 3.6
-        self.lbda_0 = 980e-9
-        print(self.PropTXM(self.lbda_0/(2*nHigh), nHigh))
-
 
 if __name__ == "__main__":
     """
@@ -391,9 +416,6 @@ if __name__ == "__main__":
             ax0 = fig.add_subplot(111)
             hi5 = Handin5()  # the simulation class
             hi5.initTask6()  # method for task 6
-        elif (args[0] == "7"):
-            hi5 = Handin5()
-            hi5.initTask7()
         else:
             sys.stdout.write("Usage: python <filename.py> <task_nbr>")
             sys.stdout.flush()
