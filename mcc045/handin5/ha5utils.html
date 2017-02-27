@@ -371,7 +371,7 @@ body.cython { font-family: courier; font-size: 12; }
     Click on a line that starts with a "<code>+</code>" to see the C code that Cython generated for it.
 </p>
 <p>Raw output: <a href="ha5utils.c">ha5utils.c</a></p>
-<div class="cython"><pre class="cython line score-16" onclick='toggleDiv(this)'>+<span class="">001</span>: <span class="sd">&quot;&quot;&quot;</span></pre>
+<div class="cython"><pre class="cython line score-16" onclick='toggleDiv(this)'>+<span class="">001</span>: <span class="sd">&quot;&quot;&quot; ha5utils.pyx</span></pre>
 <pre class='cython code score-16 '>  __pyx_t_1 = <span class='py_c_api'>PyDict_New</span>(); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 1, __pyx_L1_error)
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   if (<span class='py_c_api'>PyDict_SetItem</span>(__pyx_t_1, __pyx_kp_u_vecMatDot_line_112, __pyx_kp_u_Performs_the_dot_product_for_tw) &lt; 0) __PYX_ERR(0, 1, __pyx_L1_error)
@@ -1219,7 +1219,7 @@ static PyArrayObject *__pyx_f_8ha5utils_vecMatDot(PyArrayObject *__pyx_v_dims, P
 
 /* Python wrapper */
 static PyObject *__pyx_pw_8ha5utils_1vecMatDot(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_8ha5utils_vecMatDot[] = "\n    Performs the dot product for two matrices whose elements are vectors.\n    Axis 0 are treated as the rows, axis 1 are treated as the columns and\n    axis 2 are the matrix elements. The dot product is performed on axis 0\n    and axis 1 while multiplication with axis 2 will be elementwise.\n\n    Parameters\n    ----------\n    dims : numpy.ndarray[numpy.int32_t, ndim=1]\n        The dimensions of the returned array; [row, col, arrLen].\n    mat1 : numpy.ndarray[numpy.complex128_t, ndim=3]\n        The left matrix.\n    mat2 : numpy.ndarray[numpy.complex128_t, ndim=3]\n        The right matrix.\n\n    Returns\n    -------\n    numpy.ndarray[numpy.complex128_t, ndim=3]\n        A matrix whose elements are vectors and is the result of the dot\n        product.\n\n    Example\n    -------\n    &gt;&gt;&gt; import ha5utils\n    &gt;&gt;&gt; import numpy as np\n    &gt;&gt;&gt; mat=np.arange(0, 12, dtype=np.float64).reshape((2,2,3))\n    &gt;&gt;&gt; dim=np.array([mat.shape[0], mat.shape[1], mat.shape[2]], dtype=np.int32)\n    &gt;&gt;&gt; mat\n    array([[[  0.,   1.,   2.],\n            [  3.,   4.,   5.]],\n\n           [[  6.,   7.,   8.],\n            [  9.,  10.,  11.]]])\n    &gt;&gt;&gt; ha5utils.vecMatDot(dim, mat, mat)\n    array([[[  18.,   29.,   44.],\n            [  27.,   44.,   65.]],\n\n           [[  54.,   77.,  104.],\n            [  99.,  128.,  161.]]])\n    ";
+static char __pyx_doc_8ha5utils_vecMatDot[] = "vecMatDot(ndarray dims, ndarray mat1, ndarray mat2) -&gt; ndarray\n\n    Performs the dot product for two matrices whose elements are vectors.\n    Axis 0 are treated as the rows, axis 1 are treated as the columns and\n    axis 2 are the matrix elements. The dot product is performed on axis 0\n    and axis 1 while multiplication with axis 2 will be elementwise.\n\n    Parameters\n    ----------\n    dims : numpy.ndarray[numpy.int32_t, ndim=1]\n        The dimensions of the returned array; [row, col, arrLen].\n    mat1 : numpy.ndarray[numpy.complex128_t, ndim=3]\n        The left matrix.\n    mat2 : numpy.ndarray[numpy.complex128_t, ndim=3]\n        The right matrix.\n\n    Returns\n    -------\n    numpy.ndarray[numpy.complex128_t, ndim=3]\n        A matrix whose elements are vectors and is the result of the dot\n        product.\n\n    Example\n    -------\n    &gt;&gt;&gt; import ha5utils\n    &gt;&gt;&gt; import numpy as np\n    &gt;&gt;&gt; mat=np.arange(0, 12, dtype=np.float64).reshape((2,2,3))\n    &gt;&gt;&gt; dim=np.array([mat.shape[0], mat.shape[1], mat.shape[2]], dtype=np.int32)\n    &gt;&gt;&gt; mat\n    array([[[  0.,   1.,   2.],\n            [  3.,   4.,   5.]],\n\n           [[  6.,   7.,   8.],\n            [  9.,  10.,  11.]]])\n    &gt;&gt;&gt; ha5utils.vecMatDot(dim, mat, mat)\n    array([[[  18.,   29.,   44.],\n            [  27.,   44.,   65.]],\n\n           [[  54.,   77.,  104.],\n            [  99.,  128.,  161.]]])\n    ";
 static PyObject *__pyx_pw_8ha5utils_1vecMatDot(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_dims = 0;
   PyArrayObject *__pyx_v_mat1 = 0;
@@ -1609,7 +1609,7 @@ static int __pyx_f_8ha5utils_findMaxIdx(PyArrayObject *__pyx_v_arr, CYTHON_UNUSE
 
 /* Python wrapper */
 static PyObject *__pyx_pw_8ha5utils_3findMaxIdx(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_8ha5utils_2findMaxIdx[] = "\n    Finds the index in the given array where the maximum value of the array\n    is found.\n\n    Parameters\n    ----------\n    arr : numpy.ndarray[numpy.float64_t, ndim=1]\n        The array where the index of the maximum value is sought.\n    startIdxHint : int\n        A hint as to what index in them array the search should start from.\n        Default value is 0.\n\n    Returns\n    -------\n    int\n        The index where the maximum value of the array is found.\n    ";
+static char __pyx_doc_8ha5utils_2findMaxIdx[] = "findMaxIdx(ndarray arr, int startIdxHint=0) -&gt; int\n\n    Finds the index in the given array where the maximum value of the array\n    is found.\n\n    Parameters\n    ----------\n    arr : numpy.ndarray[numpy.float64_t, ndim=1]\n        The array where the index of the maximum value is sought.\n    startIdxHint : int\n        A hint as to what index in them array the search should start from.\n        Default value is 0.\n\n    Returns\n    -------\n    int\n        The index where the maximum value of the array is found.\n    ";
 static PyObject *__pyx_pw_8ha5utils_3findMaxIdx(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_arr = 0;
   int __pyx_v_startIdxHint;
@@ -1740,7 +1740,7 @@ static PyObject *__pyx_pf_8ha5utils_2findMaxIdx(CYTHON_UNUSED PyObject *__pyx_se
 <pre class="cython line score-0">&#xA0;<span class="">184</span>: <span class="sd">        The index where the maximum value of the array is found.</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">185</span>: <span class="sd">    &quot;&quot;&quot;</span></pre>
 <pre class="cython line score-22" onclick='toggleDiv(this)'>+<span class="">186</span>:     <span class="k">cdef</span> <span class="kt">numpy</span>.<span class="kt">float64_t</span> <span class="nf">m</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">startIdxHint</span><span class="p">:])</span></pre>
-<pre class='cython code score-22 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyObject_GetSlice</span>(((PyObject *)__pyx_v_arr), __pyx_v_startIdxHint, 0, NULL, NULL, NULL, 1, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 186, __pyx_L1_error)
+<pre class='cython code score-22 '>  __pyx_t_1 = <span class='pyx_c_api'>__Pyx_PyObject_GetSlice</span>(((PyObject *)__pyx_v_arr), __pyx_v_startIdxHint, 0, NULL, NULL, NULL, 1, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 186, __pyx_L1_error)
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
   __pyx_t_2 = <span class='py_c_api'>PyTuple_New</span>(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 186, __pyx_L1_error)
   <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_2);
@@ -1758,19 +1758,10 @@ static PyObject *__pyx_pf_8ha5utils_2findMaxIdx(CYTHON_UNUSED PyObject *__pyx_se
 <pre class='cython code score-5 '>  __pyx_t_4 = <span class='py_c_api'>PyObject_Length</span>(((PyObject *)__pyx_v_arr)); if (unlikely(__pyx_t_4 == -1)) __PYX_ERR(0, 188, __pyx_L1_error)
   for (__pyx_t_5 = __pyx_v_startIdxHint; __pyx_t_5 &lt; __pyx_t_4; __pyx_t_5+=1) {
     __pyx_v_i = __pyx_t_5;
-</pre><pre class="cython line score-2" onclick='toggleDiv(this)'>+<span class="">189</span>:         <span class="k">if</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">m</span><span class="p">:</span></pre>
-<pre class='cython code score-2 '>    __pyx_t_6 = __pyx_v_i;
-    __pyx_t_7 = -1;
-    if (__pyx_t_6 &lt; 0) {
-      __pyx_t_6 += __pyx_pybuffernd_arr.diminfo[0].shape;
-      if (unlikely(__pyx_t_6 &lt; 0)) __pyx_t_7 = 0;
-    } else if (unlikely(__pyx_t_6 &gt;= __pyx_pybuffernd_arr.diminfo[0].shape)) __pyx_t_7 = 0;
-    if (unlikely(__pyx_t_7 != -1)) {
-      <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_7);
-      __PYX_ERR(0, 189, __pyx_L1_error)
-    }
-    __pyx_t_8 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_arr.rcbuffer-&gt;pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_arr.diminfo[0].strides)) == __pyx_v_m) != 0);
-    if (__pyx_t_8) {
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">189</span>:         <span class="k">if</span> <span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">m</span><span class="p">:</span></pre>
+<pre class='cython code score-0 '>    __pyx_t_6 = __pyx_v_i;
+    __pyx_t_7 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_arr.rcbuffer-&gt;pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_arr.diminfo[0].strides)) == __pyx_v_m) != 0);
+    if (__pyx_t_7) {
 /* … */
     }
   }
@@ -1824,7 +1815,7 @@ static int __pyx_f_8ha5utils_findBandWidth(PyArrayObject *__pyx_v_arr, int __pyx
 
 /* Python wrapper */
 static PyObject *__pyx_pw_8ha5utils_5findBandWidth(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static char __pyx_doc_8ha5utils_4findBandWidth[] = "\n    Attempts to find the bandwidth given the center point of the band and\n    the lower bound of the band.\n\n    Parameters\n    ----------\n    arr : array_like\n        The array where the index of the maximum value is sought.\n    peakValIdx : int\n        The index peak value in the band (i.e. the center point of the\n        band) in arr.\n    bwBounds : float\n        The lower bound of the band, i.e. any values in arr are considered\n        to be outside the band.\n\n    Returns\n    -------\n    ";
+static char __pyx_doc_8ha5utils_4findBandWidth[] = "findBandWidth(ndarray arr, int peakValIdx, float64_t bwBounds) -&gt; int\n\n    Attempts to find the bandwidth given the center point of the band and\n    the lower bound of the band.\n\n    Parameters\n    ----------\n    arr : numpy.ndarray[numpy.float64_t, ndim=1]\n        The array where the index of the maximum value is sought.\n    peakValIdx : int\n        The index peak value in the band (i.e. the center point of the\n        band) in arr.\n    bwBounds : numpy.float64_t\n        The lower bound of the band, i.e. any values in arr are considered\n        to be outside the band.\n\n    Returns\n    -------\n    int\n        The number of indices that is above them bandwidth constraints\n        arround peakValIdx, i.e. multiply by the sampling distance to get\n        the bandwidth.\n    ";
 static PyObject *__pyx_pw_8ha5utils_5findBandWidth(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyArrayObject *__pyx_v_arr = 0;
   int __pyx_v_peakValIdx;
@@ -1943,19 +1934,23 @@ static PyObject *__pyx_pf_8ha5utils_4findBandWidth(CYTHON_UNUSED PyObject *__pyx
 <pre class="cython line score-0">&#xA0;<span class="">199</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">200</span>: <span class="sd">    Parameters</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">201</span>: <span class="sd">    ----------</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">202</span>: <span class="sd">    arr : array_like</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">202</span>: <span class="sd">    arr : numpy.ndarray[numpy.float64_t, ndim=1]</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">203</span>: <span class="sd">        The array where the index of the maximum value is sought.</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">204</span>: <span class="sd">    peakValIdx : int</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">205</span>: <span class="sd">        The index peak value in the band (i.e. the center point of the</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">206</span>: <span class="sd">        band) in arr.</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">207</span>: <span class="sd">    bwBounds : float</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">207</span>: <span class="sd">    bwBounds : numpy.float64_t</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">208</span>: <span class="sd">        The lower bound of the band, i.e. any values in arr are considered</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">209</span>: <span class="sd">        to be outside the band.</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">210</span>: </pre>
 <pre class="cython line score-0">&#xA0;<span class="">211</span>: <span class="sd">    Returns</span></pre>
 <pre class="cython line score-0">&#xA0;<span class="">212</span>: <span class="sd">    -------</span></pre>
-<pre class="cython line score-0">&#xA0;<span class="">213</span>: <span class="sd">    &quot;&quot;&quot;</span></pre>
-<pre class="cython line score-5" onclick='toggleDiv(this)'>+<span class="">214</span>:     <span class="k">if</span> <span class="p">(</span><span class="n">peakValIdx</span> <span class="o">&lt;</span> <span class="mf">0</span> <span class="ow">or</span> <span class="n">peakValIdx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">213</span>: <span class="sd">    int</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">214</span>: <span class="sd">        The number of indices that is above them bandwidth constraints</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">215</span>: <span class="sd">        arround peakValIdx, i.e. multiply by the sampling distance to get</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">216</span>: <span class="sd">        the bandwidth.</span></pre>
+<pre class="cython line score-0">&#xA0;<span class="">217</span>: <span class="sd">    &quot;&quot;&quot;</span></pre>
+<pre class="cython line score-5" onclick='toggleDiv(this)'>+<span class="">218</span>:     <span class="k">if</span> <span class="p">(</span><span class="n">peakValIdx</span> <span class="o">&lt;</span> <span class="mf">0</span> <span class="ow">or</span> <span class="n">peakValIdx</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span></pre>
 <pre class='cython code score-5 '>  __pyx_t_2 = ((__pyx_v_peakValIdx &lt; 0) != 0);
   if (!__pyx_t_2) {
   } else {
@@ -1963,7 +1958,7 @@ static PyObject *__pyx_pf_8ha5utils_4findBandWidth(CYTHON_UNUSED PyObject *__pyx
     goto __pyx_L4_bool_binop_done;
   }
 /* … */
-  __pyx_t_3 = <span class='py_c_api'>PyObject_Length</span>(((PyObject *)__pyx_v_arr)); if (unlikely(__pyx_t_3 == -1)) __PYX_ERR(0, 214, __pyx_L1_error)
+  __pyx_t_3 = <span class='py_c_api'>PyObject_Length</span>(((PyObject *)__pyx_v_arr)); if (unlikely(__pyx_t_3 == -1)) __PYX_ERR(0, 218, __pyx_L1_error)
 /* … */
   __pyx_t_2 = ((__pyx_v_peakValIdx &gt;= __pyx_t_3) != 0);
   if (!__pyx_t_2) {
@@ -1975,79 +1970,52 @@ static PyObject *__pyx_pf_8ha5utils_4findBandWidth(CYTHON_UNUSED PyObject *__pyx
   if (__pyx_t_1) {
 /* … */
   }
-</pre><pre class="cython line score-2" onclick='toggleDiv(this)'>+<span class="">215</span>:         <span class="ow">or</span> <span class="n">arr</span><span class="p">[</span><span class="n">peakValIdx</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">bwBounds</span><span class="p">):</span></pre>
-<pre class='cython code score-2 '>  __pyx_t_4 = __pyx_v_peakValIdx;
-  __pyx_t_5 = -1;
-  if (__pyx_t_4 &lt; 0) {
-    __pyx_t_4 += __pyx_pybuffernd_arr.diminfo[0].shape;
-    if (unlikely(__pyx_t_4 &lt; 0)) __pyx_t_5 = 0;
-  } else if (unlikely(__pyx_t_4 &gt;= __pyx_pybuffernd_arr.diminfo[0].shape)) __pyx_t_5 = 0;
-  if (unlikely(__pyx_t_5 != -1)) {
-    <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_5);
-    __PYX_ERR(0, 215, __pyx_L1_error)
-  }
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">219</span>:         <span class="ow">or</span> <span class="n">arr</span><span class="p">[</span><span class="n">peakValIdx</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">bwBounds</span><span class="p">):</span></pre>
+<pre class='cython code score-0 '>  __pyx_t_4 = __pyx_v_peakValIdx;
   __pyx_t_2 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_arr.rcbuffer-&gt;pybuffer.buf, __pyx_t_4, __pyx_pybuffernd_arr.diminfo[0].strides)) &lt; __pyx_v_bwBounds) != 0);
   __pyx_t_1 = __pyx_t_2;
   __pyx_L4_bool_binop_done:;
-</pre><pre class="cython line score-0">&#xA0;<span class="">216</span>:         <span class="c"># peak value is lower than the bounds</span></pre>
-<pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">217</span>:         <span class="k">return</span> <span class="mf">0</span></pre>
+</pre><pre class="cython line score-0">&#xA0;<span class="">220</span>:         <span class="c"># peak value is lower than the bounds</span></pre>
+<pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">221</span>:         <span class="k">return</span> <span class="mf">0</span></pre>
 <pre class='cython code score-0 '>    __pyx_r = 0;
     goto __pyx_L0;
-</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">218</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">upperBound</span> <span class="o">=</span> <span class="n">peakValIdx</span></pre>
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">222</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">upperBound</span> <span class="o">=</span> <span class="n">peakValIdx</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_upperBound = __pyx_v_peakValIdx;
-</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">219</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">lowerBound</span> <span class="o">=</span> <span class="n">peakValIdx</span></pre>
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">223</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">lowerBound</span> <span class="o">=</span> <span class="n">peakValIdx</span></pre>
 <pre class='cython code score-0 '>  __pyx_v_lowerBound = __pyx_v_peakValIdx;
-</pre><pre class="cython line score-0">&#xA0;<span class="">220</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">i</span><span class="p">,</span> <span class="nf">j</span></pre>
-<pre class="cython line score-5" onclick='toggleDiv(this)'>+<span class="">221</span>:     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">peakValIdx</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)):</span></pre>
-<pre class='cython code score-5 '>  __pyx_t_3 = <span class='py_c_api'>PyObject_Length</span>(((PyObject *)__pyx_v_arr)); if (unlikely(__pyx_t_3 == -1)) __PYX_ERR(0, 221, __pyx_L1_error)
+</pre><pre class="cython line score-0">&#xA0;<span class="">224</span>:     <span class="k">cdef</span> <span class="kt">int</span> <span class="nf">i</span><span class="p">,</span> <span class="nf">j</span></pre>
+<pre class="cython line score-5" onclick='toggleDiv(this)'>+<span class="">225</span>:     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">peakValIdx</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)):</span></pre>
+<pre class='cython code score-5 '>  __pyx_t_3 = <span class='py_c_api'>PyObject_Length</span>(((PyObject *)__pyx_v_arr)); if (unlikely(__pyx_t_3 == -1)) __PYX_ERR(0, 225, __pyx_L1_error)
   for (__pyx_t_5 = __pyx_v_peakValIdx; __pyx_t_5 &lt; __pyx_t_3; __pyx_t_5+=1) {
     __pyx_v_i = __pyx_t_5;
-</pre><pre class="cython line score-2" onclick='toggleDiv(this)'>+<span class="">222</span>:         <span class="k">if</span> <span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">bwBounds</span><span class="p">):</span></pre>
-<pre class='cython code score-2 '>    __pyx_t_6 = __pyx_v_i;
-    __pyx_t_7 = -1;
-    if (__pyx_t_6 &lt; 0) {
-      __pyx_t_6 += __pyx_pybuffernd_arr.diminfo[0].shape;
-      if (unlikely(__pyx_t_6 &lt; 0)) __pyx_t_7 = 0;
-    } else if (unlikely(__pyx_t_6 &gt;= __pyx_pybuffernd_arr.diminfo[0].shape)) __pyx_t_7 = 0;
-    if (unlikely(__pyx_t_7 != -1)) {
-      <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_7);
-      __PYX_ERR(0, 222, __pyx_L1_error)
-    }
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">226</span>:         <span class="k">if</span> <span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">bwBounds</span><span class="p">):</span></pre>
+<pre class='cython code score-0 '>    __pyx_t_6 = __pyx_v_i;
     __pyx_t_1 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_arr.rcbuffer-&gt;pybuffer.buf, __pyx_t_6, __pyx_pybuffernd_arr.diminfo[0].strides)) &lt; __pyx_v_bwBounds) != 0);
     if (__pyx_t_1) {
 /* … */
     }
   }
   __pyx_L8_break:;
-</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">223</span>:             <span class="n">upperBound</span> <span class="o">=</span> <span class="n">i</span></pre>
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">227</span>:             <span class="n">upperBound</span> <span class="o">=</span> <span class="n">i</span></pre>
 <pre class='cython code score-0 '>      __pyx_v_upperBound = __pyx_v_i;
-</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">224</span>:             <span class="k">break</span></pre>
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">228</span>:             <span class="k">break</span></pre>
 <pre class='cython code score-0 '>      goto __pyx_L8_break;
-</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">225</span>:     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">peakValIdx</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1</span><span class="p">):</span></pre>
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">229</span>:     <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">peakValIdx</span><span class="p">,</span> <span class="mf">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1</span><span class="p">):</span></pre>
 <pre class='cython code score-0 '>  for (__pyx_t_5 = __pyx_v_peakValIdx; __pyx_t_5 &gt; 0; __pyx_t_5-=1) {
     __pyx_v_j = __pyx_t_5;
-</pre><pre class="cython line score-2" onclick='toggleDiv(this)'>+<span class="">226</span>:         <span class="k">if</span> <span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">bwBounds</span><span class="p">):</span></pre>
-<pre class='cython code score-2 '>    __pyx_t_8 = __pyx_v_j;
-    __pyx_t_7 = -1;
-    if (__pyx_t_8 &lt; 0) {
-      __pyx_t_8 += __pyx_pybuffernd_arr.diminfo[0].shape;
-      if (unlikely(__pyx_t_8 &lt; 0)) __pyx_t_7 = 0;
-    } else if (unlikely(__pyx_t_8 &gt;= __pyx_pybuffernd_arr.diminfo[0].shape)) __pyx_t_7 = 0;
-    if (unlikely(__pyx_t_7 != -1)) {
-      <span class='pyx_c_api'>__Pyx_RaiseBufferIndexError</span>(__pyx_t_7);
-      __PYX_ERR(0, 226, __pyx_L1_error)
-    }
-    __pyx_t_1 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_arr.rcbuffer-&gt;pybuffer.buf, __pyx_t_8, __pyx_pybuffernd_arr.diminfo[0].strides)) &lt; __pyx_v_bwBounds) != 0);
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">230</span>:         <span class="k">if</span> <span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">bwBounds</span><span class="p">):</span></pre>
+<pre class='cython code score-0 '>    __pyx_t_7 = __pyx_v_j;
+    __pyx_t_1 = (((*__Pyx_BufPtrStrided1d(__pyx_t_5numpy_float64_t *, __pyx_pybuffernd_arr.rcbuffer-&gt;pybuffer.buf, __pyx_t_7, __pyx_pybuffernd_arr.diminfo[0].strides)) &lt; __pyx_v_bwBounds) != 0);
     if (__pyx_t_1) {
 /* … */
     }
   }
   __pyx_L11_break:;
-</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">227</span>:             <span class="n">lowerBound</span> <span class="o">=</span> <span class="n">j</span></pre>
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">231</span>:             <span class="n">lowerBound</span> <span class="o">=</span> <span class="n">j</span></pre>
 <pre class='cython code score-0 '>      __pyx_v_lowerBound = __pyx_v_j;
-</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">228</span>:             <span class="k">break</span></pre>
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">232</span>:             <span class="k">break</span></pre>
 <pre class='cython code score-0 '>      goto __pyx_L11_break;
-</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">229</span>:     <span class="k">return</span> <span class="n">upperBound</span> <span class="o">-</span> <span class="n">lowerBound</span></pre>
+</pre><pre class="cython line score-0" onclick='toggleDiv(this)'>+<span class="">233</span>:     <span class="k">return</span> <span class="n">upperBound</span> <span class="o">-</span> <span class="n">lowerBound</span></pre>
 <pre class='cython code score-0 '>  __pyx_r = (__pyx_v_upperBound - __pyx_v_lowerBound);
   goto __pyx_L0;
 </pre></div></body></html>

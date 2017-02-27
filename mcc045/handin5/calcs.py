@@ -51,7 +51,7 @@ class Handin5(object):
         """
         ymax = 1
         self.line_1, = ax1.plot([], [], linestyle="-", color="black")
-        ax1.set_ylim(0, ymax)
+        ax1.set_ylim(0, ymax*1.01)
         ax1.set_xlabel("$wavelength [nm]$", size=16)
         ax1.set_ylabel("$Reflectance$", size=16)
         ax1.set_xlim(self.lbdaMin*1e9, self.lbdaMax*1e9)
@@ -219,8 +219,8 @@ class Handin5(object):
         # setup plot
         self.initializePlot()
         self.line_0.set_data(self.lbda_0*1e9, refl_1)
-        maxidx_1 = ha5u.findMaxIdx(refl_1)
-        ax0.set_ylim(0, refl_1[maxidx_1])
+        # maxidx_1 = ha5u.findMaxIdx(refl_1)
+        # ax0.set_ylim(0, refl_1[maxidx_1])
 
     def initTask2(self):
         """
@@ -370,6 +370,8 @@ class Handin5(object):
         # stup plot
         self.txtTmpl = "Max refl pwr, w/o error: %.2f percent at $s = %.1f$ nm"
         self.initializePlot()
+        self.figTxt = ax0.text(0, 1.05,
+                               "", color="#000000")
         ax0.set_ylabel("$Reflectance$ $@$ $980$ $nm$")
         print(len(refl))
         maxidx_1 = ha5u.findMaxIdx(refl, 0)

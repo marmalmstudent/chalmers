@@ -199,17 +199,21 @@ cpdef int findBandWidth(numpy.ndarray[numpy.float64_t, ndim=1] arr,
 
     Parameters
     ----------
-    arr : array_like
+    arr : numpy.ndarray[numpy.float64_t, ndim=1]
         The array where the index of the maximum value is sought.
     peakValIdx : int
         The index peak value in the band (i.e. the center point of the
         band) in arr.
-    bwBounds : float
+    bwBounds : numpy.float64_t
         The lower bound of the band, i.e. any values in arr are considered
         to be outside the band.
 
     Returns
     -------
+    int
+        The number of indices that is above them bandwidth constraints
+        arround peakValIdx, i.e. multiply by the sampling distance to get
+        the bandwidth.
     """
     if (peakValIdx < 0 or peakValIdx >= len(arr)
         or arr[peakValIdx] < bwBounds):
