@@ -1,0 +1,119 @@
+\documentclass[12pt,a4paper]{article}
+
+%\pdfoutput=1
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{mathabx}
+\usepackage{lmodern}
+\usepackage{listings}
+\usepackage{units}
+\usepackage{siunitx}
+\usepackage{icomma}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{color}
+\usepackage{pgf}
+\DeclareMathOperator{\acosh}{arccosh}
+\newcommand{\N}{\ensuremath{\mathbbm{N}}}
+\newcommand{\Z}{\ensuremath{\mathbbm{Z}}}
+\newcommand{\Q}{\ensuremath{\mathbbm{Q}}}
+\newcommand{\R}{\ensuremath{\mathbbm{R}}}
+\newcommand{\C}{\ensuremath{\mathbbm{C}}}
+\newcommand{\rd}{\ensuremath{\mathrm{d}}}
+\newcommand{\id}{\ensuremath{\,\rd}}
+\usepackage{hyperref}
+%\usepackage{a4wide} % puts the page numbering further down the page.
+\usepackage{pdfpages}
+\usepackage{epstopdf}
+\DeclareGraphicsExtensions{.eps}
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist
+
+\title{Handin 5}
+\author{Marcus Malmquist, marmalm}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Task 1}\label{sec:1}
+It can be seen from Figure~\ref{fig:task1} that the reflected intensity is very low for the entire visible spectrum but shorter wavelengths are reflected more than longer wavelengths so the reflected light should be slightly bluer.
+\begin{figure}[h]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/Task_1.pgf}}}
+  \caption{Simulation result from task 1.}
+  \label{fig:task1}
+\end{figure}
+
+\section{Task 2}\label{sec:2}
+The theoretical reflected intensity for a dielectric mirror with 20 double layers is 97.36\% (calculated using (\ref{eq:task2}) with $n_H=1.7$, $n_L=1.5$ and $N=20$). In Figure~\ref{fig:task2} it can be seen that the value from the simulation is the same as the theoretical.
+\begin{equation}
+  \label{eq:task2}
+  R=\Big(\frac{n_H^{2N}-n_L^{2N}}{n_H^{2N}+n_L^{2N}}\Big)^2
+\end{equation}
+\begin{figure}[h]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/Task_2.pgf}}}
+  \caption{Simulation result from task 2.}
+  \label{fig:task2}
+\end{figure}
+
+\section{Task 3}\label{sec:3}
+The simulation results can be seen in Figure~\ref{fig:task3}. The 99\% bandwidth without the manufacturing error is $\SI{80}{\nano\metre}$. The bandwidth is not so easely defined when the manufacturing error is introduced since the design bandwidth is not included in the band.
+\begin{figure}[h]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.70}{\input{figures/Task_3.pgf}}}
+  \caption{Simulation result from task 3. The left image comes from a simulation without manufacturing errors while the right image does.}
+  \label{fig:task3}
+\end{figure}
+
+\section{Task 4}\label{sec:4}
+A lossy material should have $\Im(n)>0$. This can be read from (\ref{eq:task4}).
+\begin{equation}
+  \label{eq:task4}
+  E(z)=e^{jk_0nz}=e^{jk_0(n'+jn'')z}=e^{jk_0n'z}e^{-k_0n''z}
+\end{equation}
+\section{Task 5}\label{sec:5}
+Combining (\ref{eq:task4}) with (\ref{eq:task5_1}) yeidls (\ref{eq:task5_2}). If $\alpha=\SI{1000}{\centi\metre^{-1}}$ for $\lambda=\SI{980}{\nano\metre}$ then $n''=7.8\cdot 10^{-3}$.
+\begin{equation}
+  \label{eq:task5_1}
+  I=|E|^2=e^{-\alpha z}
+\end{equation}
+\begin{equation}
+  \label{eq:task5_2}
+  n''=\frac{\lambda\alpha}{4\pi}
+\end{equation}
+\section{Task 6}\label{sec:6}
+The reflected intensity when using $n''$ from Section\ref{sec:5} can be seen in Figure~\ref{fig:task6}. Then maximum reflected power is higher for some separation distance between the conductive layer and the DBR andhelp for those values the reflected intensity is ``much'' higher and the light seems to pass through with almost no losses.
+\begin{figure}
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.7}{\input{figures/Task_6.pgf}}}
+  \caption{Simulation results from task 6.}
+  \label{fig:task6}
+\end{figure}
+
+\section{Task 7}\label{sec:7}
+The wavelength inside the medium between the DBR and the conductive layer is $\SI{306.25}{\nano\meter}$ if the wavelength in vacuum is $\SI{980}{\nano\metre}$. The ``peaks'' seen in Figure~\ref{fig:task6} appear to be separated by half of this distance (about $\SI{150}{\nano\metre}$) which leads me to beleve that destructive interference could take place inside the conductive layer so (almost) no currents are induced. This should drastically reduce the losses in the material.
+
+\newpage
+\appendix
+\section{Code}
+In order to do this task efficiently, I had to write the matrix multiplication functions as a C-extension library. This was done in Cython, which allows you to add type definitions and compile the code. The generated C-code itself is about 10~000 lines so it is not included but the steps to generate it are.
+\subsection{Python code}
+\begin{changemargin}{-3cm}{0.5cm}
+\lstinputlisting[language=Python]{calcs.py}
+\end{changemargin}
+\newpage
+\begin{changemargin}{-3cm}{0.5cm}
+\lstinputlisting[language=Python]{setup.py}
+\end{changemargin}
+\newpage
+\subsection{Cython code}
+\begin{changemargin}{-3cm}{0.5cm}
+\lstinputlisting[language=Python]{ha5utils.pyx}
+\end{changemargin}
+\end{document}

@@ -1,10 +1,11 @@
-"""
+""" ha5utils.pyx
 This code is adapted for 80 columns
 |------------------------------------------------------------------------------|
 """
 import numpy
 cimport numpy
 cimport cython
+
 
 # turn off bounds-checking for entire function
 @cython.boundscheck(False)
@@ -17,15 +18,17 @@ cdef numpy.ndarray[numpy.complex128_t, ndim=3] \
     """
     Both matrices are 3-dimensional
     """
-    cdef numpy.ndarray[numpy.complex128_t, ndim=3] out
-    cdef int i,j, k, l
-    out = numpy.zeros((dims[0], dims[1], dims[2]),
-		      dtype=numpy.complex128)
-    for i in range(dims[0]):
-        for j in range(dims[1]):
-            for k in range(dims[0]):
-                for l in range(dims[2]):
-                    out[i,j, l] = out[i,j, l] + mat1[i, k, l]*mat2[k, j, l]
+    cdef int nRows = dims[0]
+    cdef int nCols = dims[1]
+    cdef int nArrEle = dims[2]
+    cdef numpy.ndarray[numpy.complex128_t, ndim=3] out =\
+        numpy.zeros((nRows, nCols, nArrEle), dtype=numpy.complex128)
+    cdef int i,j, k, n
+    for i in range(nRows):
+        for j in range(nCols):
+            for n in range(nRows):
+                for k in range(nArrEle):
+                    out[i, j, k] = out[i, j, k] + mat1[i, n, k] * mat2[n, j, k]
     return out
 
 
@@ -40,15 +43,17 @@ cdef numpy.ndarray[numpy.complex128_t, ndim=3] \
     """
     Left matrix is 2-dimensional
     """
-    cdef numpy.ndarray[numpy.complex128_t, ndim=3] out
-    cdef int i,j, k, l
-    out = numpy.zeros((dims[0], dims[1], dims[2]),
-		      dtype=numpy.complex128)
-    for i in range(dims[0]):
-        for j in range(dims[1]):
-            for k in range(dims[0]):
-                for l in range(dims[2]):
-                    out[i,j, l] = out[i,j, l] + mat1[i, k]*mat2[k, j, l]
+    cdef int nRows = dims[0]
+    cdef int nCols = dims[1]
+    cdef int nArrEle = dims[2]
+    cdef numpy.ndarray[numpy.complex128_t, ndim=3] out =\
+        numpy.zeros((nRows, nCols, nArrEle), dtype=numpy.complex128)
+    cdef int i,j, k, n
+    for i in range(nRows):
+        for j in range(nCols):
+            for n in range(nRows):
+                for k in range(nArrEle):
+                    out[i, j, k] = out[i, j, k] + mat1[i, n] * mat2[n, j, k]
     return out
 
 
@@ -63,15 +68,17 @@ cdef numpy.ndarray[numpy.complex128_t, ndim=3] \
     """
     Right matrix is 2-dimensional
     """
-    cdef numpy.ndarray[numpy.complex128_t, ndim=3] out
-    cdef int i,j, k, l
-    out = numpy.zeros((dims[0], dims[1], dims[2]),
-		      dtype=numpy.complex128)
-    for i in range(dims[0]):
-        for j in range(dims[1]):
-            for k in range(dims[0]):
-                for l in range(dims[2]):
-                    out[i,j, l] = out[i,j, l] + mat1[i, k, l]*mat2[k, j]
+    cdef int nRows = dims[0]
+    cdef int nCols = dims[1]
+    cdef int nArrEle = dims[2]
+    cdef numpy.ndarray[numpy.complex128_t, ndim=3] out =\
+        numpy.zeros((nRows, nCols, nArrEle), dtype=numpy.complex128)
+    cdef int i,j, k, n
+    for i in range(nRows):
+        for j in range(nCols):
+            for n in range(nRows):
+                for k in range(nArrEle):
+                    out[i, j, k] = out[i, j, k] + mat1[i, n, k] * mat2[n, j]
     return out
 
 
@@ -79,10 +86,32 @@ cdef numpy.ndarray[numpy.complex128_t, ndim=3] \
 @cython.boundscheck(False)
 # turn off negative index wrapping for entire function
 @cython.wraparound(False)
-cpdef numpy.ndarray[numpy.complex128_t, ndim=3] \
-    vecMatDot(numpy.ndarray[numpy.int32_t, ndim=1] dims,
-              numpy.ndarray mat1,
-              numpy.ndarray mat2):
+cdef numpy.ndarray[numpy.complex128_t, ndim=2] \
+    vecMatDot22(numpy.ndarray[numpy.int32_t, ndim=1] dims,
+              numpy.ndarray[numpy.complex128_t, ndim=2] mat1,
+              numpy.ndarray[numpy.complex128_t, ndim=2] mat2):
+    """
+    Both matrices are 2-dimensional
+    """
+    cdef int nRows = dims[0]
+    cdef int nCols = dims[1]
+    cdef numpy.ndarray[numpy.complex128_t, ndim=2] out =\
+        numpy.zeros((nRows, nCols), dtype=numpy.complex128)
+    cdef int i, j, n
+    for i in range(nRows):
+        for j in range(nCols):
+            for n in range(nRows):
+                out[i, j] = out[i, j] + mat1[i, n] * mat2[n, j]
+    return out
+
+
+# turn off bounds-checking for entire function
+@cython.boundscheck(False)
+# turn off negative index wrapping for entire function
+@cython.wraparound(False)
+cpdef numpy.ndarray vecMatDot(numpy.ndarray[numpy.int32_t, ndim=1] dims,
+                              numpy.ndarray mat1,
+                              numpy.ndarray mat2):
     """
     Performs the dot product for two matrices whose elements are vectors.
     Axis 0 are treated as the rows, axis 1 are treated as the columns and
@@ -123,20 +152,18 @@ cpdef numpy.ndarray[numpy.complex128_t, ndim=3] \
            [[  54.,   77.,  104.],
             [  99.,  128.,  161.]]])
     """
-    if (len(numpy.shape(mat1)) == 3 and len(numpy.shape(mat2)) == 3):
+    cdef int mat1Len = len(numpy.shape(mat1))
+    cdef int mat2Len = len(numpy.shape(mat2))
+    if (mat1Len == 3 and mat2Len == 3):
         return vecMatDot33(dims, mat1, mat2)
-    elif (len(numpy.shape(mat1)) == 2 and len(numpy.shape(mat2)) == 3):
+    elif (mat1Len == 2 and mat2Len == 3):
         return vecMatDot23(dims, mat1, mat2)
-    elif (len(numpy.shape(mat1)) == 3 and len(numpy.shape(mat2)) == 2):
+    elif (mat1Len == 3 and mat2Len == 2):
         return vecMatDot32(dims, mat1, mat2)
-    elif (len(numpy.shape(mat1)) == 2 and len(numpy.shape(mat2)) == 2):
-        return numpy.dot(mat1, mat2)
+    elif (mat1Len == 2 and mat2Len == 2):
+        return vecMatDot22(dims, mat1, mat2)
 
 
-# turn off bounds-checking for entire function
-@cython.boundscheck(False)
-# turn off negative index wrapping for entire function
-@cython.wraparound(False)
 cpdef int findMaxIdx(numpy.ndarray[numpy.float64_t, ndim=1] arr,
                      int startIdxHint=0):
     """
@@ -164,10 +191,6 @@ cpdef int findMaxIdx(numpy.ndarray[numpy.float64_t, ndim=1] arr,
     return 0
 
 
-# turn off bounds-checking for entire function
-@cython.boundscheck(False)
-# turn off negative index wrapping for entire function
-@cython.wraparound(False)
 cpdef int findBandWidth(numpy.ndarray[numpy.float64_t, ndim=1] arr,
                         int peakValIdx, numpy.float64_t bwBounds):
     """
@@ -176,17 +199,21 @@ cpdef int findBandWidth(numpy.ndarray[numpy.float64_t, ndim=1] arr,
 
     Parameters
     ----------
-    arr : array_like
+    arr : numpy.ndarray[numpy.float64_t, ndim=1]
         The array where the index of the maximum value is sought.
     peakValIdx : int
         The index peak value in the band (i.e. the center point of the
         band) in arr.
-    bwBounds : float
+    bwBounds : numpy.float64_t
         The lower bound of the band, i.e. any values in arr are considered
         to be outside the band.
 
     Returns
     -------
+    int
+        The number of indices that is above them bandwidth constraints
+        arround peakValIdx, i.e. multiply by the sampling distance to get
+        the bandwidth.
     """
     if (peakValIdx < 0 or peakValIdx >= len(arr)
         or arr[peakValIdx] < bwBounds):
