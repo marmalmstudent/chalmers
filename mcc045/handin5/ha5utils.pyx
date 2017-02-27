@@ -7,6 +7,10 @@ cimport numpy
 cimport cython
 
 
+# turn off bounds-checking for entire function
+@cython.boundscheck(False)
+# turn off negative index wrapping for entire function
+@cython.wraparound(False)
 cdef numpy.ndarray[numpy.complex128_t, ndim=3] \
     vecMatDot33(numpy.ndarray[numpy.int32_t, ndim=1] dims,
               numpy.ndarray[numpy.complex128_t, ndim=3] mat1,
@@ -19,7 +23,7 @@ cdef numpy.ndarray[numpy.complex128_t, ndim=3] \
     cdef int nArrEle = dims[2]
     cdef numpy.ndarray[numpy.complex128_t, ndim=3] out =\
         numpy.zeros((nRows, nCols, nArrEle), dtype=numpy.complex128)
-    cdef int i,j, k, l
+    cdef int i,j, k, n
     for i in range(nRows):
         for j in range(nCols):
             for n in range(nRows):
@@ -28,6 +32,10 @@ cdef numpy.ndarray[numpy.complex128_t, ndim=3] \
     return out
 
 
+# turn off bounds-checking for entire function
+@cython.boundscheck(False)
+# turn off negative index wrapping for entire function
+@cython.wraparound(False)
 cdef numpy.ndarray[numpy.complex128_t, ndim=3] \
     vecMatDot23(numpy.ndarray[numpy.int32_t, ndim=1] dims,
               numpy.ndarray[numpy.complex128_t, ndim=2] mat1,
@@ -40,7 +48,7 @@ cdef numpy.ndarray[numpy.complex128_t, ndim=3] \
     cdef int nArrEle = dims[2]
     cdef numpy.ndarray[numpy.complex128_t, ndim=3] out =\
         numpy.zeros((nRows, nCols, nArrEle), dtype=numpy.complex128)
-    cdef int i,j, k, l
+    cdef int i,j, k, n
     for i in range(nRows):
         for j in range(nCols):
             for n in range(nRows):
@@ -65,7 +73,7 @@ cdef numpy.ndarray[numpy.complex128_t, ndim=3] \
     cdef int nArrEle = dims[2]
     cdef numpy.ndarray[numpy.complex128_t, ndim=3] out =\
         numpy.zeros((nRows, nCols, nArrEle), dtype=numpy.complex128)
-    cdef int i,j, k, l
+    cdef int i,j, k, n
     for i in range(nRows):
         for j in range(nCols):
             for n in range(nRows):
@@ -83,18 +91,17 @@ cdef numpy.ndarray[numpy.complex128_t, ndim=2] \
               numpy.ndarray[numpy.complex128_t, ndim=2] mat1,
               numpy.ndarray[numpy.complex128_t, ndim=2] mat2):
     """
-    Right matrix is 2-dimensional
+    Both matrices are 2-dimensional
     """
     cdef int nRows = dims[0]
     cdef int nCols = dims[1]
-    cdef int nArrEle = dims[2]
-    cdef numpy.ndarray[numpy.complex128_t, ndim=3] out =\
-        numpy.zeros((nRows, nCols, nArrEle), dtype=numpy.complex128)
-    cdef int i,j, k, l
+    cdef numpy.ndarray[numpy.complex128_t, ndim=2] out =\
+        numpy.zeros((nRows, nCols), dtype=numpy.complex128)
+    cdef int i, j, n
     for i in range(nRows):
         for j in range(nCols):
             for n in range(nRows):
-                    out[i, j] = out[i, j] + mat1[i, n] * mat2[n, j]
+                out[i, j] = out[i, j] + mat1[i, n] * mat2[n, j]
     return out
 
 
