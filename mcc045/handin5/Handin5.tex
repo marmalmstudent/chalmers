@@ -1,0 +1,84 @@
+\documentclass[12pt,a4paper]{article}
+
+%\pdfoutput=1
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{mathabx}
+\usepackage{lmodern}
+\usepackage{listings}
+\usepackage{units}
+\usepackage{siunitx}
+\usepackage{icomma}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{color}
+\usepackage{pgf}
+\DeclareMathOperator{\acosh}{arccosh}
+\newcommand{\N}{\ensuremath{\mathbbm{N}}}
+\newcommand{\Z}{\ensuremath{\mathbbm{Z}}}
+\newcommand{\Q}{\ensuremath{\mathbbm{Q}}}
+\newcommand{\R}{\ensuremath{\mathbbm{R}}}
+\newcommand{\C}{\ensuremath{\mathbbm{C}}}
+\newcommand{\rd}{\ensuremath{\mathrm{d}}}
+\newcommand{\id}{\ensuremath{\,\rd}}
+\usepackage{hyperref}
+%\usepackage{a4wide} % puts the page numbering further down the page.
+\usepackage{pdfpages}
+\usepackage{epstopdf}
+\DeclareGraphicsExtensions{.eps}
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist
+
+\title{Handin 5}
+\author{Marcus Malmquist, marmalm}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Task 1}\label{sec:1}
+%\begin{figure}
+%  \centering
+%  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/Task1.pgf}}}
+%  \caption{Simulation result from task 1.}
+%  \label{fig:task1}
+%\end{figure}
+
+%\begin{figure}
+%  \centering
+%    \begin{subfigure}[b]{0.5\textwidth}
+%        \noindent\makebox[\textwidth]{\scalebox{0.5}{\input{figures/Task2Before.pgf}}}
+%        \subcaption{Simulation before the wave hit the right side of the numerical window.}
+%        \label{fig:task2_1}
+%    \end{subfigure}\\
+%    \begin{subfigure}[b]{0.5\textwidth}
+%        \noindent\makebox[\textwidth]{\scalebox{0.5}{\input{figures/Task2After.pgf}}}
+%        \subcaption{Simulation after the wave hit the right side of the numerical window.}
+%        \label{fig:task2_2}
+%    \end{subfigure}
+%  \caption{Simulation results from task 2.}
+%  \label{fig:task2}
+%\end{figure}
+
+\newpage
+\appendix
+\section{Code}
+In order to do this task efficiently, I had to write the matrix multiplication functions as a C-extension library. This was done in Cython, which allows you to add type definitions and compile the code. The generated C-code itself is about 10~000 lines so it is not included but the steps to generate it are.
+\subsection{Python code}
+\begin{changemargin}{-3cm}{0.5cm}
+\lstinputlisting[language=Python]{calcs.py}
+\end{changemargin}
+\newpage
+\begin{changemargin}{-3cm}{0.5cm}
+\lstinputlisting[language=Python]{setup.py}
+\end{changemargin}
+\newpage
+\subsection{Cython code}
+\begin{changemargin}{-3cm}{0.5cm}
+\lstinputlisting[language=Python]{ha5utils.pyx}
+\end{changemargin}
+\end{document}

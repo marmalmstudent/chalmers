@@ -1,3 +1,9 @@
+""" setup.py
+This code is adapted for 80 columns
+|------------------------------------------------------------------------------|
+Compiles the cython code into and extension module that can be imported in a
+regular python script.
+"""
 from distutils.core import setup
 from Cython.Build import cythonize
 
@@ -6,6 +12,5 @@ setup(
                           compiler_directives={'embedsignature': True,
                                                'boundscheck': False,
                                                'wraparound': False,
-                                               'initializedcheck': False,
-                                               'cdivision': True})
+                                               'initializedcheck': False})
 )
