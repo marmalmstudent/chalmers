@@ -206,10 +206,62 @@ def stability_check(k, delta):
     int
         The stability mask
     """
-    pass
+    stable = 0  # unstable
+    if (False):
+        stable = 1  # conditionally stable
+    if (k > 1 and abs(delta) < 1):
+        stable = 2  # unconditionally stable
+    return stable
 
 
 if (__name__ == '__main__'):
+    """
+    LNA design -> available gain: G_a is important.
+
+    -------------------------- Stability circles ------------------------------
+    - Stable if |gma_in|<1 and |gma_out|<1;
+    - How can we check this?
+    - Calculate gma_s and gma_l for |gma_out|=1 and |gma_in|=1.
+    - Ex. gma_l values resulting in |gma_in|=1 => stability circles for the
+      output matching network.
+
+    ------------------------ Potentially unstable -----------------------------
+    - Calculated circle provides the boundary between stable and unstable
+      regions.
+    - Which part is stable?
+    - Simple check: assume gma_l = 0 => gma_l=s_11. If |s_11|<1, the centre of
+      the Smith chart represents a stable operating point.
+
+    ----------------------- Unconditionally stable ----------------------------
+    - |gma_in|<1; |gma_out|<1; |gma_s|<1; and |gma_l|<1;
+    - From a graphical view - we would like to see the stability circles to
+      fall completely outside the SC.
+
+    -------------------------- Stability circles ------------------------------
+    - Input:
+        The intersection between |s_11| < 1 and ||c_l| - r_l | > 1:
+            If gma_in < 1 for |gma_l| = 0 then then intersection represents
+            that we can have |gma_in| > 1 for some |s_11| < 1.
+            Conditionally unstable/Conditionally stable.
+            Typically larger stable region.
+
+            If gma_in > 1 for |gma_l| = 0 then then intersection represents
+            that we can have |gma_in| < 1 for some |s_11| < 1.
+            Conditionally stable/Conditionally unstable.
+            Typically smaller stable region.
+    - Output:
+        The intersection between |s_22| < 1 and ||c_s| - r_s | > 1:
+            If gma_out < 1 for |gma_s| = 0 then then intersection represents
+            that we can have |gma_out| > 1 for some |s_22| < 1.
+            Conditionally unstable/Conditionally stable.
+            Typically larger stable region.
+
+            If gma_out > 1 for |gma_s| = 0 then then intersection represents
+            that we can have |gma_out| < 1 for some |s_22| < 1.
+            Conditionally stable/Conditionally unstable.
+            Typically smaller stable region.
+
+    """
     s = np.array([[p_to_c(0.93, -60.1), p_to_c(0.028, 57.7)],
                   [p_to_c(1.61, 128.7), p_to_c(0.43, -172.3)]],
                  dtype=np.complex128)
