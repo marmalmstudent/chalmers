@@ -31,94 +31,50 @@
 \usepackage{epstopdf}
 \DeclareGraphicsExtensions{.eps}
 
-\title{Handin 2: Extraction of intrinsic parameters.}
+\title{Handin 3: DC modelling.}
 \author{Marcus Malmquist, marmalm}
 \date{\today}
 
 \begin{document}
 \maketitle
 
-\section{Task 2}\label{sec:1}
-In this section I describe the method I used to extract the values of intrinsic components. This method was proposed by Dambrine.
-The simulation was set up according to Figure~\ref{fig:scematic}.
-\begin{figure}
+\section{Task 3}\label{sec:1}
+The simulation was set up according to Figure~\ref{fig:scematic}. I could not quite get the lines to fit in the $I_d$ vs. $V_{ds}$ plot for higher $V_{ds}$ and the lower values of $V_{gs}$ in the $I_d$ vs. $V_{gs}$ plot but the tuned values can be seen in Table~\ref{tab:tuned}. With some more fine-tuning it might have been possible to achieve a better curve fit.
+\begin{figure}[h]
   \centering
-  \noindent\makebox[\textwidth]{\includegraphics[width=\textwidth]{Task2_sc.pdf}}
+  \noindent\makebox[\textwidth]{\includegraphics[width=\textwidth]{Task3_sc.pdf}}
   \caption{The scematic that was used to produce the results presented in this report.}
   \label{fig:scematic}
 \end{figure}
-
-Simulating the scematic shown in Figure~\ref{fig:scematic} yielded S-parameters for the two-port. The extrinsic parameters (calculated in the previous task) could be removed by a series of calculations.
-\begin{itemize}
-\item Convert $\mathbf{S}$ to $\mathbf{Y}_0$.
-\item Remove extrinsic capacitances (\ref{eq:ex_c}).
-\item Convert $\mathbf{Y}_1$ to $\mathbf{Z}_0$.
-\item Remove extrinsic resistances and inductances (\ref{eq:ex_rl}).
-\item Convert $\mathbf{Z}_1$ to $\mathbf{Y}$.
-\end{itemize}
-\begin{equation}
-  \label{eq:ex_c}
-  \mathbf{Y}_1 = \mathbf{Y}_0 -
-  \begin{bmatrix}
-    j\omega(C_\text{pg}-C_\text{pgd}) & -j\omega C_\text{pgd} \\
-    -j\omega C_\text{pgd} & j\omega(C_\text{pg}-C_\text{pgd})
-  \end{bmatrix}
-\end{equation}
-\begin{equation}
-  \label{eq:ex_rl}
-  \mathbf{Z}_1 = \mathbf{Z}_0 -
-  \begin{bmatrix}
-    R_g+R_s+j\omega(L_g+L_s) & R_s+j\omega L_s \\
-    R_s+j\omega L_s & R_g+R_s+j\omega(L_g+L_s)
-  \end{bmatrix}
-\end{equation}
-When the extrinsic parameters have been eliminated the intrinsic parameters can be acquired from (\ref{eq:in_param}), which yields seven equations (three real and four imaginary).
-\begin{subequations}
-  \label{eq:in_param}
-  \begin{align}
-    y_{11} &= R_iC_{gs}^2\omega^2+j\omega(C_{gs}+C_{gd}), \label{eq:in_param_y11}\\
-    y_{12} &= -j\omega C_{gd}, \label{eq:in_param_y12}\\
-    y_{21} &= g_m-j\omega\big(C_{gd}+g_m(R_iC_{gs}+\tau)\big), \label{eq:in_param_y21}\\
-    y_{22} &= g_d+j\omega(C_{ds}+C_{gd}), \label{eq:in_param_y22}
-  \end{align}
-\end{subequations}
-The intrinsic parameters can be seen in (\ref{eq:in_param_solve})
-\begin{subequations}
-  \label{eq:in_param_solve}
-  \begin{align}
-    C_{gd} &= -\frac{\Im(y_{12})}{\omega}, \label{eq:in_param_solve_cgd}\\
-    C_{gs} &= \frac{\Im(y_{11})}{\omega}-C_{gd}, \label{eq:in_param_solve_cgs}\\
-    R_i &= \frac{\Re(y_{11})}{(C_{gs}\omega)^2}, \label{eq:in_param_solve_ri}\\
-    g_m &= \Re(y_{21}), \label{eq:in_param_solve_gm}\\
-    \tau &= \frac{C_{gd}-\frac{\Im(y_{21})}{\omega}}{g_m}-R_iC_{gs}, \label{eq:in_param_solve_tau}\\
-    g_d &= \Re(y_{22}), \label{eq:in_param_solve_gd}\\
-    C_{ds} &= \frac{\Im(y_{22})}{\omega}-C_{gd}, \label{eq:in_param_solve_cds}\\
-  \end{align}
-\end{subequations}
-Using the extrinsic parameters calculated during the previous handin yields the values in Table~\ref{tab:in_vals}
-\newcolumntype{d}{D{.}{.}{-1} } %decimal column as before
-\begin{table}
+\begin{table}[h]
   \centering
-  \begin{tabular}{|l|r|}\hline
-    Variable & Value \\ \hline
-    $C_{gd}$ & $\SI{-426}{\atto\farad}$ \\
-    $C_{gs}$ & $\SI{-57.3}{\femto\farad}$ \\
-    $R_i$ & $\SI{55.9}{\ohm}$ \\
-    $g_m$ & $\SI{-68.4}{\siemens}$ \\
-    $\tau$ & $\SI{387}{\pico\second}$ \\
-    $g_d$ & $\SI{-73.2}{\siemens}$ \\
-    $C_{ds}$ & $\SI{-208}{\pico\farad}$ \\ \hline
+  \begin{tabular}{|l|l|}\hline
+    $I_{pk0}$ & $\SI{1.025}{\ampere}$ \\
+    $V_{pks}$ & $\SI{50}{\milli\volt}$ \\
+    $P_1$ & 0.154 \\
+    $I_j$ & $\SI{440}{\milli\ampere}$ \\
+    $P_g$ & 0.05 \\
+    $V_{jg}$ & $\SI{1.048}{\volt}$ \\
+    $R_s$ & $\SI{561}{\milli\ohm}$ \\
+    $R_d$ & $\SI{283}{\milli\ohm}$ \\
+    $R_g$ & $\SI{1.05}{\ohm}$ \\ \hline
   \end{tabular}
-  \caption{The final values of the intrinsic parameters.}
-  \label{tab:in_vals}
+  \caption{The values of the tuned parameters}
+  \label{tab:tuned}
 \end{table}
 
-The calculations were done in ADS and the procedure can be seen in Figure~\ref{fig:calcs}.
-\begin{figure}
+The resulting graphs can be seen in Figure~\ref{fig:id_vds} and Figure~\ref{fig:id_vgs}.
+\begin{figure}[h]
   \centering
-  \noindent\makebox[\textwidth]{\includegraphics[width=\textwidth]{Task2.pdf}}
-  \caption{The cell that was used to produce the results presented in this report.}
-  \label{fig:calcs}
+  \noindent\makebox[\textwidth]{\includegraphics[width=\textwidth]{Task3.pdf}}
+  \caption{The $I_d$ vs. $V_{ds}$ plot after some tuning. The blue curves represent the data from the .midf-file and the red curves represents the simulated data.}
+  \label{fig:id_vds}
+\end{figure}
+\begin{figure}[h]
+  \centering
+  \noindent\makebox[\textwidth]{\includegraphics[width=\textwidth]{Task3_2.pdf}}
+  \caption{The $I_d$ vs. $V_{gs}$ plot after some tuning. The blue curves represent the data from the .midf-file and the red curves represents the simulated data.}
+  \label{fig:id_vgs}
 \end{figure}
 
 \end{document}
