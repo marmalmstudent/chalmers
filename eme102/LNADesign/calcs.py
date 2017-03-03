@@ -165,8 +165,8 @@ def get_gma_in(s_mat, gma_ld):
     float
         gamma_in
     """
-    return s_mat[0, 0] + (s_mat[0, 1]*s_mat[1, 0]*gma_ld) /\
-        (1 - s_mat[1, 1]*gma_ld)
+    return s_mat[0, 0] + ((s_mat[0, 1]*s_mat[1, 0]*gma_ld) /
+                          (1 - s_mat[1, 1]*gma_ld))
 
 
 def func_in(s_mat, gma_vec):
@@ -357,10 +357,75 @@ def get_g_t(s_mat, gma_in, gma_src, gma_ld):
         (1-abs(gma_ld)**2)/abs(1-s_mat[1, 1]*gma_ld)**2
 
 
-def func_optimize(conds, s_mat, gma_in, gma_out, gma_src, gma_ld):
+def get_noise_figure(f_min, r_n, gma_opt, gma_src, z_0):
     """
-    This function connects all of the functions and the variables that
-    controls the amplifier specifications.
+    Calculates the noise figure of the transistor.
+    See Pozar chapter 12.3 Low amplifier design section.
+
+    Parameters
+    ----------
+    f_min : float
+        Minimum noise figure of transistor, attained when Y_S = Y_opt.
+    r_n : float
+        Equivalent noise resistance of transistor.
+    gma_opt : complex
+        Reflection coefficient resulting from an optimum source impedance that
+        results in minimum noise figure.
+    gma_src : complex
+        The source reflection coefficient. The reflection coefficient seen
+        from the transistor looking at the input matching network.
+    z_0 : float
+        System impedance.
+
+    Returns
+    -------
+    float
+        The noise figure of the transistor.
+    """
+    return f_min + (4*r_n/z_0*abs(gma_src-gma_opt)**2
+                    / ((1-abs(gma_src)**2) * abs(1+gma_opt)**2))
+
+
+def noise_figure_circle(f, f_min, r_n, z_0, gma_opt):
+    """
+    Calculates the center and radius of the noise figure circle.
+
+    Parameters
+    ----------
+    f : float
+        Noise figure of the transistor
+    f_min : float
+        Minimum noise figure of transistor, attained when Y_S = Y_opt.
+    r_n : float
+        Equivalent noise resistance of transistor.
+    z_0 : float
+        System impedance.
+    gma_opt : complex
+        Reflection coefficient resulting from an optimum source impedance that
+        results in minimum noise figure.
+
+    Returns
+    -------
+    tuple
+        complex
+            The center of the noise figure circle.
+        float
+            The radius of the noise figure circle.
+    """
+    noise_fig_param = (f - f_min)*abs(1+gma_opt)**2/(4*r_n/z_0)
+    center = gma_opt/(noise_fig_param + 1)
+    radius = (np.sqrt(noise_fig_param*(noise_fig_param + 1 - abs(gma_opt)**2))
+              / (noise_fig_param + 1))
+    return center, radius
+
+
+def func_optimize(
+        conds, f_min, r_n, s_mat, gma_in,
+        gma_out, gma_src, gma_ld, z_0=50):
+    """
+    ----------------------------------------------------------------------------
+    This function connects all of the functions and the variables that controls
+    the amplifier specifications.
 
     Idea: perform an fmin on the function:
         abs(conds["F"]-f, conds["VSWRin"]-vswr_in,
@@ -377,15 +442,27 @@ def func_optimize(conds, s_mat, gma_in, gma_out, gma_src, gma_ld):
     However, this might be difficult for parameters with multiple input
     parameters.
     """
-    # F here
-
-    # VSWRin here
+    """
+    # In total: Tunable variables are:
+    #     gma_src: fixed using a input matching network.
+    #     gma_out: fixed using an output matching network.
+    # gma_in and gma_out are calculated from get_gma_in() and get_gma_out()
+    return (f/conds["F"], vswr_in/conds["VSWRin"],
+            vswr_out/conds["VSWRout"], g_t/conds["GT"])
+    """
+    # F here. Tunable variables:
+    # gma_src.
+    f = get_noise_figure(f_min, r_n, gma_opt, gma_src, z_0)
+    # VSWRin here Tunable variables:
+    # gma_in
     vswr_in = get_vswr(gma_in)
-    # VSWRout
+    # VSWRout Tunable variables:
+    # gma_out
     vswr_out = get_vswr(gma_out)
-    # GT
+    # GT Tunable variables:
+    # gma_in, gma_out, gma_ld
     g_t = get_g_t(s_mat, gma_in, gma_src, gma_ld)
-    return vswr_in, vswr_out, g_t
+    return f, vswr_in, vswr_out, g_t
 
 
 def stability_check(cl, rl, cs, rs):
@@ -581,7 +658,10 @@ if (__name__ == '__main__'):
     gma_s = gma_opt
     gma_out = get_gma_out(s, gma_s)
     gma_l = gma_out.conjugate()
-    gma_in = get_gma_out(s, gma_l)
+    gma_in = get_gma_in(s, gma_l)
+    print(func_optimize(conds=lna_cond, f_min=f_min, r_n=r_n, s_mat=s,
+                        gma_in=gma_in, gma_out=gma_out, gma_src=gma_s,
+                        gma_ld=gma_l, z_0=50))
     """
     print(gma_s, gma_out, gma_l, gma_in)
     print(get_g_t(s, gma_in, gma_s, gma_l))
