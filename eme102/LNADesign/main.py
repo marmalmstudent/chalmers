@@ -26,7 +26,7 @@ if (__name__ == '__main__'):
     ax0.set_aspect('equal')
     cf, rf = calcs.noise_figure_circle(
         f=lna_cond["F"], f_min=f_min, r_n=r_n, z_0=50, gma_opt=gma_opt)
-    calcs.plot_circle(ax0, 0, 1, color="#0000ff")
+    calcs.plot_circle(ax0, 0, 1, color="#000000")
     calcs.plot_circle(ax0, cf, rf, color="#ff0000")
     """
     # plot stability circles
@@ -41,14 +41,37 @@ if (__name__ == '__main__'):
     calcs.plot_circle(ax1, cs, rs, color="#ff0000")
     """
 
-    # initial values form gma_s and gma_l, seen lecture 8 slide 6.
+    # find gamma_s such that constant gain circle and constant noise circle
+    # intersect.
     gma_s = calcs.optimize_gma_s(gma_opt, s, lna_cond, f_min, r_n, 50, gma_opt)
     gma_out = calcs.get_gma_out(s, gma_s)
     gma_l = gma_out.conjugate()
     gma_in = calcs.get_gma_in(s, gma_l)
+
+    # calculate gamma_s and gamma_l that satisfies vswr constraints.
+    abs_gma_b = (lna_cond["VSWRout"] - 1)/(lna_cond["VSWRout"] + 1)
+    abs_gma_a = (lna_cond["VSWRin"] - 1)/(lna_cond["VSWRin"] + 1)
+    count = 0
+    while (((calcs.get_vswr(calcs.get_abs_gma_ports(gma_out, gma_l))
+             > lna_cond["VSWRout"])
+            or (calcs.get_vswr(calcs.get_abs_gma_ports(gma_in, gma_s))
+                > lna_cond["VSWRin"]))
+           and (count < 100)):
+        gma_l = calcs.optimize_vswr(abs_gma_b, gma_out, gma_out.conjugate())
+        gma_in = calcs.get_gma_in(s, gma_l)
+        gma_s = calcs.optimize_vswr(abs_gma_a, gma_in, gma_s)
+        gma_out = calcs.get_gma_in(s, gma_l)
+        count += 1
+
+    print(calcs.get_abs_gma_ports(gma_out, gma_l),
+          calcs.get_vswr(calcs.get_abs_gma_ports(gma_out, gma_l)))
+    print(calcs.get_abs_gma_ports(gma_in, gma_s),
+          calcs.get_vswr(calcs.get_abs_gma_ports(gma_in, gma_s)))
+    # NEED TO FIX GAIN!
+    print(calcs.todb(calcs.get_g_t(s, gma_in, gma_s, gma_l)))
+
     cs, rs = calcs.input_const_gain_circle(gma_s, gma_in)
     calcs.plot_circle(ax0, cs, rs, color="#00ff00")
-    print(gma_out)
     """
     gma_s = gma_opt*1.156*0.9
     gma_out = calcs.get_gma_out(s, gma_s)

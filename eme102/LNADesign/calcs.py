@@ -394,6 +394,28 @@ def get_gma_out(s_mat, gma_src):
                           (1 - s_mat[0, 0]*gma_src))
 
 
+def get_abs_gma_ports(gma_transistor, gma_matching):
+    """
+
+    Parameters
+    ----------
+    gma_transistor : complex
+        The in/out reflection coefficient for the transistor itself.
+        E.g. Gamma_in or Gamma_out.
+    gma_matching : complex
+        The input/output matching circuit reflection coefficient.
+        E.g. Gamma_S or Gamma_L.
+
+    Returns
+    -------
+    float
+        The magnitude of the reflection coefficient seen from the load/source
+        looking at the output/input circuit.
+    """
+    return abs((gma_transistor - gma_matching.conjugate()) /
+               (1 - gma_transistor*gma_matching))
+
+
 def get_noise_figure(f_min, r_n, gma_opt, gma_src, z_0):
     """
     Calculates the noise figure of the transistor.
@@ -643,14 +665,23 @@ def optimize_gma_s(gma_s_start, s_mat, cond, f_min, r_n, z_0, gma_opt):
     return gma_s[0]+1j*gma_s[1]
 
 
-def optim_vswr_out(s_mat, gma_s_start, vswr_out_max):
+def optimize_vswr_helpfun(abs_gma_sys_targ, gma_transistor, gma_matching):
     """
     """
-    gma_out_targ = (vswr_out_max-1)/(vswr_out_max+1)
-    gma_s = spo.fsolve(lambda gma_s: optim_gma_s_helpfun(
-        s_mat, gma_s[0]+1j*gma_s[1], vswr_out_max),
-                       [np.real(gma_s_start), np.imag(gma_s_start)])
-    return gma_s[0]+1j*gma_s[1]
+    out = abs_gma_sys_targ - get_abs_gma_ports(
+        gma_transistor, gma_matching)
+    return out, out
+
+
+def optimize_vswr(abs_gma_sys_targ, gma_transistor, gma_matching_start):
+    """
+    """
+    gma_matching = spo.fsolve(
+        lambda gma_matching: optimize_vswr_helpfun(
+            abs_gma_sys_targ, gma_transistor,
+            gma_matching[0]+1j*gma_matching[1]),
+        [np.real(gma_matching_start), np.imag(gma_matching_start)])
+    return gma_matching[0]+1j*gma_matching[1]
 
 
 def func_optimize(
