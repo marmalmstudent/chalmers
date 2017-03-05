@@ -5,7 +5,7 @@ import calcs
 
 if (__name__ == '__main__'):
     lna_cond = {"F": calcs.fromdb(0.9), "VSWRin": 2,
-                "VSWRout": 1.9, "GT": calcs.fromdb(14)}
+                "VSWRout": 1.9, "GT": calcs.fromdb(14.0)}
     f = 1.8e9
     s = np.array([[calcs.p_to_c(0.93, -60.1), calcs.p_to_c(0.028, 57.7)],
                   [calcs.p_to_c(1.61, 128.7), calcs.p_to_c(0.43, -172.3)]],
@@ -43,31 +43,49 @@ if (__name__ == '__main__'):
 
     # find gamma_s such that constant gain circle and constant noise circle
     # intersect.
-    gma_s = calcs.optimize_gma_s(gma_opt, s, lna_cond, f_min, r_n, 50, gma_opt)
+    gma_s = calcs.optimize_gma_s(
+        gma_opt, s, lna_cond["VSWRout"],
+        lna_cond["F"], f_min, r_n, 50, gma_opt)
     gma_out = calcs.get_gma_out(s, gma_s)
     gma_l = gma_out.conjugate()
     gma_in = calcs.get_gma_in(s, gma_l)
 
     # calculate gamma_s and gamma_l that satisfies vswr constraints.
-    abs_gma_b = (lna_cond["VSWRout"] - 1)/(lna_cond["VSWRout"] + 1)
-    abs_gma_a = (lna_cond["VSWRin"] - 1)/(lna_cond["VSWRin"] + 1)
     count = 0
     while (((calcs.get_vswr(calcs.get_abs_gma_ports(gma_out, gma_l))
              > lna_cond["VSWRout"])
             or (calcs.get_vswr(calcs.get_abs_gma_ports(gma_in, gma_s))
                 > lna_cond["VSWRin"]))
            and (count < 100)):
-        gma_l = calcs.optimize_vswr(abs_gma_b, gma_out, gma_out.conjugate())
-        gma_in = calcs.get_gma_in(s, gma_l)
-        gma_s = calcs.optimize_vswr(abs_gma_a, gma_in, gma_s)
-        gma_out = calcs.get_gma_in(s, gma_l)
+        if (calcs.get_vswr(calcs.get_abs_gma_ports(gma_out, gma_l))
+                > lna_cond["VSWRout"]):
+            gma_l = calcs.optimize_vswr_matching(
+                lna_cond["VSWRout"], gma_out, gma_l)
+            gma_in = calcs.get_gma_in(s, gma_l)
+        if (calcs.get_vswr(calcs.get_abs_gma_ports(gma_in, gma_s))
+                > lna_cond["VSWRin"]):
+            gma_s = calcs.optimize_vswr_matching(
+                lna_cond["VSWRin"], gma_in, gma_s)
+            gma_out = calcs.get_gma_out(s, gma_s)
+        if (calcs.get_g_t(s, gma_in, gma_s, gma_l) < lna_cond["GT"]):
+            gma_s, gma_l = calcs.optimize_gain(s, gma_s, gma_l, lna_cond["GT"])
+            gma_in = calcs.get_gma_in(s, gma_l)
         count += 1
 
+    """
+    gma_s = calcs.optimize_gma_s(gma_opt, s, lna_cond, f_min, r_n, 50, gma_opt)
+    gma_out = calcs.get_gma_out(s, gma_s)
+    """
+    """
+    gma_l = calcs.optimize_vswr_matching(
+        lna_cond["VSWRout"], gma_out, gma_l)
+    gma_in = calcs.get_gma_in(s, gma_l)
+    """
+    print(calcs.todb(calcs.get_noise_figure(f_min, r_n, gma_opt, gma_s, 50)))
     print(calcs.get_abs_gma_ports(gma_out, gma_l),
           calcs.get_vswr(calcs.get_abs_gma_ports(gma_out, gma_l)))
     print(calcs.get_abs_gma_ports(gma_in, gma_s),
           calcs.get_vswr(calcs.get_abs_gma_ports(gma_in, gma_s)))
-    # NEED TO FIX GAIN!
     print(calcs.todb(calcs.get_g_t(s, gma_in, gma_s, gma_l)))
 
     cs, rs = calcs.input_const_gain_circle(gma_s, gma_in)

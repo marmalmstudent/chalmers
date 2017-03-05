@@ -396,6 +396,8 @@ def get_gma_out(s_mat, gma_src):
 
 def get_abs_gma_ports(gma_transistor, gma_matching):
     """
+    Calculates the magnitude of the reflection coefficients measured at the
+    ports, i.e. before input matching circuit or after output matching circuit.
 
     Parameters
     ----------
@@ -572,7 +574,7 @@ def get_angle(cs, cf):
     return np.real(-1j*np.log((cf-cs)/abs(cf-cs)))
 
 
-def optim_gma_s_helpfun(
+def optim_gain_noise_helpfun(
         gma_s, s_mat, f_targ, f_min, r_n, z_0, gma_opt, abs_gma_out_targ):
     """
     This function performs the calculations for the optimize_gma_s function
@@ -622,11 +624,9 @@ def optim_gma_s_helpfun(
     return np.real(out), np.imag(out)
 
 
-def optimize_gma_s(gma_s_start, s_mat, cond, f_min, r_n, z_0, gma_opt):
+def optimize_gma_s(
+        gma_s_start, s_mat, vswr_out_targ, f_targ, f_min, r_n, z_0, gma_opt):
     """
-    NOTE: should probably remake this to first operate under the VSWRout
-    condition.
-
     This function runs the equation solving code for gamma_s. It attempts to
     optimize gamma_s such that the constant noise circle and the constant gain
     circles are separated by the sum of the radius'. This means that they
@@ -640,8 +640,10 @@ def optimize_gma_s(gma_s_start, s_mat, cond, f_min, r_n, z_0, gma_opt):
         matching network.
     s_mat : matrix_like
         A 2x2 matrx containing the S-parameters.
-    cond : dict
-        The dictionary containing the LNA design constraints.
+    vswr_out_targ : float
+        The VSWRout target value.
+    f_targ : float
+        The noise figure target value.
     f_min : float
         Minimum noise figure of transistor, attained when Y_S = Y_opt.
     r_n : float
@@ -657,9 +659,9 @@ def optimize_gma_s(gma_s_start, s_mat, cond, f_min, r_n, z_0, gma_opt):
     complex
         The optimized gamma_s.
     """
-    abs_gma_out_targ = (cond["VSWRout"]-1)/(cond["VSWRout"]+1)
-    gma_s = spo.fsolve(lambda gma_s: optim_gma_s_helpfun(
-        gma_s[0]+1j*gma_s[1], s_mat, cond["F"], f_min, r_n, z_0, gma_opt,
+    abs_gma_out_targ = (vswr_out_targ-1)/(vswr_out_targ+1)
+    gma_s = spo.fsolve(lambda gma_s: optim_gain_noise_helpfun(
+        gma_s[0]+1j*gma_s[1], s_mat, f_targ, f_min, r_n, z_0, gma_opt,
         abs_gma_out_targ),
                        [np.real(gma_s_start), np.imag(gma_s_start)])
     return gma_s[0]+1j*gma_s[1]
@@ -667,15 +669,58 @@ def optimize_gma_s(gma_s_start, s_mat, cond, f_min, r_n, z_0, gma_opt):
 
 def optimize_vswr_helpfun(abs_gma_sys_targ, gma_transistor, gma_matching):
     """
+    Calculates the residual of the magnitude of the reflection coefficient of
+    the system supplied to then function and calclated using the remaining
+    parameters supplied to the function.
+
+    Parameters
+    ----------
+    abs_gma_sys_targ : float
+        Target system reflection coefficient amplitude seen from the
+        source/load looking at the input/output matching network.
+    gma_transistor : complex
+        The reflection coefficient of the transistor, e.g. gamma_in or
+        gamma_out.
+    gma_matching_start : complex
+        Starting value of the reflection coefficient of the matching
+        network.
+
+    Returns
+    -------
+    tuple
+        float
+            The magnitude of the residual.
+        float
+            The magnitude of the residual.
     """
-    out = abs_gma_sys_targ - get_abs_gma_ports(
-        gma_transistor, gma_matching)
+    out = (abs_gma_sys_targ
+           - get_abs_gma_ports(gma_transistor, gma_matching))
     return out, out
 
 
-def optimize_vswr(abs_gma_sys_targ, gma_transistor, gma_matching_start):
+def optimize_vswr_matching(vswr_targ, gma_transistor, gma_matching_start):
     """
+    Optimizes the reflection coefficient of the matching circuit to make the
+    reflection coefficient of the system equal to the target reflection
+    coefficient.
+
+    Parameters
+    ----------
+    vswr_targ : float
+        Target voltage standing wave ratio.
+    gma_transistor : complex
+        The reflection coefficient of the transistor, e.g. gamma_in or
+        gamma_out.
+    gma_matching_start : complex
+        Starting value of the reflection coefficient of the matching
+        network.
+
+    Returns
+    -------
+    complex
+        The new reflection coefficient for the matching circuit.
     """
+    abs_gma_sys_targ = (vswr_targ - 1)/(vswr_targ + 1)
     gma_matching = spo.fsolve(
         lambda gma_matching: optimize_vswr_helpfun(
             abs_gma_sys_targ, gma_transistor,
@@ -684,46 +729,40 @@ def optimize_vswr(abs_gma_sys_targ, gma_transistor, gma_matching_start):
     return gma_matching[0]+1j*gma_matching[1]
 
 
-def func_optimize(
-        conds, f_min, r_n, s_mat, gma_in,
-        gma_out, gma_src, gma_ld, z_0=50):
-    """
-    This function connects all of the functions and the variables that controls
-    the amplifier specifications.
+"""
+def optimize_gain_helpfun(s_mat, gma_src, gma_ld, g_t_targ):
+    gma_in = get_gma_in(s_mat, gma_ld)
+    out = g_t_targ - get_g_t(s_mat, gma_in, gma_src, gma_ld)
+    print(out)
+    return (out, out, out, out)
+"""
 
-    Idea: perform an fmin on the function:
-        abs(conds["F"]-f, conds["VSWRin"]-vswr_in,
-            conds["VSWRout"]-vswr_out, conds["GT"]-g_t).
-    This function must also meed the requirements:
-        f <= conds["F"]
-        vswr_in <= conds["VSWRin"]
-        vswr_out <= conds["VSWRout"]
-        g_t <= conds["GT"]
-    This could be done by for example:
-        if (vswr_in > conds["VSWRin"]):
-            vswr_in = conds["VSWRin"] - abs(conds["VSWRin"]-vswr_in)
-            gma_in = get_gma(vswr_in)
-    However, this might be difficult for parameters with multiple input
-    parameters.
+
+def optimize_gain(s_mat, gma_src, gma_ld, g_t_targ):
     """
+    Optimizes then transducer gain.
+
+    Parameters
+    ----------
+    s_mat : matrix_like
+        A 2x2 matrx containing the S-parameters.
+    gma_in : complex
+        Input reflection coefficient. The reflection coefficient seen from
+        the input matching network looking at the transistor.
+    gma_src : complex
+        The source reflection coefficient. The reflection coefficient seen
+        from the transistor looking at the input matching network.
+    gma_ld the load reflection coefficient. The reflection coefficient seen
+        from the transistor looking at the output matching network.
+
+    Returns
+    -------
+    float
+        The optimizes transducer power gain.
     """
-    # In total: Tunable variables are:
-    #     gma_src: fixed using a input matching network.
-    #     gma_out: fixed using an output matching network.
-    # gma_in and gma_out are calculated from get_gma_in() and get_gma_out()
-    return (f/conds["F"], vswr_in/conds["VSWRin"],
-            vswr_out/conds["VSWRout"], g_t/conds["GT"])
-    """
-    # F here. Tunable variables:
-    # gma_src.
-    f = get_noise_figure(f_min, r_n, gma_opt, gma_src, z_0)
-    # VSWRin here Tunable variables:
-    # gma_in
-    vswr_in = get_vswr(gma_in)
-    # VSWRout Tunable variables:
-    # gma_out
-    vswr_out = get_vswr(gma_out)
-    # GT Tunable variables:
-    # gma_in, gma_out, gma_ld
-    g_t = get_g_t(s_mat, gma_in, gma_src, gma_ld)
-    return f, vswr_in, vswr_out, g_t
+    gma_matching = spo.fsolve(
+        lambda gma_matching: optimize_gain_helpfun(
+            s_mat, gma_matching[0]+1j*gma_matching[1],
+            gma_matching[2]+1j*gma_matching[3], g_t_targ),
+        [np.real(gma_ld), np.imag(gma_ld), np.real(gma_src), np.imag(gma_src)])
+    return gma_matching[0]+1j*gma_matching[1], gma_matching[2]+1j*gma_matching[3]
