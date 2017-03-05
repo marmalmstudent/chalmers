@@ -38,14 +38,17 @@
 \begin{document}
 \maketitle
 
-\section{Intro}
-First and foremost it should be noticed that we have four constraints ($F~\leq~\SI{0.9}{\deci\bel}$, $\text{VSWR}_\text{in}\leq 2$, $\text{VSWR}_\text{in}\leq 1.9$ and $G_T\geq\SI{14}{\deci\bel}$) but only two variables ($\Gamma_S$ and $\Gamma_L$). This means that this problem might not have a solution for any set of these set of contraints.
-
 \section{Workflow}\label{sec:wf}
+I wrote a Python-script to numerically solve this task. The workflow of the program can be seen in Figure~\ref{fig:workflow}. It is probably easier to understand the code after looking at the workflow graph.
 \begin{figure}[h]
   \centering
   \noindent\makebox[\textwidth]{\scalebox{0.7}{\input{flow_chart.pdf_t}}}
-  \caption{The scematic that was used to produce the results presented in this report.}
-  \label{fig:scematic}
+  \caption{The workflow of the program that wss used to design the LNA. It starts from the top and works its way down, following the appropriate arrows, until it reaches the end.}
+  \label{fig:workflow}
 \end{figure}
+
+\section{LNA Design}
+The starting values for $\Gamma_S$ and $\Gamma_L$ was chosen to be $\Gamma_\text{opt}$ and $\Gamma^*_\text{out}$ respectively. The reason I choose these starting values is because according to (12.53) in Pozar the noise figure of the amplifier is minimized when $Y_S=Y_\text{opt}$ which in turn means that $\Gamma_S=\Gamma_\text{opt}$ and because the gain is maximized when $\Gamma_L=\Gamma^*_\text{out}$.
+
+Then output and the final values can be seen in Figure~\ref{fig:result}.
 \end{document}

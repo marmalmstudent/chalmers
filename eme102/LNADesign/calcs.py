@@ -107,10 +107,10 @@ def input_stability_circle(s_mat, delta):
         float
             The radius of the input stability circle.
     """
-    r_l = (abs(s_mat[0, 1]*s_mat[1, 0] /
-               (abs(s_mat[1, 1])**2 - abs(delta)**2)))
-    c_l = ((s_mat[1, 1] - delta*s_mat[0, 0].conjugate()).conjugate() /
-           (abs(s_mat[1, 1])**2 - abs(delta)**2))
+    r_l = (abs(s_mat[0, 1]*s_mat[1, 0]
+               / (abs(s_mat[1, 1])**2 - abs(delta)**2)))
+    c_l = ((s_mat[1, 1] - delta*s_mat[0, 0].conjugate()).conjugate()
+           / (abs(s_mat[1, 1])**2 - abs(delta)**2))
     return c_l, r_l
 
 
@@ -134,10 +134,10 @@ def output_stability_circle(s_mat, delta):
         float
             The radius of the output stability circle.
     """
-    r_s = (abs(s_mat[0, 1]*s_mat[1, 0] /
-               (abs(s_mat[0, 0])**2 - abs(delta)**2)))
-    c_s = ((s_mat[0, 0] - delta*s_mat[1, 1].conjugate()).conjugate() /
-           (abs(s_mat[0, 0])**2 - abs(delta)**2))
+    r_s = (abs(s_mat[0, 1]*s_mat[1, 0]
+               / (abs(s_mat[0, 0])**2 - abs(delta)**2)))
+    c_s = ((s_mat[0, 0] - delta*s_mat[1, 1].conjugate()).conjugate()
+           / (abs(s_mat[0, 0])**2 - abs(delta)**2))
     return c_s, r_s
 
 
@@ -290,7 +290,7 @@ def create_circle(center_x, center_y, radius, n_points=101):
     return x, y
 
 
-def plot_circle(ax, center, radius, color=None):
+def plot_circle(ax, center, radius, color="#000000", linestyle='-'):
     """
     Plots a circle
 
@@ -309,10 +309,7 @@ def plot_circle(ax, center, radius, color=None):
                          np.imag(center),
                          radius,
                          n_points=1000)
-    if (color is not None):
-        ax.plot(x, y, color=color)
-    else:
-        ax.plot(x, y)
+    ax.plot(x, y, color=color, linestyle=linestyle)
 
 
 def get_delta(s_mat):
@@ -348,8 +345,8 @@ def get_k(s_mat, delta):
     float
         The K-value
     """
-    return (1 - abs(s_mat[0, 0])**2 - abs(s_mat[1, 1])**2 + abs(delta)**2) /\
-        (2*abs(s_mat[0, 1]*s_mat[1, 0]))
+    return ((1 - abs(s_mat[0, 0])**2 - abs(s_mat[1, 1])**2 + abs(delta)**2)
+            / (2*abs(s_mat[0, 1]*s_mat[1, 0])))
 
 
 def get_gma_in(s_mat, gma_ld):
@@ -369,8 +366,8 @@ def get_gma_in(s_mat, gma_ld):
     float
         gamma_in
     """
-    return s_mat[0, 0] + ((s_mat[0, 1]*s_mat[1, 0]*gma_ld) /
-                          (1 - s_mat[1, 1]*gma_ld))
+    return s_mat[0, 0] + ((s_mat[0, 1]*s_mat[1, 0]*gma_ld)
+                          / (1 - s_mat[1, 1]*gma_ld))
 
 
 def get_gma_out(s_mat, gma_src):
@@ -390,8 +387,8 @@ def get_gma_out(s_mat, gma_src):
     float
         gamma_out
     """
-    return s_mat[1, 1] + ((s_mat[0, 1]*s_mat[1, 0]*gma_src) /
-                          (1 - s_mat[0, 0]*gma_src))
+    return s_mat[1, 1] + ((s_mat[0, 1]*s_mat[1, 0]*gma_src)
+                          / (1 - s_mat[0, 0]*gma_src))
 
 
 def get_abs_gma_ports(gma_transistor, gma_matching):
@@ -414,8 +411,8 @@ def get_abs_gma_ports(gma_transistor, gma_matching):
         The magnitude of the reflection coefficient seen from the load/source
         looking at the output/input circuit.
     """
-    return abs((gma_transistor - gma_matching.conjugate()) /
-               (1 - gma_transistor*gma_matching))
+    return abs((gma_transistor - gma_matching.conjugate())
+               / (1 - gma_transistor*gma_matching))
 
 
 def get_noise_figure(f_min, r_n, gma_opt, gma_src, z_0):
@@ -575,18 +572,16 @@ def get_angle(cs, cf):
 
 
 def optim_gain_noise_helpfun(
-        gma_s, s_mat, f_targ, f_min, r_n, z_0, gma_opt, abs_gma_out_targ):
+        gma_s, f_targ, f_min, r_n, z_0, gma_opt, gma_in):
     """
     This function performs the calculations for the optimize_gma_s function
     and returns the target function evaluated with the supplied parameters.
 
     Parameters
     ----------
-    gmma_s: complex
+    gma_s: complex
         The source reflection coefficient. The reflection coefficient seen
         from the transistor looking at the input matching network.
-    s_mat : matrix_like
-        A 2x2 matrx containing the S-parameters.
     f_targ : dict
         The target noise figure of the transistor.
     f_min : float
@@ -598,34 +593,27 @@ def optim_gain_noise_helpfun(
     gma_opt : complex
         Reflection coefficient resulting from an optimum source impedance that
         results in minimum noise figure.
-    abs_gma_out_targ : float
-        The maximum absolute value of gma_out allowed by the VSWRout
-        constraints.
+    gma_in : complex
+        Gamma_in
 
     Returns
     -------
     tuple
         float
-            The real part of the target function. This function should be
-            linked to the real part of gamma_s.
+            The magnitude of the target function.
         float
-            The imaginary part of then target function. This function should
-            be liked to the imaginary part of gamma_s.
+            The magnitude of the target function.
     """
-    gma_out = get_gma_out(s_mat, gma_s)
-    gma_l = gma_out.conjugate()
-    gma_in = get_gma_in(s_mat, gma_l)
-
     cf, rf = noise_figure_circle(
-        f=f_targ, f_min=f_min, r_n=r_n, z_0=50, gma_opt=gma_opt)
+        f=f_targ, f_min=f_min, r_n=r_n, z_0=z_0, gma_opt=gma_opt)
     cs, rs = input_const_gain_circle(gma_s, gma_in)
     v = get_angle(cs, cf)
     out = ((cf-cs) - (rf+rs)*np.exp(1j*v))/abs(cf-cs)
-    return np.real(out), np.imag(out)
+    return abs(out), abs(out)
 
 
 def optimize_gma_s(
-        gma_s_start, s_mat, vswr_out_targ, f_targ, f_min, r_n, z_0, gma_opt):
+        gma_s_start, f_targ, f_min, r_n, z_0, gma_opt, gma_in):
     """
     This function runs the equation solving code for gamma_s. It attempts to
     optimize gamma_s such that the constant noise circle and the constant gain
@@ -638,10 +626,6 @@ def optimize_gma_s(
         Initial value of gamma_s, the source reflection coefficient. The
         reflection coefficient seen from the transistor looking at the input
         matching network.
-    s_mat : matrix_like
-        A 2x2 matrx containing the S-parameters.
-    vswr_out_targ : float
-        The VSWRout target value.
     f_targ : float
         The noise figure target value.
     f_min : float
@@ -653,18 +637,21 @@ def optimize_gma_s(
     gma_opt : complex
         Reflection coefficient resulting from an optimum source impedance that
         results in minimum noise figure.
+    gma_in : complex
+        Gamma_in
 
     Returns
     -------
     complex
         The optimized gamma_s.
     """
-    abs_gma_out_targ = (vswr_out_targ-1)/(vswr_out_targ+1)
-    gma_s = spo.fsolve(lambda gma_s: optim_gain_noise_helpfun(
-        gma_s[0]+1j*gma_s[1], s_mat, f_targ, f_min, r_n, z_0, gma_opt,
-        abs_gma_out_targ),
-                       [np.real(gma_s_start), np.imag(gma_s_start)])
-    return gma_s[0]+1j*gma_s[1]
+    gma_s = spo.fsolve(
+        lambda gma_s: optim_gain_noise_helpfun(
+            gma_s[0]*np.exp(1j*gma_s[1]), f_targ,
+            f_min, r_n, z_0, gma_opt, gma_in),
+        [np.abs(gma_s_start), np.angle(gma_s_start)], xtol=1e-12)
+    gma_s_1 = gma_s[0]*np.exp(1j*gma_s[1])
+    return gma_s[0]*np.exp(1j*gma_s[1])
 
 
 def optimize_vswr_helpfun(abs_gma_sys_targ, gma_transistor, gma_matching):
@@ -689,9 +676,13 @@ def optimize_vswr_helpfun(abs_gma_sys_targ, gma_transistor, gma_matching):
     -------
     tuple
         float
-            The magnitude of the residual.
+            The residual of the target system reflection coefficient compared
+            to the system reflection coefficient calclated using the current
+            parameters.
         float
-            The magnitude of the residual.
+            The residual of the target system reflection coefficient compared
+            to the system reflection coefficient calclated using the current
+            parameters.
     """
     out = (abs_gma_sys_targ
            - get_abs_gma_ports(gma_transistor, gma_matching))
@@ -724,18 +715,47 @@ def optimize_vswr_matching(vswr_targ, gma_transistor, gma_matching_start):
     gma_matching = spo.fsolve(
         lambda gma_matching: optimize_vswr_helpfun(
             abs_gma_sys_targ, gma_transistor,
-            gma_matching[0]+1j*gma_matching[1]),
-        [np.real(gma_matching_start), np.imag(gma_matching_start)])
-    return gma_matching[0]+1j*gma_matching[1]
+            gma_matching[0]*np.exp(1j*gma_matching[1])),
+        [np.abs(gma_matching_start), np.angle(gma_matching_start)])
+    return gma_matching[0]*np.exp(1j*gma_matching[1])
 
 
-"""
 def optimize_gain_helpfun(s_mat, gma_src, gma_ld, g_t_targ):
+    """
+    Evaluates then target function for satisfying the target gain.
+
+    Parameters
+    ----------
+    s_mat : matrix_like
+        A 2x2 matrx containing the S-parameters.
+    gma_src : complex
+        The source reflection coefficient. The reflection coefficient seen
+        from the transistor looking at the input matching network.
+    gma_ld the load reflection coefficient. The reflection coefficient seen
+        from the transistor looking at the output matching network.
+    g_t_targ : float
+        Target transducer gain.
+
+    Returns
+    -------
+    tuple
+        float
+            The residual of the target gain compared to the gain calculated
+            using the current parameters.
+        float
+            The residual of the target gain compared to the gain calculated
+            using the current parameters.
+        float
+            The residual of the target gain compared to the gain calculated
+            using the current parameters.
+        float
+            The residual of the target gain compared to the gain calculated
+            using the current parameters.
+    """
     gma_in = get_gma_in(s_mat, gma_ld)
-    out = g_t_targ - get_g_t(s_mat, gma_in, gma_src, gma_ld)
-    print(out)
+    curr_g_t = get_g_t(s_mat, gma_in, gma_src, gma_ld)
+    out = g_t_targ - curr_g_t
     return (out, out, out, out)
-"""
 
 
 def optimize_gain(s_mat, gma_src, gma_ld, g_t_targ):
@@ -746,14 +766,13 @@ def optimize_gain(s_mat, gma_src, gma_ld, g_t_targ):
     ----------
     s_mat : matrix_like
         A 2x2 matrx containing the S-parameters.
-    gma_in : complex
-        Input reflection coefficient. The reflection coefficient seen from
-        the input matching network looking at the transistor.
     gma_src : complex
         The source reflection coefficient. The reflection coefficient seen
         from the transistor looking at the input matching network.
     gma_ld the load reflection coefficient. The reflection coefficient seen
         from the transistor looking at the output matching network.
+    g_t_targ : float
+        Target transducer gain.
 
     Returns
     -------
@@ -762,7 +781,8 @@ def optimize_gain(s_mat, gma_src, gma_ld, g_t_targ):
     """
     gma_matching = spo.fsolve(
         lambda gma_matching: optimize_gain_helpfun(
-            s_mat, gma_matching[0]+1j*gma_matching[1],
-            gma_matching[2]+1j*gma_matching[3], g_t_targ),
-        [np.real(gma_ld), np.imag(gma_ld), np.real(gma_src), np.imag(gma_src)])
-    return gma_matching[0]+1j*gma_matching[1], gma_matching[2]+1j*gma_matching[3]
+            s_mat, gma_matching[0]*np.exp(1j*gma_matching[1]),
+            gma_matching[2]*np.exp(1j*gma_matching[3]), g_t_targ),
+        [np.abs(gma_ld), np.angle(gma_ld), np.abs(gma_src), np.angle(gma_src)])
+    return (gma_matching[0]*np.exp(1j*gma_matching[1]),
+            gma_matching[2]*np.exp(1j*gma_matching[3]))
