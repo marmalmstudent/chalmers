@@ -31,14 +31,144 @@
 \usepackage{epstopdf}
 \DeclareGraphicsExtensions{.eps}
 
-\title{Handin 4 and 5: Large signal capacitance modelling}
-\author{Marcus Malmquist, marmalm}
+\title{Formula sheet EME102}
+\author{Marcus Malmquist}
 \date{\today}
 
 \begin{document}
 \maketitle
 
 \section{Amplifier design}\label{sec:1}
-
-
+The amplifier is unconditionally stable if $K>1$ and $|\Delta|<1$. Page 567, Pozar.
+\begin{equation}
+  \label{eq:delta}
+  \Delta = s_{11}s_{22} - s_{12}s_{21}
+\end{equation}
+\begin{equation}
+  \label{eq:k}
+  K = \frac{1 - |s_{11}|^2 - |s_{22}|^2 + |\Delta|^2}{2|s_{12}s_{21}|}
+\end{equation}
+Page 562, Pozar.
+\begin{equation}
+  \label{eq:gma_in}
+  \Gamma_\text{in} = s_{11} + \frac{s_{12}s_{21}\Gamma_L}{1 - s_{22}\Gamma_L}
+\end{equation}
+\begin{equation}
+  \label{eq:gma_out}
+  \Gamma_\text{out} = s_{22} + \frac{s_{12}s_{21}\Gamma_S}{1 - s_{11}\Gamma_S}
+\end{equation}
+$\Gamma_a$ is used to control $\text{VSWR}_\text{in}$ and $\Gamma_b$ is used to control $\text{VSWR}_\text{out}$.
+\begin{subequations}
+  \label{eq:gma_sys}
+  \begin{align}
+    \text{VSWR}_t=\frac{1+|\Gamma_i|}{1-|\Gamma_i|}, \\
+    |\Gamma_i|=\bigg|\frac{\Gamma_t - \Gamma_m^*}{1 - \Gamma_t\Gamma_m}\bigg|, \\
+    \begin{cases}
+      i=a \\
+      t=\text{in}, & \text{for $\text{VSWR}_\text{in}$} \\
+      m=S
+    \end{cases}, \\
+    \begin{cases}
+      i=b \\
+      t=\text{out}, & \text{for $\text{VSWR}_\text{out}$} \\
+      m=L
+    \end{cases}
+  \end{align}
+\end{subequations}
+Page 580, Pozar.
+\begin{equation}
+  \label{eq:noise}
+  F=F_\text{min} + \frac{4R_N}{Z_0}\frac{|\Gamma_S-\Gamma_\text{opt}|^2}{(1-|\Gamma_S|^2)|1+\Gamma_\text{opt}|^2}
+\end{equation}
+Page 561, Pozar.
+\begin{subequations}
+  \label{eq:g_t}
+  \begin{align}
+    G_S &= \frac{1-|\Gamma_S|^2}{|1-\Gamma_\text{in}\Gamma_S|^2}, \\
+    G_0 &= |s_{21}|^2, \\
+    G_L &= \frac{1-|\Gamma_L|^2}{|1-s_{22}\Gamma_L|^2}, \\
+    G_T &= G_SG_0G_L
+  \end{align}
+\end{subequations}
+\begin{equation}
+  \label{eq:g_a}
+  G_A = \frac{|s_{21}|^2(1-|\Gamma_S|^2)}{|1-s_{11}\Gamma_S|^2(1-|\Gamma_\text{out}|^2)}
+\end{equation}
+\begin{equation}
+  \label{eq:tradeoff}
+  M_\text{G-F-tradeoff}=\frac{F-1}{1-1/G_A}
+\end{equation}
+\subsection{Design for maximum gain}
+Simultaneous conjugate matching, page 572, Pozar.
+\begin{subequations}
+  \label{eq:simultaneous_conjugate}
+  \begin{align}
+    \Gamma_S=\frac{B_1\pm\sqrt{B_1^2-4|C_1|^2}}{2C_1}, \\
+    \Gamma_L=\frac{B_2 \pm\sqrt{B_2^2-4|C_2|^2}}{2C_2}, \\
+    \begin{cases}
+      B_1=1+|s_{11}|^2-|s_{22}|^2-|\Delta|^2, \\
+      B_2=1+|s_{22}|^2-|s_{11}|^2-|\Delta|^2, \\
+      C_1=s_{11}-\Delta s^*_{22}, \\
+      C_2=s_{22}-\Delta s^*_{11}
+    \end{cases}
+  \end{align}
+\end{subequations}
+Maximum stable gain, page 572, Pozar.
+\begin{equation}
+  \label{eq:g_msg}
+  G_\text{MSG}=\frac{|s_{21}|}{|s_{12}|}
+\end{equation}
+\subsection{Stabilizing resistance}
+The resistor needed to stabilize an unstable resistor. $C_i$ is the center of the stability circle and $R_i$ is then radius of the stability circle.
+\begin{subequations}
+  \label{eq:stabilize}
+  \begin{align}
+    R_\text{stab} &= Z_0\bigg(\frac{|C_i+\lambda|^2-R^2_i}{(R_i+1)^2-|C_i|^2}\bigg)^\lambda, \\
+    \lambda &= 
+    \begin{cases}
+      +1 & \text{for shunt resistor} \\
+      -1 & \text{for series resistor}
+    \end{cases}, \\
+    i &= 
+    \begin{cases}
+      L & \text{for load} \\
+      S & \text{for source}
+    \end{cases}
+  \end{align}
+\end{subequations}
+\subsection{Stability circles}
+Input stability circle in the $\Gamma$-plane. Page 566, Pozar.
+\begin{subequations}
+  \label{eq:stab_input}
+  \begin{align}
+    R_s &= \bigg|\frac{s_{12}s_{21}}{|s_{11}|^2 - |\Delta|^2}\biggl|, \\
+    C_s &= \frac{(s_{11} - \Delta s_{22}^*)^*}{|s_{11}|^2 - |\Delta|^2}
+  \end{align}
+\end{subequations}
+Output stability circle in the $\Gamma$-plane. Page 566, Pozar.
+\begin{subequations}
+  \label{eq:stab_output}
+  \begin{align}
+    R_L &= \bigg|\frac{s_{12}s_{21}}{|s_{22}|^2 - |\Delta|^2}\biggl|, \\
+    C_L &= \frac{(s_{22} - \Delta s_{11}^*)^*}{|s_{22}|^2 - |\Delta|^2}
+  \end{align}
+\end{subequations}
+Constant noise figure circles. Page 580, Pozar
+\begin{subequations}
+  \label{eq:const_noise}
+  \begin{align}
+    N &= \frac{F - F_\text{min}}{4R_N/Z_0}|1+\Gamma_\text{opt}|^2, \\
+    C_F &= \frac{\Gamma_\text{opt}}{N + 1}, \\
+    R_F &= \frac{\sqrt{N(N + 1 - |\Gamma_\text{opt}|^2)}}{N + 1}
+  \end{align}
+\end{subequations}
+Constant $G_S$ circles, page 576 Pozar.
+\begin{subequations}
+  \label{eq:const_gain}
+  \begin{align}
+    g_s &= \frac{1-|\Gamma_S|^2}{|1-\Gamma_\text{in}\Gamma_S|^2}(1-|\Gamma_\text{in}|^2), \\
+    C_S &= \frac{g_s\Gamma_\text{in}^*}{1 - (1 - g_s)|\Gamma_\text{in}|^2}, \\
+    R_S &= \frac{\sqrt{1-g_s}(1-|\Gamma_\text{in}|^2)}{1 - (1 - g_s)|\Gamma_\text{in}|^2}
+  \end{align}
+\end{subequations}
 \end{document}

@@ -1,4 +1,5 @@
 import numpy as np
+import scipy as sp
 import scipy.optimize as spo
 
 
@@ -547,6 +548,45 @@ def get_g_t(s_mat, gma_in, gma_src, gma_ld):
         The transducer power gain.
     """
     return get_g_s(gma_in, gma_src)*get_g_0(s_mat)*get_g_l(gma_ld, s_mat)
+
+
+def simultaneous_conj_matching(s_mat, delta):
+    """
+    Matches Gamma_S and Gamma_L simultaneously for conjugate matching.
+
+    Parameters
+    ----------
+    s_mat : matrix_like
+        A 2x2 matrx containing the S-parameters.
+
+    Returns
+    -------
+    tuple
+        complex
+            Reflection coefficient as seen looking from the input of the
+            transistor towards the source.
+        complex
+            Reflection coefficient as seen looking from the output of the
+            transistor towards the load.
+    """
+    b_1 = 1 + abs(s_mat[0, 0])**2 - abs(s_mat[1, 1])**2 - abs(delta)**2
+    b_2 = 1 + abs(s_mat[1, 1])**2 - abs(s_mat[0, 0])**2 - abs(delta)**2
+    c_1 = s_mat[0, 0] - delta*s_mat[1, 1].conjugate()
+    c_2 = s_mat[1, 1] - delta*s_mat[0, 0].conjugate()
+    # print("%.3f, %.3f, %.3f, %.3f" %(np.abs(c_1), np.angle(c_1), np.abs(c_2), np.angle(c_2)))
+    if (abs(s_mat[0, 0]) < 1):
+        gamma_s_conj_matched = ((b_1 - sp.sqrt(b_1**2 - 4*abs(c_1)**2))
+                                / (2*c_1))
+    else:
+        gamma_s_conj_matched = ((b_1 + sp.sqrt(b_1**2 - 4*abs(c_1)**2))
+                                / (2*c_1))
+    if (abs(s_mat[1, 1]) < 1):
+        gamma_l_conj_matched = ((b_2 - sp.sqrt(b_2**2 - 4*abs(c_2)**2))
+                                / (2*c_2))
+    else:
+        gamma_l_conj_matched = ((b_2 + sp.sqrt(b_2**2 - 4*abs(c_2)**2))
+                                / (2*c_2))
+    return gamma_s_conj_matched, gamma_l_conj_matched
 
 
 def get_angle(cs, cf):
