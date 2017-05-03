@@ -1,10 +1,10 @@
-""" 80 columns
---------------------------------------------------------------------------------
+""" hw1.py
+This code is adapted for 80 columns
+|------------------------------------------------------------------------------|
 """
 import numpy as np
 import numpy.fft as npfft
 import scipy as sp
-import scipy.optimize as spo
 import scipy.signal as sps
 import scipy.io
 import matplotlib.pyplot as plt
@@ -12,6 +12,10 @@ import ha1utils
 
 
 gen_data_dir = "HWE1/"
+c = 2.99792458e8
+prefixes = {
+    -12: "p", -9: "n", -6: "u", -3: "m", 0: "",
+    3: "k", 6: "M", 9: "G", 12: "T"}
 
 
 def load_gen_data():
@@ -42,6 +46,16 @@ def load_gen_data():
         out.update({name: np.array(
             scipy.io.loadmat(gen_data_dir + name + ".mat")[name][0])})
     return out
+
+
+def scale_factor(val):
+    """
+    Calculates what (log10-)scale factor should be used, i.e.
+    -3 means that val can be expressed in kilo-,
+    6 means that val can be expressed in micro-,
+    in integer form with 1-3 significant digits.
+    """
+    return -3*int(np.floor(np.log10(val)/3))
 
 
 def fft(signal):
@@ -125,7 +139,7 @@ def interpolate_signal(signal, time, interp_factor):
     This function interpolates the signal signal(time) by the interpolation
     factor interp_factor, using zero-padding in the frequency domain. The
     time vector time must be evenly spaced.
-    The output si is the interpolated signal at the imterpolation times ti.
+    The output is the interpolated signal at the imterpolation times ti.
 
     Parameters
     ----------
@@ -148,7 +162,7 @@ def interpolate_signal(signal, time, interp_factor):
     dt = time_spacing(time)  # signal time spacing
     signal_len = n_samples*interp_factor   # interpolated signal length
     # time vector for interpolate signal
-    ti = time[0] + sp.arange(n_samples)*dt/interp_factor
+    ti = time[0] + sp.arange(signal_len)*dt/interp_factor
     si = sps.resample(signal, signal_len)  # interpolated signal
     return si, ti
 
@@ -252,7 +266,23 @@ def signal_plot(signal, time):
     ax2.set_xlabel('Frequency [MHz]')
     ax2.set_ylabel('Magnitude of the Fourier transform.')
     plt.grid(True)
-    # plt.show()
+    plt.show()
+
+
+def plot_sqr_magn(signal, time):
+    """
+    plot_sqr_magn(signal, time)
+
+    Plots the magnitude of the signal squaredas a function of distance
+    (in km)
+    """
+    plt_sig = abs(signal)**2
+    fig = plt.figure()
+    ax1 = fig.add_subplot(111)
+    ax1.plot(time*c/2*1e-3, plt_sig/max(plt_sig))
+    ax1.set_xlabel('Distance [km]')
+    ax1.set_ylabel('Relative magnitude')
+    plt.show()
 
 
 def find_bandiwdth(signal, center_idx, threshold=1/np.sqrt(2)):
@@ -288,7 +318,7 @@ def task1(tx_envelope, tx_sample_time, tx_signal, rx_sample_time, rx_signal):
     # find bandwidth to estimate amplitude of signal
     center_idx = ha1utils.find_ordered_zero(
         tx_sample_time, int(len(tx_sample_time)-1), int(0))
-    # assum center_idx != -1
+    # assume center_idx != -1
 
     """ pulse width
     u(t) = 1/sqrt(t_p)*rect(t/t_p)*exp(-i*pi*gma*t^2)
@@ -340,37 +370,41 @@ def task1(tx_envelope, tx_sample_time, tx_signal, rx_sample_time, rx_signal):
 
     # plot received signal
     # signal_plot(rx_signal, rx_sample_time)
-    # can not detect any target because of te noise
+    # can not detect any target because of the noise
+
+    return pulse_width, bw[0]  # workarround due to lack of time
 
 
 def task2(rx_sample_time, rx_signal, tx_signal):
     rx_quad_demod = quadrature_demodulation(rx_signal, rx_sample_time)
-    """
-    signal_plot(tx_envelope, tx_sample_time)
-    signal_plot(rx_quad_demod, rx_sample_time)
-    plt.show()
-    """
-    print(len(tx_sample_time), len(rx_sample_time), len(rx_sample_time)/len(tx_sample_time))
-    t_s = time_spacing(tx_sample_time)
-    t = np.arange(tx_sample_time[0], rx_sample_time[-1], t_s)
-    s_tx = np.zeros(len(t), dtype=np.complex128)
-    s_rx = np.zeros(len(t), dtype=np.complex128)
-    """
-    s_tx = np.hstack((np.flipud(tx_signal.conjugate()), np.zeros(len(t)-len(tx_signal),
-                                          dtype=np.complex128)))
-    s_rx = np.hstack((rx_quad_demod, np.zeros(len(t)-len(rx_quad_demod),
-                                              dtype=np.complex128)))
-    """
-    middle_1 = int((np.average(rx_sample_time)-tx_sample_time[0])/t_s)
-    s_tx[middle_1-int(len(tx_sample_time)/2):middle_1+int(len(tx_sample_time)/2)+1] = np.flipud(tx_signal.conjugate())
-    s_rx[middle_1-int(len(rx_sample_time)/2)-1:] = rx_quad_demod
+    rx_filtered = matched_filter(rx_quad_demod, tx_signal)
+    # plot_sqr_magn(rx_filtered, rx_sample_time)
+    return rx_filtered  # workarround due to lack of time
 
-    rx_filteded = matched_filter(s_rx, s_tx)
-    # plt.plot(t, np.real(rx_filteded))
-    # plt.show()
+
+def task3(rx_filtered, rx_sample_time, pulse_width, bandwidth):
+    rx_interp, t_interp = interpolate_signal(
+        rx_filtered, rx_sample_time, 100)
+    sig = abs(rx_interp)**2
+    bandwidths = ha1utils.findbw(sig/max(sig), 1/np.sqrt(2), 0.2)
+    bw_3db = ((bandwidths[0, 1] - bandwidths[0, 0])
+              * time_spacing(t_interp))
+    sf = scale_factor(bw_3db)
+    print("3 dB width of first peak: %.1f [%ss]"
+          % (time_spacing(t_interp) *
+             (bandwidths[0, 1]-bandwidths[0, 0]) * 10**(sf),
+             prefixes[-sf]))
+    range_res = pulse_width*c/2
+    sf = scale_factor(range_res)
+    print("Theoretical range resolution: %.1f [%sm]"
+          % (range_res * 10**(sf), prefixes[-sf]))
+    print("Time-bandwidth product: %.1f"
+          % (bw_3db*bandwidth))
+    # plot_sqr_magn(rx_interp, t_interp)
 
 
 if __name__ == "__main__":
+    # Data needs to be loaded from the .mat files.
     gen_data = load_gen_data()
     carrier_freq = gen_data["fc"]
     rx_signal = gen_data["sr"]
@@ -378,8 +412,9 @@ if __name__ == "__main__":
     tx_sample_time = gen_data["t"]
     rx_sample_time = gen_data["tr"]
     tx_envelope = gen_data["ut"]
-    print(len(rx_sample_time), rx_sample_time[-1])
-    print(len(tx_sample_time), tx_sample_time[0])
-    
-    # task1(tx_envelope, tx_sample_time, tx_signal, rx_sample_time, rx_signal)
-    task2(rx_sample_time, rx_signal, tx_signal)
+
+    pulse_width, bandwidth = task1(
+        tx_envelope, tx_sample_time,
+        tx_signal, rx_sample_time, rx_signal)
+    rx_filtered = task2(rx_sample_time, rx_signal, tx_signal)
+    task3(rx_filtered, rx_sample_time, pulse_width, bandwidth)

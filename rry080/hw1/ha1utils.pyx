@@ -300,7 +300,7 @@ cpdef numpy.ndarray[numpy.uint32_t, ndim=1] \
 
     # Compute number of occurences
     cdef numpy.ndarray[numpy.uint32_t, ndim=1] maxvalIndex =\
-        numpy.empty(100, dtype=numpy.uint32)
+        numpy.empty(1000, dtype=numpy.uint32)
     cdef numpy.uint32_t nMaxvals = occurence_of(
         maxval, signal, maxvalIndex, tol)
 

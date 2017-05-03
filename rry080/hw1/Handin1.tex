@@ -1,0 +1,109 @@
+\documentclass[12pt,a4paper]{article}
+
+%\pdfoutput=1
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{mathabx}
+\usepackage{lmodern}
+\usepackage{units}
+\usepackage{siunitx}
+\usepackage{icomma}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{color}
+\usepackage{pgf}
+\DeclareMathOperator{\acosh}{arccosh}
+\newcommand{\N}{\ensuremath{\mathbbm{N}}}
+\newcommand{\Z}{\ensuremath{\mathbbm{Z}}}
+\newcommand{\Q}{\ensuremath{\mathbbm{Q}}}
+\newcommand{\R}{\ensuremath{\mathbbm{R}}}
+\newcommand{\C}{\ensuremath{\mathbbm{C}}}
+\newcommand{\rd}{\ensuremath{\mathrm{d}}}
+\newcommand{\id}{\ensuremath{\,\rd}}
+\usepackage{hyperref}
+%\usepackage{a4wide} % puts the page numbering further down the page.
+\usepackage{pdfpages}
+\usepackage{epstopdf}
+\DeclareGraphicsExtensions{.eps}
+
+\title{Handin 1}
+\author{Marcus Malmquist, marmalm}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{README}
+I solved this task using Python (and Cython where needed for performance increase) because the MATLAB license is too restrictive for me to use. The Cython module ``ha1utils.pyx'' can be compiled by running ``setup.py.'' If needed I can demonstrate the code.
+
+\section{Task 1}\label{sec:1}
+The relevant values can be seen in Table~\ref{tab:task1} and the plots in Figure~\ref{fig:task1_ut}, Figure~\ref{fig:task1_st}, Figure~\ref{fig:task1_sr}.
+The pulse width was calculated using (\ref{eq:pulse_width}).
+
+The bandwidth was calculated using \textit{findbw} in ``ha1utils.pyx'' which locates peak values, separates them into bands, finds the center points in the band and then calculates the bandwidth given a lower threshold.
+
+The Nyquist rate was calculated using $f_\text{Nyquist}=2f_\text{max}$. where $f_\text{max}$ is the highest frequency inside the band ($\approx \SI{35}{\mega\hertz}$).
+
+The apparent carrier frequency is lower than the actual carrier frequency because of the FFT-shift.
+\begin{equation}
+  \label{eq:pulse_width}
+  |u(0)|=\frac{1}{|\sqrt{t_p}|}
+\end{equation}
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|}\hline
+    $t_p$ & $\SI{6.7}{\micro\second}$ \\
+    $B$ & $\SI{73.2}{\mega\hertz}$ \\
+    $B$ & $\SI{73.2}{\mega\hertz}$ \\
+    $t_pB$ & 487.7 \\
+    $f_\text{Nyquist}$ & $\SI{73.1}{\mega\hertz}$ \\
+    $f_s$ & $\SI{195}{\mega\hertz}$ \\
+    $f_{ca}$ & $\SI{48.7}{\mega\hertz}$ \\ \hline
+  \end{tabular}
+  \caption{The requested values for task 1}
+  \label{tab:task1}
+\end{table}
+\begin{figure}[h]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/task1_ut.pgf}}}
+  \caption{Transmitted envelope.}
+  \label{fig:task1_ut}
+\end{figure}
+\begin{figure}[h]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/task1_st.pgf}}}
+  \caption{Transmitted signal.}
+  \label{fig:task1_st}
+\end{figure}
+\begin{figure}[h]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/task1_sr.pgf}}}
+  \caption{Received signal.}
+  \label{fig:task1_sr}
+\end{figure}
+
+\section{Task 2}\label{sec:2}
+The pulse-compressed signal can be seen in Figure~\ref{fig:task2}, where three targets can be seen, located $\SI{7.4}{\kilo\meter}$, $\SI{8.4}{\kilo\meter}$ and $\SI{8.4}{\kilo\meter}$ away.
+\begin{figure}[h]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/task2.pgf}}}
+  \caption{Received signal after demodulation and pulse compression.}
+  \label{fig:task2}
+\end{figure}
+\section{Task 3}\label{sec:3}
+The first peak of the interpolated signal can be seen in Figure~\ref{fig:task3}. The $\SI{3}{\deci\bel}$ width was calculated to be $\SI{9.4}{\nano\second}$ using \textit{findbw} in ``ha1utils.pyx.''
+The theoretical range resolution should be $\SI{1}{\kilo\metre}$ since the echos have to be separated by the pulse width in order to be able to separated after pulse compresison, and the pulse width is $\SI{6.7}{\micro\second}$.
+The theoretical range resolution seems unrealistically high but the pulse is also very long.
+
+The time-bandwidth product after pulse compression is 0.7 ($t_p=\SI{9.4}{\nano\second}$, $B$ from Table~\ref{tab:task1}). The theoretical time-bandwidth product should because 0.5 since the modulation allows for double spectral efficienty. The simulated time-bandiwdth product is significantly lower (and close to the theoretical value) after pulse compresison.
+\begin{figure}[h]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/task3_100.pgf}}}
+  \caption{Received signal after demodulation, pulse compression and interpolation using an interpolation number of 100.}
+  \label{fig:task3}
+\end{figure}
+\end{document}
