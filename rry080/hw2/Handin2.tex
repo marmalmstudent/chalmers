@@ -1,0 +1,57 @@
+\documentclass[12pt,a4paper]{article}
+
+%\pdfoutput=1
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{mathabx}
+\usepackage{lmodern}
+\usepackage{units}
+\usepackage{siunitx}
+\usepackage{icomma}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{color}
+\usepackage{pgf}
+\DeclareMathOperator{\acosh}{arccosh}
+\newcommand{\N}{\ensuremath{\mathbbm{N}}}
+\newcommand{\Z}{\ensuremath{\mathbbm{Z}}}
+\newcommand{\Q}{\ensuremath{\mathbbm{Q}}}
+\newcommand{\R}{\ensuremath{\mathbbm{R}}}
+\newcommand{\C}{\ensuremath{\mathbbm{C}}}
+\newcommand{\rd}{\ensuremath{\mathrm{d}}}
+\newcommand{\id}{\ensuremath{\,\rd}}
+\usepackage{hyperref}
+%\usepackage{a4wide} % puts the page numbering further down the page.
+\usepackage{pdfpages}
+\usepackage{epstopdf}
+\DeclareGraphicsExtensions{.eps}
+
+\title{Handin 1}
+\author{Marcus Malmquist, marmalm}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{README}
+I solved this task using GNU Ocrave because the MATLAB license is too restrictive for me to use. The syntax and function names are mostly identical to that of MATLAB so it shuld be possible to run the scripts in MATLAB.
+
+\section{Task 1}\label{sec:1}
+\begin{equation}
+  \label{eq:resolution}
+  \Delta f \Delta t \geq 1
+\end{equation}
+\subsection{a}
+The $\SI{3}{\deci\bel}$ bandwidth of the signal is approximately $\SI{130}{\hertz}$. Using (\ref{eq:resolution}) the resolution is $\SI{7.69}{\milli\second}$.
+
+\begin{figure}[h]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/task1.tex}}}
+  \caption{The spectrum plot of the average along the major axis of the fft of the minor axes.}
+  \label{fig:task1_ut}
+\end{figure}
+\end{document}
