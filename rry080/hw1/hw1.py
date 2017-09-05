@@ -237,7 +237,7 @@ def quadrature_demodulation(signal, time):
     return p
 
 
-def signal_plot(signal, time):
+def signal_plot(signal, time, a1px=None, a2px=None):
     """
     signal_plot(signal,time)
 
@@ -257,31 +257,52 @@ def signal_plot(signal, time):
     # Plot the real part of the signal in the time domain
     ax1 = fig.add_subplot(211)
     ax1.plot(time*1e6, sp.real(signal))
+    if a1px is not None:
+        a1pt = [time[i] for i in a1px]
+        a1ps = [sp.real(signal[i]) for i in a1px]
+        ax1.plot(a1pt, a1ps, linestyle=None, marker='o',
+                 markeredgecolor='#ff0000', markerfacecolor=None,
+                 markersize=5)
     ax1.set_xlabel('Time [$\mu$s]')
     ax1.set_ylabel('Real part of the signal')
 
     # Plot the magnitude of the Fourier transform
     ax2 = fig.add_subplot(212)
-    ax2.plot(f*1e-6, abs(signal_fd)/max(abs(signal_fd)))
+    ma_sig = max(abs(signal_fd))
+    ax2.plot(f*1e-6, abs(signal_fd)/ma_sig)
+    if a2px is not None:
+        a2pf = [f[i]*1e-6 for i in a2px]
+        a2ps = [abs(signal_fd[i])/ma_sig for i in a2px]
+        ax2.plot(a2pf, a2ps, linestyle='', marker='o',
+                 markeredgecolor='#ff0000', markerfacecolor='None',
+                 markersize=5)
     ax2.set_xlabel('Frequency [MHz]')
     ax2.set_ylabel('Magnitude of the Fourier transform.')
     plt.grid(True)
-    plt.show()
+    plt.show(block=False)
 
 
-def plot_sqr_magn(signal, time):
+def plot_sqr_magn(signal, time, a1px=None):
     """
     plot_sqr_magn(signal, time)
 
-    Plots the magnitude of the signal squaredas a function of distance
+    Plots the magnitude of the signal squared as a function of distance
     (in km)
     """
     plt_sig = abs(signal)**2
     fig = plt.figure()
     ax1 = fig.add_subplot(111)
-    ax1.plot(time*c/2*1e-3, plt_sig/max(plt_sig))
+    msig = max(plt_sig)
+    d = time*c/2
+    ax1.plot(d*1e-3, plt_sig/msig)
+    if a1px is not None:
+        a1pd = [d[i]*1e-3 for i in a1px]
+        a1ps = [plt_sig[i]/msig for i in a1px]
+        ax1.plot(a1pd, a1ps, linestyle='', marker='o',
+                 markeredgecolor='#ff0000', markerfacecolor='None',
+                 markersize=5)
     ax1.set_xlabel('Distance [km]')
-    ax1.set_ylabel('Relative magnitude')
+    ax1.set_ylabel('Relative (squared) magnitude')
     plt.show()
 
 
@@ -311,9 +332,8 @@ def find_bandiwdth(signal, center_idx, threshold=1/np.sqrt(2)):
     return lower, upper
 
 
-def task1(tx_envelope, tx_sample_time, tx_signal, rx_sample_time, rx_signal):
-    # plot transmitted envelope
-    # signal_plot(tx_envelope, tx_sample_time)
+def task1(tx_envelope, tx_sample_time, tx_signal, rx_sample_time, rx_signal,
+          pltfig=False):
 
     # find bandwidth to estimate amplitude of signal
     center_idx = ha1utils.find_ordered_zero(
@@ -333,10 +353,14 @@ def task1(tx_envelope, tx_sample_time, tx_signal, rx_sample_time, rx_signal):
     freq = frequency_vector(n_sampl, f_sampl)
     env_fft = abs(fft(tx_envelope))
     bandwidth = np.transpose(ha1utils.findbw(
-        env_fft/max(env_fft), 1/np.sqrt(2), 5e-2))
+        env_fft/max(env_fft), 1/np.sqrt(2), 0.6))
     lower = bandwidth[0]
     upper = bandwidth[1]
     bw = (upper-lower) * f_sampl/n_sampl
+    if pltfig:
+        # plot transmitted envelope
+        signal_plot(tx_envelope, tx_sample_time,
+                    a2px=np.array([upper, lower]))
     print("Bandwidth: %.1f MHz" % (bw[0]*1e-6))
 
     # bandwidth product
@@ -363,36 +387,44 @@ def task1(tx_envelope, tx_sample_time, tx_signal, rx_sample_time, rx_signal):
     print("Apparent carrier frequency: %.1f MHz" % (f_center*1e-6))
     print("Carrier frequency: %.1f MHz" % (carrier_freq*1e-6))
     # apparent carrier frequency and carrier frequency different because
-    # f_ac = f_c - floor(f_c/f_s) which is a result from an fftshift
+    # f_ac = f_c - floor(f_c/f_s) which is a result from an fftshif
 
-    # plot transmitted signal
-    # signal_plot(tx_signal, tx_sample_time)
+    if pltfig:
+        # plot transmitted signal
+        signal_plot(tx_signal, tx_sample_time,
+                    a2px=np.array([upper, lower]))
 
-    # plot received signal
-    # signal_plot(rx_signal, rx_sample_time)
+    if pltfig:
+        # plot received signal
+        signal_plot(rx_signal, rx_sample_time)
     # can not detect any target because of the noise
 
     return pulse_width, bw[0]  # workarround due to lack of time
 
 
-def task2(rx_sample_time, rx_signal, tx_signal):
+def task2(rx_sample_time, rx_signal, tx_envelope, pltfig=False):
     rx_quad_demod = quadrature_demodulation(rx_signal, rx_sample_time)
-    rx_filtered = matched_filter(rx_quad_demod, tx_signal)
-    # plot_sqr_magn(rx_filtered, rx_sample_time)
+    rx_filtered = matched_filter(rx_quad_demod,
+                                 sp.conjugate(sp.flipud(tx_envelope)))
+    if pltfig:
+        plot_sqr_magn(rx_filtered, rx_sample_time)
     return rx_filtered  # workarround due to lack of time
 
 
-def task3(rx_filtered, rx_sample_time, pulse_width, bandwidth):
+def task3(rx_filtered, rx_sample_time, pulse_width, bandwidth, pltfig=False):
     rx_interp, t_interp = interpolate_signal(
         rx_filtered, rx_sample_time, 100)
     sig = abs(rx_interp)**2
-    bandwidths = ha1utils.findbw(sig/max(sig), 1/np.sqrt(2), 0.2)
-    bw_3db = ((bandwidths[0, 1] - bandwidths[0, 0])
+    bandwidths = sp.transpose(ha1utils.findbw(
+        sig/max(sig), 1/2, 0.6))
+    lower = bandwidths[0]
+    upper = bandwidths[1]
+    bw_3db = ((upper[0] - lower[0])
               * time_spacing(t_interp))
     sf = scale_factor(bw_3db)
     print("3 dB width of first peak: %.1f [%ss]"
           % (time_spacing(t_interp) *
-             (bandwidths[0, 1]-bandwidths[0, 0]) * 10**(sf),
+             (upper[0]-lower[0]) * 10**(sf),
              prefixes[-sf]))
     range_res = pulse_width*c/2
     sf = scale_factor(range_res)
@@ -400,7 +432,10 @@ def task3(rx_filtered, rx_sample_time, pulse_width, bandwidth):
           % (range_res * 10**(sf), prefixes[-sf]))
     print("Time-bandwidth product: %.1f"
           % (bw_3db*bandwidth))
-    # plot_sqr_magn(rx_interp, t_interp)
+    if pltfig:
+        plot_sqr_magn(rx_interp[int(len(rx_interp)/4):int(len(rx_interp)/2)],
+                      t_interp[int(len(t_interp)/4):int(len(t_interp)/2)],
+                      a1px=sp.array([upper[0]-int(len(t_interp)/4), lower[0]-int(len(t_interp)/4)]))
 
 
 if __name__ == "__main__":
@@ -415,6 +450,6 @@ if __name__ == "__main__":
 
     pulse_width, bandwidth = task1(
         tx_envelope, tx_sample_time,
-        tx_signal, rx_sample_time, rx_signal)
-    rx_filtered = task2(rx_sample_time, rx_signal, tx_signal)
-    task3(rx_filtered, rx_sample_time, pulse_width, bandwidth)
+        tx_signal, rx_sample_time, rx_signal, pltfig=False)
+    rx_filtered = task2(rx_sample_time, rx_signal, tx_signal, pltfig=False)
+    task3(rx_filtered, rx_sample_time, pulse_width, bandwidth, pltfig=True)

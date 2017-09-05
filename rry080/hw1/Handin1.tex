@@ -46,9 +46,11 @@ The pulse width was calculated using (\ref{eq:pulse_width}).
 
 The bandwidth was calculated using \textit{findbw} in ``ha1utils.pyx'' which locates peak values, separates them into bands, finds the center points in the band and then calculates the bandwidth given a lower threshold.
 
-The Nyquist rate was calculated using $f_\text{Nyquist}=2f_\text{max}$. where $f_\text{max}$ is the highest frequency inside the band ($\approx \SI{35}{\mega\hertz}$).
+The Nyquist rate was calculated using $f_\text{Nyquist}=2f_\text{max}$ (defined as $f_\text{Nyquist}\geq 2f_\text{max}$, valid for periodic signals). where $f_\text{max}$ is the highest frequency inside the band ($\approx \SI{35}{\mega\hertz}$).
 
-The apparent carrier frequency is lower than the actual carrier frequency because of the FFT-shift.
+The apparent carrier frequency is lower than the actual carrier frequency because $f_s\ll f$.
+
+The sampling frequency can be acquired using $f_s=\frac{1}{t_s}$ and the apparent sampling frequency was found by taking the point between the upper and lower frequency points ($\frac{f_\text{upper}+f_\text{lower}}{2}$).
 \begin{equation}
   \label{eq:pulse_width}
   |u(0)|=\frac{1}{|\sqrt{t_p}|}
@@ -57,10 +59,9 @@ The apparent carrier frequency is lower than the actual carrier frequency becaus
   \centering
   \begin{tabular}{|l|l|}\hline
     $t_p$ & $\SI{6.7}{\micro\second}$ \\
-    $B$ & $\SI{73.2}{\mega\hertz}$ \\
-    $B$ & $\SI{73.2}{\mega\hertz}$ \\
-    $t_pB$ & 487.7 \\
-    $f_\text{Nyquist}$ & $\SI{73.1}{\mega\hertz}$ \\
+    $B$ & $\SI{72.4}{\mega\hertz}$ \\
+    $t_pB$ & 482.4 \\
+    $f_\text{Nyquist}$ & $\SI{72.3}{\mega\hertz}$ \\
     $f_s$ & $\SI{195}{\mega\hertz}$ \\
     $f_{ca}$ & $\SI{48.7}{\mega\hertz}$ \\ \hline
   \end{tabular}
@@ -95,11 +96,14 @@ The pulse-compressed signal can be seen in Figure~\ref{fig:task2}, where three t
   \label{fig:task2}
 \end{figure}
 \section{Task 3}\label{sec:3}
-The first peak of the interpolated signal can be seen in Figure~\ref{fig:task3}. The $\SI{3}{\deci\bel}$ width was calculated to be $\SI{9.4}{\nano\second}$ using \textit{findbw} in ``ha1utils.pyx.''
-The theoretical range resolution should be $\SI{1}{\kilo\metre}$ since the echos have to be separated by the pulse width in order to be able to separated after pulse compresison, and the pulse width is $\SI{6.7}{\micro\second}$.
-The theoretical range resolution seems unrealistically high but the pulse is also very long.
+The first peak of the interpolated signal can be seen in Figure~\ref{fig:task3}. The $\SI{3}{\deci\bel}$ width was calculated to be $\SI{10.5}{\nano\second}$ using \textit{findbw} in ``ha1utils.pyx'' (using $\SI{3}{\deci\bel}$ as threshold).
+The theoretical resolution should be $\SI{6.12}{\nano\second}$ (from (\ref{eq:rangeres})).
+\begin{equation}
+  \label{eq:rangeres}
+  t_{r\SI{3}{\deci\bel}}=\frac{1}{calc}\delta_{r\SI{3}{\deci\bel}} = \frac{0.886}{2B}
+\end{equation}
 
-The time-bandwidth product after pulse compression is 0.7 ($t_p=\SI{9.4}{\nano\second}$, $B$ from Table~\ref{tab:task1}). The theoretical time-bandwidth product should because 0.5 since the modulation allows for double spectral efficienty. The simulated time-bandiwdth product is significantly lower (and close to the theoretical value) after pulse compresison.
+The time-bandwidth product after pulse compression is 0.8 ($t_p=\SI{10.5}{\nano\second}$, $B$ from Table~\ref{tab:task1}). The theoretical time-bandwidth product should be 0.2215.
 \begin{figure}[h]
   \centering
   \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/task3_100.pgf}}}

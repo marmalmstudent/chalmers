@@ -1,25 +1,15 @@
+function out=createHfilter(nl, PRF_v)
 % createHfilter
-%
-% This is an incomplete script that creates the Hfilter.
-%
 
-Ronear=10446;       %Distance to near range [m]
-delta_R=4;          %Pixel size in range direction [m]
-NOfRows=350;        %Number of rows
-
-
-lambda=0.0566;      %Wavelength [m]
-
-n=-700:700;         %Update n after you determine the filter length!
+Ronear = 10446;       %Distance to near range [m]
+delta_R = 4;          %Pixel size in range direction [m]
+NOfRows = 350;        %Number of rows
+lambda = 0.0566;      %Wavelength [m]
+# n = -721:720;         %Update n after you determine the filter length!
+n = -nl/2:nl/2-1;         %Update n after you determine the filter length!
+% PRF_v = 2.33;       %PRF divided by aircraft speed [m^-1]
 
 
-PRF_v=   (Put your PRF_v here.)  ;         %PRF divided by aircraft speed [m^-1]
-
-
-Hfilter=zeros(NOfRows,length(n));
-
-for row=1:NOfRows
-    R= (R should be dependent on row number.);
-    Hfilter(row,:)= (Put your filter expression here.);
-end;
-
+r = Ronear + delta_R*(0:NOfRows-1);
+[N, R] = meshgrid(n, r);
+out = exp(2j*pi ./ (lambda*R*PRF_v^2) .* N.^2);

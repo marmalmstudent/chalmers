@@ -8,6 +8,7 @@
 \usepackage{amsmath}
 \usepackage{mathabx}
 \usepackage{lmodern}
+\usepackage{listings}
 \usepackage{units}
 \usepackage{siunitx}
 \usepackage{icomma}
@@ -29,29 +30,203 @@
 \usepackage{pdfpages}
 \usepackage{epstopdf}
 \DeclareGraphicsExtensions{.eps}
+\def\changemargin#1#2{\list{}{\rightmargin#2\leftmargin#1}\item[]}
+\let\endchangemargin=\endlist
 
-\title{Handin 1}
+\title{Handin 2}
 \author{Marcus Malmquist, marmalm}
 \date{\today}
 
 \begin{document}
 \maketitle
 
-\section{README}
-I solved this task using GNU Ocrave because the MATLAB license is too restrictive for me to use. The syntax and function names are mostly identical to that of MATLAB so it shuld be possible to run the scripts in MATLAB.
-
 \section{Task 1}\label{sec:1}
-\begin{equation}
-  \label{eq:resolution}
-  \Delta f \Delta t \geq 1
-\end{equation}
-\subsection{a}
-The $\SI{3}{\deci\bel}$ bandwidth of the signal is approximately $\SI{130}{\hertz}$. Using (\ref{eq:resolution}) the resolution is $\SI{7.69}{\milli\second}$.
-
-\begin{figure}[h]
+The $\SI{3}{\deci\bel}$ bandwidth of the signal is approximately $\SI{200}{\hertz}$ from Figure~\ref{fig:task1_ut}.
+\begin{figure}[ht!]
   \centering
   \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/task1.tex}}}
   \caption{The spectrum plot of the average along the major axis of the fft of the minor axes.}
   \label{fig:task1_ut}
 \end{figure}
+
+\subsection{a}
+Using (\ref{eq:resolution_b}) the resolution is $\SI{660}{\milli\metre}$.
+\begin{equation}
+  \label{eq:resolution_b}
+  \Delta x = \frac{v}{B}
+\end{equation}
+
+\subsection{b}
+Using (\ref{eq:resolution_a}) the resolution is $\SI{650}{\milli\metre}$.
+\begin{equation}
+  \label{eq:resolution_a}
+  \Delta x = \frac{D_a}{2}
+\end{equation}
+
+\subsection{c}
+When the antenna size decreases the gain will increase and we may have to increase the frequency which can lead to atmospheric attenuation depending on what frequency we choose.
+Ultimately the resolution will be limited by the wavelength.
+
+\section{Task 2}
+Since $\Theta_a=\SI{3}{\degree}$ we can apprximate $\sin(\Theta_a)\approx\Theta_a$.
+Assuming $R_{0,\text{near}}$ is defined in the centering of the cell, the distance to the furthest cell would because $R_{0,\text{far}}=R_{0,\text{near}}+349\Delta R$.
+
+Using (\ref{eq:rangeres}) the synthetic aperture length, $L$, would be $\SI{620}{\metre}$.
+\begin{equation}
+  \label{eq:rangeres}
+  L = R_{0,\text{far}}\Theta_a= (R_{0,\text{near}}+349\Delta R)\Theta_a
+\end{equation}
+The synthetic aperture length in terms of pixels is $1442$.
+
+\section{Task 3}
+\begin{figure}[ht!]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/task3.tex}}}
+  \caption{The squared magnitude of the array \textit{oneline}.}
+  \label{fig:task3_ut}
+\end{figure}
+The filter can be seen in (\ref{eq:filter}) where $R_0=R_{0,\text{near}}+36\Delta R$.
+\begin{equation}
+  \label{eq:filter}
+  h(n) = \exp\Bigg(j2\pi\frac{n^2}{\lambda R_0\big(\frac{\text{PRF}}{v}\big)^2}\Bigg)
+\end{equation}
+\begin{figure}[ht!]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/task3.tex}}}
+  \caption{The squared magnitude of the array \textit{oneline}.}
+  \label{fig:task3_ut}
+\end{figure}
+\begin{figure}[ht!]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/task3_filter.tex}}}
+  \caption{The squared magnitude of the array \textit{oneline}.}
+  \label{fig:task3_filter_ut}
+\end{figure}
+
+There filtered signal can be seen in Figure~\ref{fig:task3_filter_ut}. The filtering process took $\SI{725.031}{\micro\second}$ using \textbf{FFT} and $\SI{42.1069}{\milli\second}$ using \textbf{Convolution}.
+
+The fft algorithm is fastest when the length of the array is a multiple of 2, so 4096 is a good length. The fft algorithm is slower when the signal length has large prime factors. When instead using the length 4093 (which is a prime number), the fft computation is an order of magnitude slower while the convolution is unchanged.
+
+\section{Task 4}
+From Figure~\ref{fig:task4_ut} we see that the optimal value for $\frac{\text{PRF}}{v}$ is 2.33. Since the resolution is quite low it is difficult to estimate the bandwidth of the signal for $\frac{\text{PRF}}{v}=2.33$ but it is approximately 2 data points wide, which translates into a resolution of $2\Delta A = \SI{1}{\metre}$. This is quite close to the results from Section~\ref{sec:1} given the precision.
+\begin{figure}[ht!]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/task4.tex}}}
+  \caption{The squared magnitude of the array \textit{oneline} for different values of $\frac{\text{PRF}}{v}$.}
+  \label{fig:task4_ut}
+\end{figure}
+
+\section{Task 5}
+The image and signal data can be seen in Figure~\ref{fig:task5_img} and Figure~\ref{fig:task5_sig}. The image extracted by professionals have a lot higher contrast than the image I produced (this could have been done some post-processing of the image), but my image presents about the same information.
+\begin{figure}[ht!]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\includegraphics[width=\textwidth]{figures/task5.png}}}
+  \caption{The filtered image.}
+  \label{fig:task5_img}
+\end{figure}
+\begin{figure}[ht!]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/task5.tex}}}
+  \caption{The squared magnitude of the filtered signal data.}
+  \label{fig:task5_sig}
+\end{figure}
+
+\section{Task 6}
+\subsection{a}
+The pre-filtered power spectrum can be seen in Figure~\ref{fig:task6_pre} and the post-filtered power spectrum can be seen in Figure~\ref{fig:task6_post}. The Bandwidth is the same in both images but there post-filtered signal has been lowpass filtered.
+\begin{figure}[ht!]
+  \centering
+    \begin{subfigure}[b]{0.59\textwidth}
+        \noindent\makebox[\textwidth]{\scalebox{0.50}{\input{figures/task1.tex}}}
+        \subcaption{Power spectrum pre-filtering.}
+        \label{fig:task6_pre}
+    \end{subfigure}\\
+    \begin{subfigure}[b]{0.59\textwidth}
+        \noindent\makebox[\textwidth]{\scalebox{0.50}{\input{figures/task6.tex}}}
+        \subcaption{Power spectrum post-filtering.}
+        \label{fig:task6_post}
+    \end{subfigure}
+  \caption{The pre- and post-filtered power spectrum for the signal data.}
+  \label{fig:task6}
+\end{figure}
+
+\subsection{b}
+The filter characteristics shown in Figure~\ref{fig:task6_filter} shows that the filter is a low-pass filter with an upper uniform frequency offset approximately 0.45, which corresponds to $\SI{140}{\hertz}$ (since 0.5 corresponds to 155 from \textit{spectrumplot}).
+\begin{figure}[ht!]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.90}{\input{figures/task6_filter.tex}}}
+  \caption{Filter characteristics.}
+  \label{fig:task6_filter}
+\end{figure}
+
+The signal spreads in time but is constant in frequency as it propagates, so the higher resolution likely comes from reconstructing the original signal in time using the filter.
+
+\section{Task 7}
+There nine-look filtered image can be seen in Figure~\ref{fig:task7_nlf}. The image now looks a lost clearer compared to Figure~\ref{fig:task7_f}.
+
+The bandwidth of the peak seen in Figure~\ref{fig:task7_ps} is now about 9 points wide which means that the resolution has decreased to $9\Delta A=\SI{3.9}{\metre}$. The pixel size is unaffected by the multi-looking process.
+\begin{figure}[ht!]
+  \centering
+    \begin{subfigure}[b]{0.59\textwidth}
+        \noindent\makebox[\textwidth]{\includegraphics[width=\textwidth]{figures/task5.png}}
+        \subcaption{The filtered image.}
+        \label{fig:task7_f}
+    \end{subfigure}\\
+    \begin{subfigure}[b]{0.59\textwidth}
+        \noindent\makebox[\textwidth]{\includegraphics[width=\textwidth]{figures/task7.png}}
+        \subcaption{The nine-look filtered image.}
+        \label{fig:task7_nlf}
+    \end{subfigure}
+  \caption{The images before and after nine-look.}
+  \label{fig:task7_img}
+\end{figure}
+\begin{figure}[ht!]
+  \centering
+    \begin{subfigure}[b]{0.59\textwidth}
+        \noindent\makebox[\textwidth]{\scalebox{0.50}{\input{figures/task7_spct1.tex}}}
+        \subcaption{Power spectrum of nine-look image}
+        \label{fig:task7_ps_whole}
+    \end{subfigure}\\
+    \begin{subfigure}[b]{0.59\textwidth}
+        \noindent\makebox[\textwidth]{\scalebox{0.50}{\input{figures/task7_spct2.tex}}}
+        \subcaption{Power spectrum of nine-look image close to its peak.}
+        \label{fig:task7_ps_zoom}
+    \end{subfigure}
+  \caption{The power spectrum of the nine-look image (same row as \textit{oneline})}
+  \label{fig:task7_ps}
+\end{figure}
+
+
+\newpage
+\appendix
+\section{Code}
+\subsection{Task 1}
+\begin{changemargin}{-3cm}{0.5cm}
+\lstinputlisting[language=MATLAB]{task1.m}
+\end{changemargin}
+\subsection{Task 2}
+\begin{changemargin}{-3cm}{0.5cm}
+\lstinputlisting[language=MATLAB]{task2.m}
+\end{changemargin}
+\subsection{Task 3}
+\begin{changemargin}{-3cm}{0.5cm}
+\lstinputlisting[language=MATLAB]{task3.m}
+\end{changemargin}
+\subsection{Task 4}
+\begin{changemargin}{-3cm}{0.5cm}
+\lstinputlisting[language=MATLAB]{task4.m}
+\end{changemargin}
+\subsection{Task 5}
+\begin{changemargin}{-3cm}{0.5cm}
+\lstinputlisting[language=MATLAB]{task5.m}
+\end{changemargin}
+\subsection{Task 6}
+\begin{changemargin}{-3cm}{0.5cm}
+\lstinputlisting[language=MATLAB]{task6.m}
+\end{changemargin}
+\subsection{Task 7}
+\begin{changemargin}{-3cm}{0.5cm}
+\lstinputlisting[language=MATLAB]{task7.m}
+\end{changemargin}
+
 \end{document}

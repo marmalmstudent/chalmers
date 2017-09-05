@@ -1,0 +1,83 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\title{Förberedelser: K6}
+\author{Marcus Malmquist}
+\date{Maj 2016}
+
+\begin{document}
+\maketitle
+\section{Räkneuppgifter}
+\subsection*{Task 1}
+\begin{equation}
+  \begin{array}{l}
+    ^{108}_{\text{  }47}\text{Ag} \text{ }(t_{1/2}=2.4\text{ min})\rightarrow ^{108}_{\text{  }46}\text{Cd}\text{ (stable)}+e^{-}+\bar{\nu} \\
+     \\
+    ^{110}_{\text{  }47}\text{Ag} \text{ }(t_{1/2}=25\text{ sec})\rightarrow ^{110}_{\text{  }46}\text{Cd}\text{ (stable)}+e^{-}+\bar{\nu}
+    \end{array}
+\end{equation}
+\subsection*{Task 2}
+\begin{center}
+  \begin{tabular}{|l|l|}\hline
+    m_{\text{Ag-plate}} & 10\cdot10^{-3}\text{ kg} \\
+    \rho_{\text{Ag}} & 10.49\cdot10^{3}\text{ kg/m$^3$} \\
+    V_{\text{Ag-plate}} & 9.53\cdot10^{-7}\text{ m}^{3} \\
+    c_{^{107}\text{Ag}} & 51.8\text{ }\% \\
+    c_{^{109}\text{Ag}} & 48.2\text{ }\% \\
+    \Phi & 10^{10}\text{ neutrons/(m$^2$s)} \\
+    \sigma(^{107}\text{Ag}) & 35\cdot10^{-28}\text{ m}^{2} \\
+    \sigma(^{109}\text{Ag}) & 89\cdot10^{-28}\text{ m}^{2} \\
+    M_{\text{Ag}} & 107.87\cdot10^{-3}\text{ kg/mol} \\
+    N_{A} & 6.022\cdot10^{23}\\ \hline
+  \end{tabular}
+\end{center}\\
+$N$ scattering nucleis per unit volume would then be
+\begin{equation}
+  N=\frac{n_{^{x}\text{Ag}}}{V_{^{x}\text{Ag}}}=\frac{m_{^{x}\text{Ag}}}{M_{\text{Ag}}}N_{A}\frac{\rho_{\text{Ag}}}{m_{^{x}\text{Ag}}}=\frac{\rho_{\text{Ag}}}{M_{\text{Ag}}}N_{A}
+\end{equation}
+The reaction rate is
+\begin{equation}
+  R=\Phi N\sigma
+\end{equation}
+Assuming all of the Ag atoms are taking part in the process, the production rate becomes
+\begin{equation}
+  \begin{array}{l}
+    ^{108}\text{Ag}:c_{^{107}\text{Ag}}RV_{\text{Ag-plate}} = 1.68\cdot10^{-18} \text{ mol$\cdot$ s$^{-1}$} \\
+    ^{110}\text{Ag}:c_{^{109}\text{Ag}}RV_{\text{Ag-plate}} = 3.98\cdot10^{-18} \text{ mol$\cdot$ s$^{-1}$}
+  \end{array}
+\end{equation}
+\subsection*{Task 3}
+If a neutron initially have 5 MeV and looses half of its energy each time it collides with a hydrogen nucleus, the number of collisions needed to slow down the neutron to 25 meV is
+\begin{equation}
+  n=\lceil\log_2{\frac{E_0}{E_n}}\rceil=\lceil\log_2{\frac{5\cdot10^{6}}{25\cdot10^{-3}}}\rceil=28
+\end{equation}
+The cemical formula for the paraffin used in the calculations are C$_{58}$H$_{118}$.
+\begin{center}
+  \begin{tabular}{|l|l|}\hline
+    $n_{\text{H}}$ & 118 \\
+    $\sigma$ & 20\cdot10^{-28}\text{ m$^2$} \\
+    $M_{\text{C}}$ & 12.0107\text{ g/mol} \\
+    $M_{\text{H}}$ & 1.00794\text{ g/mol} \\
+    $M_{\text{C$_{58}$H$_{118}$}}$ & 0.81556\text{ kg/mol} \\
+    $\rho_{\text{C$_{58}$H$_{118}$}}$ & 900\text{ kg/m$^3$} \\ \hline
+  \end{tabular}
+\end{center}\\
+Using the values from the tabular above, the mean free path for a neutron
+\begin{equation}
+  l=\frac{1}{\Sigma}=\frac{1}{N\sigma}=\frac{M_{\text{paraffin}}}{n_{H}\rho_{\text{paraffin}}N_{A}\sigma}=6.4\text{ mm}
+\end{equation}
+There is no upper limit of paraffin thickness as an infinite thickness would guarantee that all of the incomming neutrons have had its energy decreased to 25 meV.
+The upperlower limit, however, of the paraffin thickness would then logically be how far the average neutron would move untill its energy has decreased to 25 meV, which is
+\begin{equation}
+  \text{min}(\Delta x)=nl=179\text{ mm}
+\end{equation}
+\subsection*{Task 4}
+The activation time to reach 90\% saturation is found when
+\begin{equation}
+  N_{act}(t)=\frac{R}{\lambda}(1-e^{-\lambda t})=0.9\frac{R}{\lambda}
+\end{equation}
+The half-life of the isotope used in these calculations are $t_{1/2}=180$ seconds, which makes the saturation time
+\begin{equation}
+  t_{90\%}=-\frac{\log{0.1}}{\lambda}=598\text{ s}=10\text{ min}
+\end{equation}
+\end{document}

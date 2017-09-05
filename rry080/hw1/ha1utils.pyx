@@ -152,7 +152,7 @@ cdef numpy.ndarray[numpy.uint32_t, ndim=2] \
         numpy.zeros((arrLen, arrLen), dtype=numpy.uint32)
     pairs[0][0] = index_darr[0]
     cdef int i, j = 1, pair = 0
-    for i in range(arrLen):
+    for i in range(arrLen-1):
         if dist[i] > peak_sep_cond:
             pair += 1
             j = 0
@@ -300,7 +300,7 @@ cpdef numpy.ndarray[numpy.uint32_t, ndim=1] \
 
     # Compute number of occurences
     cdef numpy.ndarray[numpy.uint32_t, ndim=1] maxvalIndex =\
-        numpy.empty(1000, dtype=numpy.uint32)
+        numpy.empty(10000, dtype=numpy.uint32)
     cdef numpy.uint32_t nMaxvals = occurence_of(
         maxval, signal, maxvalIndex, tol)
 

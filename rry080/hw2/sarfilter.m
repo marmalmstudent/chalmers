@@ -9,7 +9,7 @@ function output=sarfilter(H, signal)
 % Patrik Dammert 1998-02-23
 %
 % Smal modifications made to avoid alliasing effects.
-% Björn Hallberg 2002-12-27
+% Bjï¿½rn Hallberg 2002-12-27
 % get right linear convolution from ifft.
 % Wiebke Aldenhoff 2016-05-24
 
