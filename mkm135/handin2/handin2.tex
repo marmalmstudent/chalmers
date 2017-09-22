@@ -1,0 +1,202 @@
+\documentclass[12pt,a4paper]{article}
+% \documentclass[12pt,a4paper]{IEEEtran}
+
+%\pdfoutput=1
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{mathabx}
+\usepackage{lmodern}
+\usepackage{units}
+\usepackage{siunitx}
+\usepackage{icomma}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{courier}
+\usepackage{color}
+\usepackage{pgf}
+\newcommand{\N}{\ensuremath{\mathbbm{N}}}
+\newcommand{\Z}{\ensuremath{\mathbbm{Z}}}
+\newcommand{\Q}{\ensuremath{\mathbbm{Q}}}
+\newcommand{\R}{\ensuremath{\mathbbm{R}}}
+\newcommand{\C}{\ensuremath{\mathbbm{C}}}
+\newcommand{\rd}{\ensuremath{\mathrm{d}}}
+\newcommand{\id}{\ensuremath{\,\rd}}
+\usepackage{hyperref}
+% \usepackage{a4wide} % puts the page numbering further down the page.
+\usepackage{pdfpages}
+\usepackage{epstopdf}
+\DeclareGraphicsExtensions{.eps}
+
+\title{Handin 2 MKM135}
+\author{Marcus Malmquist}
+\date{\today}
+
+\begin{document}
+\maketitle
+\section{Task 1}
+The logic gate can be seen in Figure~\ref{fig:schematic}.
+The input are the terminals $A$ and $B$ and the output is $V_{\text{out}}$.
+Table~\ref{tab:logic} describes the truth table of the of the gate, which is a \texttt{NAND} gate (equivalent of \texttt{\textasciitilde(A \& B)} in most programming languages).
+\begin{table}[!ht]
+  \centering
+  \caption{The truth table of the logic gate shown i Figure~\ref{fig:schematic}. 1 and 0 corresponds to a voltage of $V_{\text{DD}}$ $(=\SI{3.3}{\volt})$ and 0 respectively.}
+  \begin{tabular}{|c|c|c|}\hline
+    $A$ & $B$ & $V_{\text{out}}$ \\\hline
+    0 & 0 & 1 \\\hline
+    1 & 0 & 1 \\\hline
+    0 & 1 & 1 \\\hline
+    1 & 1 & 0 \\\hline
+  \end{tabular}
+  \label{tab:logic}
+\end{table}
+
+\begin{figure}[!ht]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{1}{\input{figures/circuit.pdf_t}}}
+  \caption{The figure depicts a schematic of the logic gate. $\text{T}_{1}$ and $\text{T}_{2}$ are of type PMOSFET while $\text{T}_{3}$ and $\text{T}_{4}$ are of type NMOSFET.}
+  \label{fig:schematic}
+\end{figure}
+
+\section{Task 2}
+Two time instants are used in this task.
+Table~\ref{tab:terminals} shows the voltage at the terminals in Figure~\ref{fig:schematic} at different points in time.
+Table~\ref{tab:transistors} shows the state of the transistors in Figure~\ref{fig:schematic} at different points in time.
+
+\begin{table}[!ht]
+  \centering
+  \caption{The state of the terminals in Figure~\ref{fig:schematic} during some time instants.}
+  \begin{tabular}{|c|c|c|c|}\hline
+    $t$ & $A$ & $B$ & $V_{\text{out}}$ \\\hline
+    $t_1$ & $V_{\text{DD}}$ & 0 & $V_{\text{DD}}$ \\\hline
+    $t_2$ & $V_{\text{DD}}$ & $V_{\text{DD}}$ & $V_{\text{DD}}$ \\\hline
+  \end{tabular}
+  \label{tab:terminals}
+\end{table}
+
+\begin{table}[!ht]
+  \centering
+  \caption{The state of the transistors in Figure~\ref{fig:schematic} during some time instants.}
+  \begin{tabular}{|c|c|c|c|c|}\hline
+    $t$ & $\text{T}_1$ & $\text{T}_2$ & $\text{T}_3$ & $\text{T}_4$ \\\hline
+    $t_1$ & \texttt{ON} & \texttt{OFF} & \texttt{OFF} & \texttt{ON} \\\hline
+    $t_2$ & \texttt{OFF} & \texttt{OFF} & \texttt{ON} & \texttt{ON} \\\hline
+  \end{tabular}
+  \label{tab:transistors}
+\end{table}
+
+\subsection{a}
+When $t=t_1$ we see from Table~\ref{tab:transistors} that $\text{T}_4$ is turned on but $\text{T}_3$ is turned off.
+This means that the drain-source current for $\text{T}_3$, $I_{DS,\text{T}_3}$, must be 0 which in turn means that the drain-source current for $\text{T}_4$, $I_{DS,\text{T}_4}$, must also be 0 and $V_x=0$.
+
+\subsection{b}
+When $t=t_2$ we see from Table~\ref{tab:transistors} that $\text{T}_4$ and $\text{T}_3$ is turned on.
+The drain-source and gate-source voltages for $\text{T}_4$ and $\text{T}_3$ can be seen in Table~\ref{tab:volt}.
+The threshold voltage for the NMOSFET transistors, $V_{Tn}$, is $\SI{0.45}{\volt}$.
+Under the assumption that $I_{DS} \gg I_{GS}$ (which is valid since $V_{DS,\text{T}_3} = V_{GS,\text{T}_3}$), we can assume that $I_{DS,\text{T}_3} = I_{DS,\text{T}_4}$.
+
+\begin{table}[!ht]
+  \centering
+  \caption{The drain-source and gate-source voltages for $\text{T}_4$ and $\text{T}_3$ when $t=t_2$.}
+  \begin{tabular}{|c|c|c|}\hline
+     & $\text{T}_3$ & $\text{T}_4$ \\\hline
+    $V_{DS}$ & $V_{\text{DD}} - V_x$ & $V_x$ \\\hline
+    $V_{GS}$ & $V_{\text{DD}} - V_x$ & $V_{\text{DD}}$ \\\hline
+  \end{tabular}
+  \label{tab:volt}
+\end{table}
+
+Using the relation $I_{DS,\text{T}_3} = I_{DS,\text{T}_4}$ previously explained, we can find $V_x$ using (\ref{eq:ids}).
+For $\text{T}_3$, it is clear that $V_{GS}-V_T \leq V_{DS}$ but for $\text{T}_4$, we have to assume that $V_{GS}-V_T \geq V_{DS}$.
+This is a reasonable assumption since $\text{T}_4$ and $\text{T}_3$ are the same type of transistor, and $V_{Tn}\approx 0.14V_{\text{DD}}$ so $V_x \leq 0.86V_{\text{DD}}$ should definitely be satisfied.
+Solving (\ref{eq:eq}) yields $V_x=\frac{2-\sqrt{2}}{2}(V_{\text{DD}}-V_{Tn})\approx \SI{0.83}{\volt}$.
+\begin{equation}
+  \label{eq:ids}
+  I_{DS}=
+  \begin{cases}
+    \frac{\mu C_{ox} W}{L} \Big[(V_{GS}-V_T)V_{DS} - \frac{V^2_{DS}}{2} \Big] & V_{GS}-V_T \geq V_{DS} \\
+    \frac{\mu C_{ox} W}{2 L} (V_{GS}-V_T)^2 & V_{GS}-V_T \leq V_{DS}
+  \end{cases}
+\end{equation}
+
+\begin{equation}
+  \begin{array}{clcl}
+    \label{eq:eq}
+     & (V_{GS,\text{T}_4}-V_{Tn})V_{DS,\text{T}_4} - \frac{V^2_{DS,\text{T}_4}}{2} & = & \frac{1}{2}(V_{GS,\text{T}_3}-V_{Tn})^2 \\
+    \Leftrightarrow & (V_{\text{DD}}-V_{Tn})V_x - \frac{V^2_x}{2} & = & \frac{1}{2}((V_{\text{DD}}-V_{Tn})-V_x)^2  
+  \end{array}
+\end{equation}
+
+\subsection{c}
+The crossection of the NMOSFET and PMOSFET can be seen in Figure~\ref{fig:crossection}.
+
+\begin{figure}[!ht]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.7}{\input{figures/cmos.pdf_t}}}
+  \caption{The figure depicts a schematic of the logic gate. $\text{T}_{1}$ and $\text{T}_{2}$ are of type PMOSFET while $\text{T}_{3}$ and $\text{T}_{4}$ are of type NMOSFET.}
+  \label{fig:crossection}
+\end{figure}
+
+\section{Task 3}
+A few different transistors are described in Table~\ref{tab:transistors}.
+\begin{table}[!ht]
+  \centering
+  \caption{Advantages and drawbacks for some transistors}
+  \begin{tabular}{|l|l|}\hline
+    & MOSFET (Metal-oxide-semiconductor field effect transistor) \\\hline
+    Advantages & Large input impedance \\\hline
+    Drawbacks & high RC constant when switching \\\hline
+    & JFET (Junction field effect transistor) \\\hline
+    Advantages & High gain, low noise \\\hline
+    Drawbacks & - \\\hline
+    & MESFET (Metal Semiconductor field effect transistor) \\\hline
+    Advantages & Fast \\\hline
+    Drawbacks & Expensive \\\hline
+    & MODFET (modulation-doped field effect transistor) \\\hline
+    Advantages & High operation frequency, high gain \\\hline
+    Drawbacks & - \\\hline
+  \end{tabular}
+  \label{tab:transistors}
+\end{table}
+
+\section{Task 4}
+\subsection{problem 1}
+Does the logic gate shown i Figure~\ref{fig:schematic} change functionality if NMOSFET and PMOSFET transistors have switched places, i.e. $\text{T}_{1}$ and $\text{T}_{2}$ are NMOSFET and $\text{T}_{3}$ and $\text{T}_{4}$ are PMOSFET?
+If so, what type of logic gate does it become?
+\subsection{solution 1}
+The circuit becomes an \texttt{OR} gate.
+The truth table can be seen in Table~\ref{tab:logicp1}.
+\begin{table}[!ht]
+  \centering
+  \caption{The truth table of the logic gate shown i Figure~\ref{fig:schematic}, but where NMOSFET and PMOSFET transistors have switched places. 1 and 0 corresponds to a voltage of $V_{\text{DD}}$ $(=\SI{3.3}{\volt})$ and 0 respectively.}
+  \begin{tabular}{|c|c|c|}\hline
+    $A$ & $B$ & $V_{\text{out}}$ \\\hline
+    0 & 0 & 0 \\\hline
+    1 & 0 & 1 \\\hline
+    0 & 1 & 1 \\\hline
+    1 & 1 & 1 \\\hline
+  \end{tabular}
+  \label{tab:logicp1}
+\end{table}
+
+% \begin{figure}[!ht]
+%   \begin{subfigure}{0.49\textwidth}
+%     \centering
+%     \noindent\makebox[\textwidth]{\scalebox{0.3}{\includegraphics{figures/task1.pdf}}}
+%     \caption{$I-V$ curves for diode a, b, c and ideal; lin-lin scale.}
+%     \label{fig:iv_linlin}
+%   \end{subfigure}
+%   \begin{subfigure}{0.49\textwidth}
+%     \centering
+%     \noindent\makebox[\textwidth]{\scalebox{0.3}{\includegraphics{figures/task2.pdf}}}
+%     \caption{$I-V$ curves for diode a, b, c and ideal; lin-log scale.}
+%     \label{fig:iv_linlog}
+%   \end{subfigure}
+%   \caption{The figures depics the resulting $I-V$ curves for diode a, b, c and ideal using both linear and logarithmic scaling on the I-axis.}
+%   \label{fig:iv_curves}
+% \end{figure}
+
+\end{document}
