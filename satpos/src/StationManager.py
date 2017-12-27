@@ -6,6 +6,7 @@ import mpl_toolkits.mplot3d.axes3d as axes3d
 import numpy as np
 
 
+pi = np.pi
 factor = 1e-6
 R = 6371000 * factor
 
@@ -33,18 +34,6 @@ def tpr_to_xyz(t, p, r):
     return (x, y, z)
 
 
-"""
-container for all active stations.
-handles loading position for all stations into staiton xi,eta,zeta
-
-fin station with highest zeta movement
-subtract eta-xi movement of station with highest zeta movement from
-all stations.
-create line between station with highest zeta movement and all other
-stations and project those stations eta-xi movement to tha
-"""
-
-
 class StationManager(object):
     def __init__(self, respath, stations, years):
         self.sm = dict()
@@ -53,16 +42,15 @@ class StationManager(object):
 
     def print_station_data(self):
         for mdl in self.sm.values():
-            print(("Total move for > %5s: Lon:%+6.3f m, "
-                   + "Lat:%+6.3f m, Rad:%+6.3f m, "
-                   + "Lat-Lon:%+6.3f m, Lat-Lon-Rad:%+6.3f m")
-                  % (mdl.acro, mdl.total_lon_move(),
-                     mdl.total_lat_move(), mdl.total_rad_move(),
-                     math.sqrt(mdl.total_lon_move()**2
-                               + mdl.total_lat_move()**2),
-                     math.sqrt(mdl.total_lon_move()**2
-                               + mdl.total_lat_move()**2
-                               + mdl.total_rad_move()**2)))
+            tom = mdl.total_lon_move()*100
+            tam = mdl.total_lat_move()*100
+            trm = mdl.total_rad_move()*100
+            print(("Total move for > %5s: Lon:%+6.2f cm, "
+                   + "Lat:%+6.2f cm, Rad:%+6.2f cm, "
+                   + "Lat-Lon:%+6.2f cm, Lat-Lon-Rad:%+6.2f cm")
+                  % (mdl.acro, tom, tam, trm,
+                     math.sqrt(tom**2 + tam**2),
+                     math.sqrt(tom**2 + tam**2 + trm**2)))
 
     def load_station_ref_coords(self, respath, fname):
         coords_data = csvl("%s/%s" % (respath, fname))
@@ -82,47 +70,21 @@ class StationManagerView(object):
     def __init__(self, sm_mgr):
         self.sm_mgr = sm_mgr
         self.fig = plt.figure()
-        self.ax1 = self.fig.add_subplot(111, projection='3d')
+        # self.ax1 = self.fig.add_subplot(111, projection='3d')
+        self.ax1 = self.fig.add_subplot(111)
         self.ax1.set_xlabel("Latitude (North-South)")
         self.ax1.set_ylabel("Longitude (West-East)")
-        self.ax1.view_init(elev=-90, azim=0)
+        # self.ax1.view_init(elev=-90, azim=0)
         self.settings = {"linestyle": "None"}
 
     def present(self):
         plt.show()
 
-    def _plot_lon_lat(self):
-        """
-        U, V = np.meshgrid(np.linspace(7*np.pi/6, 11*np.pi/6, 33),
-                           np.linspace(0, np.pi/2, 21))
-        """
-        U, V = np.meshgrid(np.linspace(0, 2*np.pi, 33),
-                           np.linspace(0, np.pi, 21))
-        x = R*np.cos(U)*np.sin(V)
-        y = R*np.sin(U)*np.sin(V)
-        z = R*np.cos(V)
-        # self.ax1.plot_surface(x, y, z)
-        for mdl in self.sm_mgr.sm.values():
-            xi = mdl.coords.xi
-            eta = mdl.coords.eta
-            zeta = mdl.coords.zeta
-            (_x, _y, _z) = (xi.val, eta.val, zeta.val)
-            if mdl.coords._spherical:
-                (_x, _y, _z) = tpr_to_xyz(xi.val, eta.val, zeta.val)
-            self.ax1.plot([_x[0], _x[0]], [_y[0], _y[0]], [_z[0], _z[0]],
-                          marker="x")
-            self.ax1.plot(_x, _y, _z)
-        self.ax1.set_aspect("equal")
-
     def plot_lon_lat(self):
         for mdl in self.sm_mgr.sm.values():
-            xi = mdl.coords.xi
-            eta = mdl.coords.eta
-            zeta = mdl.coords.zeta
-            (_x, _y, _z) = (xi.val, eta.val, zeta.val - zeta.val[0])
-            self.ax1.plot([_x[0], _x[0]], [_y[0], _y[0]], [_z[0], _z[0]],
-                          marker="x")
-            self.ax1.plot(_x, _y, _z)
+            (xi, eta, zeta) = (mdl.coords.xi, mdl.coords.eta, mdl.coords.zeta)
+            msize = max(1, 200*(zeta.val[-1]-zeta.val[0]))
+            self.ax1.plot([eta.ref], [xi.ref], marker="o", markersize=msize)
         self.ax1.set_aspect("equal")
 
     def plot_laurentide_center(self, theta, phi, a, b):
@@ -130,15 +92,12 @@ class StationManagerView(object):
         for mdl in self.sm_mgr.sm.values():
             rad.append(mdl.coords.zeta.ref)
         R = np.average(rad)
-        U, V = np.meshgrid(np.linspace(theta - np.pi/4, theta + np.pi/4, 101),
-                           np.linspace(phi - np.pi/4, phi + np.pi/4, 101))
-        dtheta = U - theta
-        dphi = V - phi
-        d = R*np.sqrt(dtheta**2 + dphi**2)
+        (U, V) = np.meshgrid(np.linspace(phi - pi/4, phi + pi/4, 101),
+                             np.linspace(theta - pi/4, theta + pi/4, 101))
+        dphi = U - phi
+        dtheta = V - theta
+        d = R*np.sqrt(dphi**2 + dtheta**2)
         f = a/np.cosh(b*d)
-        self.ax1.contour(U, V, f)
+        self.ax1.plot([phi], [theta], marker="x", markersize=10)
         # self.ax1.plot_surface(U, V, f)
-        """
-        (_x, _y, _z) = (theta, phi, 0)
-        self.ax1.plot([_x, _x], [_y, _y], [_z, _z], marker="o")
-        """
+        self.ax1.contour(U, V, f, 10)

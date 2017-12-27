@@ -45,9 +45,6 @@ class StationModel(object):
             end = np.sqrt(xi.val[-1]**2 + eta.val[-1]**2 + zeta.val[-1]**2)
             return end - bgn
 
-    def time_data(self):
-        return self.coords.time
-
 
 class StationViewer(object):
     class Errorbar3D(object):
@@ -70,11 +67,11 @@ class StationViewer(object):
                       self._xe, self._ye, self._ze)
             for (_xv, _yv, _zv, _xe, _ye, _ze) in itr:
                 self._ax.plot([_xv+_xe, _xv-_xe], [_yv, _yv], [_zv, _zv],
-                              marker="_", color="#ff0000")
+                              marker="None", color="#ff0000")
                 self._ax.plot([_xv, _xv], [_yv+_ye, _yv-_ye], [_zv, _zv],
-                              marker="_", color="#00ff00")
+                              marker="None", color="#00ff00")
                 self._ax.plot([_xv, _xv], [_yv, _yv], [_zv+_ze, _zv-_ze],
-                              marker="_", color="#0000ff")
+                              marker="None", color="#0000ff")
 
     def __init__(self, smodel):
         self.smodel = smodel
@@ -108,7 +105,7 @@ class StationViewer(object):
                   xlabel, ylabel, line_color):
         axis.set_title(plot_title)
         axis.plot()
-        axis.errorbar(self.smodel.time_data(),
+        axis.errorbar(self.smodel.coords.time,
                       point_dict.val, yerr=point_dict.error,
                       ecolor=line_color, **self.settings)
         axis.set_xlabel(xlabel)

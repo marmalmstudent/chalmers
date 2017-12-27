@@ -90,12 +90,11 @@ if __name__ == "__main__":
         smgr.make_spherical()
 
         sm_mgr_view = StationManagerView(smgr)
-        sm_mgr_view.plot_lon_lat()
-
         lcf = LaurentideCenterFinder(smgr.sm.values())
         ctheta, cphi, a, b = lcf.solver()
         print(ctheta*180/math.pi, cphi*180/math.pi, a, b)
         sm_mgr_view.plot_laurentide_center(ctheta, cphi, a, b)
+        sm_mgr_view.plot_lon_lat()
 
         sm_mgr_view.present()
     except ValueError:
