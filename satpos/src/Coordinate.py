@@ -58,81 +58,84 @@ class Coordinate(object):
     def __init__(self, years, diff_tol=10.0):
         self.years = years
         self.diff_tol = diff_tol
-        self.time = list()
+        self._t = list()
 
         self._spherical = False
-        self.xi = _Point()
-        self.eta = _Point()
-        self.zeta = _Point()
+        self._xi = _Point()
+        self._eta = _Point()
+        self._zeta = _Point()
+
+    def time(self):
+        return self._t
+
+    def theta(self):
+        return self._eta
+
+    def phi(self):
+        return self._xi
+
+    def rad(self):
+        return self._zeta
+
+    def x(self):
+        return self._xi
+
+    def y(self):
+        return self._eta
+
+    def z(self):
+        return self._zeta
 
     def set_ref_pos(self, x, y, z):
         y_rot_matrix = yrot_mat(-np.arctan2(z, list_norm((x, y))))
         z_rot_matrix = zrot_mat(np.arctan2(y, x))
         # x-axis is radial, y-axis is longitude, z-axis is latitude
         R = list_norm((x, y, z))
-        p_val = np.array([R + self.zeta.val, self.xi.val, self.eta.val])
-        p_error = np.array([self.zeta.error, self.xi.error, self.eta.error])
+        p_val = np.array([R + self._zeta.val, self._xi.val, self._eta.val])
+        p_error = np.array([self._zeta.error, self._xi.error, self._eta.error])
         p_rot_val = np.dot(z_rot_matrix, np.dot(y_rot_matrix, p_val))
         p_rot_error = np.dot(z_rot_matrix, np.dot(y_rot_matrix, p_error))
-        self.xi.transform(x, p_rot_val[0], p_rot_error[0])
-        self.eta.transform(y, p_rot_val[1], p_rot_error[1])
-        self.zeta.transform(z, p_rot_val[2], p_rot_error[2])
+        self._xi.transform(x, p_rot_val[0], p_rot_error[0])
+        self._eta.transform(y, p_rot_val[1], p_rot_error[1])
+        self._zeta.transform(z, p_rot_val[2], p_rot_error[2])
 
     def cart_to_sphere(self):
         if self._spherical:
             return
         self._spherical = True
-        (x, y, z) = (self.xi, self.eta, self.zeta)
-        theta_ref = cart_to_theta(x.ref, y.ref, z.ref)
-        theta_val = cart_to_theta(x.val, y.val, z.val)
-        theta_error = cart_to_theta(x.error, y.error, z.error)
+        (x, y, z) = (self._xi, self._eta, self._zeta)
         phi_ref = cart_to_phi(x.ref, y.ref, z.ref)
         phi_val = cart_to_phi(x.val, y.val, z.val)
         phi_error = cart_to_phi(x.error, y.error, z.error)
+        theta_ref = cart_to_theta(x.ref, y.ref, z.ref)
+        theta_val = cart_to_theta(x.val, y.val, z.val)
+        theta_error = cart_to_theta(x.error, y.error, z.error)
         rad_ref = cart_to_rad(x.ref, y.ref, z.ref)
         rad_val = cart_to_rad(x.val, y.val, z.val)
         rad_error = cart_to_rad(x.error, y.error, z.error)
-        self.xi.transform(theta_ref, theta_val, theta_error)
-        self.eta.transform(phi_ref, phi_val, phi_error)
-        self.zeta.transform(rad_ref, rad_val, rad_error)
-
-    def sphere_to_cart(self):
-        if not self._spherical:
-            return
-        self._spherical = False
-        (t, p, r) = (self.xi, self.eta, self.zeta)
-        x_ref = sphere_to_x(t.ref, p.ref, r.ref)
-        x_val = sphere_to_x(t.val, p.val, r.val)
-        x_error = sphere_to_x(t.error, p.error, r.error)
-        y_ref = sphere_to_y(t.ref, p.ref, r.ref)
-        y_val = sphere_to_y(t.val, p.val, r.val)
-        y_error = sphere_to_y(t.error, p.error, r.error)
-        z_ref = sphere_to_z(t.ref, p.ref, r.ref)
-        z_val = sphere_to_z(t.val, p.val, r.val)
-        z_error = sphere_to_z(t.error, p.error, r.error)
-        self.xi.transform(x_ref, x_val, x_error)
-        self.eta.transform(y_ref, y_val, y_error)
-        self.zeta.transform(z_ref, z_val, z_error)
+        self._xi.transform(phi_ref, phi_val, phi_error)
+        self._eta.transform(theta_ref, theta_val, theta_error)
+        self._zeta.transform(rad_ref, rad_val, rad_error)
 
     def linreg_polyfit(self, point_list):
-        return polyfit(self.time, point_list.val, 1, w=1.0/point_list.error)
+        return polyfit(self._t, point_list.val, 1, w=1.0/point_list.error)
 
     def from_file(self, lon_file, lat_file, rad_file):
-        (self.time, self.xi, self.eta, self.zeta) = self._fill_coordinates(
+        (self._t, self._xi, self._eta, self._zeta) = self._fill_coordinates(
             csvl(lon_file, self.years),
             csvl(lat_file, self.years),
             csvl(rad_file, self.years))
-        self.time = np.array(self.time, dtype=np.float64)
-        self.xi.lock()
-        self.eta.lock()
-        self.zeta.lock()
+        self._t = np.array(self._t, dtype=np.float64)
+        self._xi.lock()
+        self._eta.lock()
+        self._zeta.lock()
         # values are in cm; transform to m
-        self.xi.val *= 1e-2
-        self.xi.error *= 1e-2
-        self.eta.val *= 1e-2
-        self.eta.error *= 1e-2
-        self.zeta.val *= 1e-2
-        self.zeta.error *= 1e-2
+        self._xi.val *= 1e-2
+        self._xi.error *= 1e-2
+        self._eta.val *= 1e-2
+        self._eta.error *= 1e-2
+        self._zeta.val *= 1e-2
+        self._zeta.error *= 1e-2
 
     def _fill_coordinates(self, xi, eta, zeta):
         xi = self._form_yearly_average(self._sort_by_year(xi))
@@ -155,7 +158,6 @@ class Coordinate(object):
                 feta.add(bxi.time[i], beta.val[i], beta.error[i])
                 fzeta.add(bzeta.time[i], bzeta.val[i], bzeta.error[i])
 
-        # average each year
         return (time, fxi, feta, fzeta)
 
     def _sort_by_year(self, p):

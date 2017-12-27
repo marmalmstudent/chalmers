@@ -10,7 +10,7 @@ class ProgramConfiguration(object):
     def __init__(self):
         self.respath = "res/csv"
         self.fstr = ".rad.csv"
-        self.valid_years = [i for i in range(2005, 2018)]
+        self._years = [i for i in range(2005, 2018)]
         self.valid_plot_types = {"lon": StationViewer.plot_lat,
                                  "lat": StationViewer.plot_lon,
                                  "rad": StationViewer.plot_rad,
@@ -30,13 +30,13 @@ class ProgramConfiguration(object):
             if ":" in e:
                 try:
                     vals = e.split(":")
-                    start = int(vals[0]) if vals[0] else min(self.valid_years)
+                    start = int(vals[0]) if vals[0] else min(self._years)
                     if len(vals) == 2:
                         step = 1
-                        stop = int(vals[1]) if vals[1] else max(self.valid_years)
+                        stop = int(vals[1]) if vals[1] else max(self._years)
                     else:
                         step = int(vals[1]) if vals[1] else 1
-                        stop = int(vals[2]) if vals[2] else max(self.valid_years)
+                        stop = int(vals[2]) if vals[2] else max(self._years)
                     for i in range(start, stop+1, step):
                         entries.append(i)
                 except ValueError:
@@ -62,7 +62,7 @@ class ProgramConfiguration(object):
                                   self.valid_plot_types.keys()):
             self.plot_types.append(t)
         for y in self.filter_list(self.find_settings(argv, "--year="),
-                                  self.valid_years):
+                                  self._years):
             self.years.append(y)
 
 
@@ -89,13 +89,12 @@ if __name__ == "__main__":
         smgr.print_station_data()
         smgr.make_spherical()
 
-        sm_mgr_view = StationManagerView(smgr)
         lcf = LaurentideCenterFinder(smgr.sm.values())
-        ctheta, cphi, a, b = lcf.solver()
-        print(ctheta*180/math.pi, cphi*180/math.pi, a, b)
-        sm_mgr_view.plot_laurentide_center(ctheta, cphi, a, b)
-        sm_mgr_view.plot_lon_lat()
+        ctheta, cphi, a, b, c = lcf.solver()
 
+        sm_mgr_view = StationManagerView(smgr)
+        sm_mgr_view.plot_laurentide_center(ctheta, cphi, a, b, c)
+        sm_mgr_view.plot_lon_lat()
         sm_mgr_view.present()
     except ValueError:
         print("ValueError")

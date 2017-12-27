@@ -2,7 +2,6 @@ import math
 import csv
 from Station import StationModel
 import matplotlib.pyplot as plt
-import mpl_toolkits.mplot3d.axes3d as axes3d
 import numpy as np
 
 
@@ -82,22 +81,23 @@ class StationManagerView(object):
 
     def plot_lon_lat(self):
         for mdl in self.sm_mgr.sm.values():
-            (xi, eta, zeta) = (mdl.coords.xi, mdl.coords.eta, mdl.coords.zeta)
+            coords = mdl.coords
+            (xi, eta, zeta) = (coords.theta(), coords.phi(), coords.rad())
             msize = max(1, 200*(zeta.val[-1]-zeta.val[0]))
             self.ax1.plot([eta.ref], [xi.ref], marker="o", markersize=msize)
         self.ax1.set_aspect("equal")
 
-    def plot_laurentide_center(self, theta, phi, a, b):
+    def plot_laurentide_center(self, theta, phi, a, b, c):
         rad = list()
         for mdl in self.sm_mgr.sm.values():
-            rad.append(mdl.coords.zeta.ref)
+            rad.append(mdl.coords.rad().ref)
         R = np.average(rad)
         (U, V) = np.meshgrid(np.linspace(phi - pi/4, phi + pi/4, 101),
                              np.linspace(theta - pi/4, theta + pi/4, 101))
         dphi = U - phi
         dtheta = V - theta
         d = R*np.sqrt(dphi**2 + dtheta**2)
-        f = a/np.cosh(b*d)
+        f = a + b*np.exp(-c*d**2)
         self.ax1.plot([phi], [theta], marker="x", markersize=10)
         # self.ax1.plot_surface(U, V, f)
         self.ax1.contour(U, V, f, 10)

@@ -1,7 +1,7 @@
 import numpy as np
 from Coordinate import Coordinate
+from mpl_toolkits.mplot3d.axes3d import Axes3D
 import matplotlib.pyplot as plt
-import mpl_toolkits.mplot3d.axes3d as axes3d
 
 
 class StationModel(object):
@@ -13,36 +13,39 @@ class StationModel(object):
                               "%s/%s.rad.csv" % (path_to_csv, self.acro))
 
     def total_lon_move(self):
-        xi = self.coords.xi
-        eta = self.coords.eta
-        zeta = self.coords.zeta
         if self.coords._spherical:
-            bgn = zeta.val[0]*np.cos(xi.val[0])*np.cos(eta.val[0])
-            end = zeta.val[-1]*np.cos(xi.val[-1])*np.cos(eta.val[-1])
+            theta = self.coords.theta()
+            phi = self.coords.phi()
+            rad = self.coords.rad()
+            bgn = rad.val[0]*np.cos(theta.val[0])*np.cos(phi.val[0])
+            end = rad.val[-1]*np.cos(theta.val[-1])*np.cos(phi.val[-1])
             return end - bgn
         else:
-            return xi.val[-1] - xi.val[0]
+            x = self.coords.x()
+            return x.val[-1] - x.val[0]
 
     def total_lat_move(self):
-        xi = self.coords.xi
-        eta = self.coords.eta
-        zeta = self.coords.zeta
         if self.coords._spherical:
-            bgn = zeta.val[0]*np.cos(xi.val[0])*np.sin(eta.val[0])
-            end = zeta.val[-1]*np.cos(xi.val[-1])*np.sin(eta.val[-1])
+            theta = self.coords.theta()
+            phi = self.coords.phi()
+            rad = self.coords.rad()
+            bgn = rad.val[0]*np.cos(theta.val[0])*np.sin(phi.val[0])
+            end = rad.val[-1]*np.cos(theta.val[-1])*np.sin(phi.val[-1])
             return end - bgn
         else:
-            return eta.val[-1] - eta.val[0]
+            y = self.coords.y()
+            return y.val[-1] - y.val[0]
 
     def total_rad_move(self):
-        xi = self.coords.xi
-        eta = self.coords.eta
-        zeta = self.coords.zeta
         if self.coords._spherical:
-            return zeta.val[-1] - zeta.val[0]
+            rad = self.coords.rad()
+            return rad.val[-1] - rad.val[0]
         else:
-            bgn = np.sqrt(xi.val[0]**2 + eta.val[0]**2 + zeta.val[0]**2)
-            end = np.sqrt(xi.val[-1]**2 + eta.val[-1]**2 + zeta.val[-1]**2)
+            x = self.coords.x()
+            y = self.coords.y()
+            z = self.coords.z()
+            bgn = np.sqrt(x.val[0]**2 + y.val[0]**2 + z.val[0]**2)
+            end = np.sqrt(x.val[-1]**2 + y.val[-1]**2 + z.val[-1]**2)
             return end - bgn
 
 
@@ -79,13 +82,13 @@ class StationViewer(object):
         self._ax1 = self._fig.add_subplot(321)
         self._ax2 = self._fig.add_subplot(323)
         self._ax3 = self._fig.add_subplot(325)
-        self._ax4 = self._fig.add_subplot(122, projection='3d')
+        self._ax4 = self._fig.add_subplot(122, projection=Axes3D.name)
         self._ax4.set_xlabel("Longitude (West-East)")
         self._ax4.set_ylabel("Latitude (North-South)")
         self._ax4.set_zlabel("Radial (Up-Down)")
-        odict = self.smodel.coords.xi
-        adict = self.smodel.coords.eta
-        rdict = self.smodel.coords.zeta
+        odict = self.smodel.coords.x()
+        adict = self.smodel.coords.y()
+        rdict = self.smodel.coords.z()
         self._errbar = self.Errorbar3D(self._ax4,
                                        odict.val, odict.error,
                                        adict.val, adict.error,
@@ -105,17 +108,17 @@ class StationViewer(object):
                   xlabel, ylabel, line_color):
         axis.set_title(plot_title)
         axis.plot()
-        axis.errorbar(self.smodel.coords.time,
+        axis.errorbar(self.smodel.coords.time(),
                       point_dict.val, yerr=point_dict.error,
                       ecolor=line_color, **self.settings)
         axis.set_xlabel(xlabel)
         axis.set_ylabel(ylabel)
 
     def plot_linreg_3d(self, axis, line_color):
-        m_o, c_o = self.smodel.coords.linreg_polyfit(self.smodel.coords.xi)
-        m_a, c_a = self.smodel.coords.linreg_polyfit(self.smodel.coords.eta)
-        m_r, c_r = self.smodel.coords.linreg_polyfit(self.smodel.coords.zeta)
-        t = self.smodel.coords.time
+        m_o, c_o = self.smodel.coords.linreg_polyfit(self.smodel.coords.x())
+        m_a, c_a = self.smodel.coords.linreg_polyfit(self.smodel.coords.y())
+        m_r, c_r = self.smodel.coords.linreg_polyfit(self.smodel.coords.z())
+        t = self.smodel.coords.time()
         o = m_o + c_o*t
         a = m_a + c_a*t
         r = m_r + c_r*t
@@ -123,21 +126,21 @@ class StationViewer(object):
 
     def plot_linreg(self, axis, point_list, line_color):
         m, c = self.smodel.coords.linreg_polyfit(point_list)
-        t = self.smodel.coords.time
+        t = self.smodel.coords.time()
         y = m + c*np.array(t)
         axis.plot(t, y, color=line_color, linestyle="--", linewidth=1)
 
     def plot_lon(self):
-        self.plot_data(self._ax2, self.smodel.coords.xi,
+        self.plot_data(self._ax2, self.smodel.coords.x(),
                        "", "Year", "Longitude (East-West)", "#ff0000")
-        self.plot_linreg(self._ax2, self.smodel.coords.xi, "#000000")
+        self.plot_linreg(self._ax2, self.smodel.coords.x(), "#000000")
 
     def plot_lat(self):
-        self.plot_data(self._ax1, self.smodel.coords.eta,
+        self.plot_data(self._ax1, self.smodel.coords.y(),
                        "", "Year", "Latitude (North-South)", "#00ff00")
-        self.plot_linreg(self._ax1, self.smodel.coords.eta, "#000000")
+        self.plot_linreg(self._ax1, self.smodel.coords.y(), "#000000")
 
     def plot_rad(self):
-        self.plot_data(self._ax3, self.smodel.coords.zeta,
+        self.plot_data(self._ax3, self.smodel.coords.z(),
                        "", "Year", "Height (Up-Down)", "#0000ff")
-        self.plot_linreg(self._ax3, self.smodel.coords.zeta, "#000000")
+        self.plot_linreg(self._ax3, self.smodel.coords.z(), "#000000")
