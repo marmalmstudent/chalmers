@@ -1,17 +1,20 @@
-import station
+import traceback
+from Station import StationViewer
+from StationManager import StationManager, StationManagerView
+from LaurentideCenterFinder import LaurentideCenterFinder
 import os
 import math
 
 
-class prog_settings(object):
+class ProgramConfiguration(object):
     def __init__(self):
         self.respath = "res/csv"
         self.fstr = ".rad.csv"
         self.valid_years = [i for i in range(2005, 2018)]
-        self.valid_plot_types = {"lon": station.station_viewer.plot_lat,
-                                 "lat": station.station_viewer.plot_lon,
-                                 "rad": station.station_viewer.plot_rad,
-                                 "3d": station.station_viewer.plot_lat_lon_rad}
+        self.valid_plot_types = {"lon": StationViewer.plot_lat,
+                                 "lat": StationViewer.plot_lon,
+                                 "rad": StationViewer.plot_rad,
+                                 "3d": StationViewer.plot_lat_lon_rad}
         self.valid_stations = [f.replace(self.fstr, "")
                                for f in os.listdir(self.respath)
                                if f.endswith(self.fstr)]
@@ -63,40 +66,38 @@ class prog_settings(object):
             self.years.append(y)
 
 
+def plot_station(sm, cfg):
+    if (len(cfg.plot_types) > 0):
+        if (len(sm) > 1):
+            print("Plotting data for first station (%s)"
+                  % cfg.stations[0])
+        sv = StationViewer(sm[cfg.stations[0]])
+        for key in cfg.plot_types:
+            cfg.valid_plot_types[key](sv)
+        sv.present()
+
+
 if __name__ == "__main__":
     try:
-        settings = prog_settings()
-        settings.apply_settings(os.sys.argv[1:])
-        if len(settings.stations) == 0:
+        cfg = ProgramConfiguration()
+        cfg.apply_settings(os.sys.argv[1:])
+        if len(cfg.stations) == 0:
             raise Exception("Unknown station")
-        sm = [station.station_model(stn, settings.respath, settings.years)
-              for stn in settings.stations]
-        for stn_mdl in sm:
-            print(("Total move for > %5s: Lon:%+6.2f cm, "
-                   + "Lat:%+6.2f cm, Rad:%+6.2f cm, "
-                   + "Lat-Lon:%+6.2f cm, Lat-Lon-Rad:%+6.2f cm")
-                  % (stn_mdl.acro, stn_mdl.total_lon_move(),
-                     stn_mdl.total_lat_move(), stn_mdl.total_rad_move(),
-                     math.sqrt(stn_mdl.total_lon_move()**2
-                               + stn_mdl.total_lat_move()**2),
-                     math.sqrt(stn_mdl.total_lon_move()**2
-                               + stn_mdl.total_lat_move()**2
-                               + stn_mdl.total_rad_move()**2)))
-        if (len(settings.plot_types) > 0):
-            if (len(sm) > 1):
-                print("Plotting data for first station (%s)"
-                      % settings.stations[0])
-            sv = station.station_viewer(sm[0])
-            for key in settings.plot_types:
-                settings.valid_plot_types[key](sv)
-            sv.present()
+        smgr = StationManager(cfg.respath, cfg.stations, cfg.years)
+        plot_station(smgr.sm, cfg)
+        smgr.load_station_ref_coords("res", "coords.txt")
+        smgr.print_station_data()
+        smgr.make_spherical()
+
+        sm_mgr_view = StationManagerView(smgr)
+        sm_mgr_view.plot_lon_lat()
+
+        lcf = LaurentideCenterFinder(smgr.sm.values())
+        ctheta, cphi, a, b = lcf.solver()
+        print(ctheta*180/math.pi, cphi*180/math.pi, a, b)
+        sm_mgr_view.plot_laurentide_center(ctheta, cphi, a, b)
+
+        sm_mgr_view.present()
     except ValueError:
         print("ValueError")
-    """
-    except IndexError:
-        print("Usage: python %s <station-acronyme>" % os.sys.argv[0])
-    except FileNotFoundError:
-        print(("Could not find data for station with acronyme '%s'\n"
-              + "Try one of the following: '%s'")
-              % (os.sys.argv[1], "', '".join(settings.valid_stations)))
-    """
+        traceback.print_exc()
