@@ -87,7 +87,7 @@ class StationManagerView(object):
             self.ax1.plot([eta.ref], [xi.ref], marker="o", markersize=msize)
         self.ax1.set_aspect("equal")
 
-    def plot_laurentide_center(self, theta, phi, a, b, c):
+    def plot_laurentide_center(self, theta, phi, a, b, c1, c2):
         rad = list()
         for mdl in self.sm_mgr.sm.values():
             rad.append(mdl.coords.rad().ref)
@@ -96,8 +96,8 @@ class StationManagerView(object):
                              np.linspace(theta - pi/4, theta + pi/4, 101))
         dphi = U - phi
         dtheta = V - theta
-        d = R*np.sqrt(dphi**2 + dtheta**2)
-        f = a + b*np.exp(-c*d**2)
+        d = R*(dphi + 1j*dtheta)
+        f = a + b*np.exp(-(np.real(c1*d)**2 + np.imag(c2*d)**2))
         self.ax1.plot([phi], [theta], marker="x", markersize=10)
         # self.ax1.plot_surface(U, V, f)
-        self.ax1.contour(U, V, f, 10)
+        self.ax1.contour(U, V, f)

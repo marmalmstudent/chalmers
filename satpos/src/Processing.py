@@ -3,7 +3,7 @@ from Station import StationViewer
 from StationManager import StationManager, StationManagerView
 from LaurentideCenterFinder import LaurentideCenterFinder
 import os
-import math
+import numpy as np
 
 
 class ProgramConfiguration(object):
@@ -90,10 +90,12 @@ if __name__ == "__main__":
         smgr.make_spherical()
 
         lcf = LaurentideCenterFinder(smgr.sm.values())
-        ctheta, cphi, a, b, c = lcf.solver()
+        ctheta, cphi, a, b, c1_r, c1_v, c2_r, c2_v = lcf.solver()
+        c1 = c1_r*np.exp(1j*c1_v)
+        c2 = c2_r*np.exp(1j*c2_v)
 
         sm_mgr_view = StationManagerView(smgr)
-        sm_mgr_view.plot_laurentide_center(ctheta, cphi, a, b, c)
+        sm_mgr_view.plot_laurentide_center(ctheta, cphi, a, b, c1, c2)
         sm_mgr_view.plot_lon_lat()
         sm_mgr_view.present()
     except ValueError:
