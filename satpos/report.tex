@@ -1,0 +1,531 @@
+\documentclass[12pt,a4paper]{article}
+% \documentclass[12pt,a4paper]{IEEEtran}
+
+%\pdfoutput=1
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathabx}
+\usepackage{lmodern}
+\usepackage{units}
+\usepackage{siunitx}
+\usepackage{icomma}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{color}
+\usepackage{pgf}
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Python,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=2
+}
+
+\usepackage[top=3cm,bottom=3cm,left=3cm,right=3cm]{geometry}
+%\usepackage{times}
+\newcommand{\N}{\ensuremath{\mathbbm{N}}}
+\newcommand{\Z}{\ensuremath{\mathbbm{Z}}}
+\newcommand{\Q}{\ensuremath{\mathbbm{Q}}}
+\newcommand{\R}{\ensuremath{\mathbbm{R}}}
+\newcommand{\C}{\ensuremath{\mathbbm{C}}}
+\newcommand{\rd}{\ensuremath{\mathrm{d}}}
+\newcommand{\id}{\ensuremath{\,\rd}}
+\usepackage{hyperref}
+% \usepackage{a4wide} % puts the page numbering further down the page.
+\usepackage{pdfpages}
+\usepackage{epstopdf}
+\DeclareGraphicsExtensions{.eps}
+
+\title{Locating the center of the Laurentide ice\\and tropospheric delay prediction\\using GNSS}
+\author{Marcus Malmquist}
+\date{\today}
+
+\begin{document}
+\pagenumbering{gobble}
+\maketitle
+\begin{abstract}
+  \noindent The data needed to locate the center of the Laurentide ice and predict the tropospheric delay was collected using GNSS (Global Navigational Satellite System) and processed by the \textit{GIPSY} software package.
+  
+  The center of Laurentide ice was then estimated by fitting a model to the motion of the stations as collected GNSS and processed by GIPSY.
+  
+  The tropospheric delay was predicted by fitting a polynomial to observed tropospheric delay during $n$ days to predict the delay for day $n+1$.
+\end{abstract}
+\newpage
+\pagenumbering{roman}
+\tableofcontents
+\newpage
+\pagenumbering{arabic}
+\section{Introduction}
+GNSS (Global Navigational Satellite System) has a wide variety of applications ranging from determining the position of a (moving) object to climate research.
+
+In this report GNSS have been used to measure the movement of GNSS reference stations in North America with the goal of locating the center of the ice that covered most of North America during the last ice-age (the so-called Laurentide ice) as well as measuring the zenith tropospheric delay to predict the weather.
+The main purpose, however, is to measure distances, and often positions.
+Most of the focus will, after a brief introduction to GNSS, be on how the center of the Laurentide ice was estimated.
+
+In order to uniquely determine the position of an object in a three dimensional space, it is necessary to measure the distance to at least four locations with known positions.
+This is called \textit{trilateration}.
+Since the measurements are not perfect it is beneficial to use more than four satellites and use a least-square method or similar to compute the position.
+A requirement for an accurate trilateration is that the reference points (satellites) needs to be well spread out to provide a reliable positions.
+
+Since the satellites are located in space and the objects to measure are typically located on or near the surface of the earth, the signals have to propagate a very long distance and through the atmosphere.
+A long propagation distance means that the satellite antennas typically have a narrow beamwidth to save power.
+This means that the orbital elevation of the satellites has to be chosen carefully.
+The nature of the propagation also means that the position estimation is improved if the satellites in use are located in zenith.
+This will be explained later.\\
+
+\noindent The challenges for an implementation of GNSS described above gives rise to many different implementations depending on what the system will be used for.
+
+\subsection{Examples of GNSS implementations}
+There are several satellite systems in use around the world including GPS (Global Positioning Systems), GLONASS (Globalnaya navigatsionnaya sputnikovaya sistema), the oldest and most used being GPS, which is controlled by the US Military.
+
+Implementing GNSS is very expensive and needs to be reliable at all times around the globe (or the region it is intended to be used in) and under any weather conditions.
+Therefore the system needs redundancy, which in many implementations is done by using more satellites than are needed.
+
+\subsubsection{GPS}
+GPS is an American system of satellites operating in 6 MEO planes.
+Each orbital plane has 5 satellites.
+The orbital altitude for GPS is \SI{20180}{\kilo\metre} and the inclination have been chosen to provide good coverage over USA and is \SI{55}{\degree}.
+
+GPS transmits signals on two different frequencies, L1 and L2, which are located at \SI{1575.42}{\mega\hertz} and \SI{1227.60}{\mega\hertz} respectively.
+The codes transmitted on these bands are the Course acquisition code (C/A) code at \SI{1.023}{\mega\hertz}, Precise positioning code (P-code) at \SI{10.23}{\mega\hertz} and the Anti-spoofing code (Y-code) at \SI{10.23}{\mega\hertz}.
+The C/A and P code are public while the Y-code is encrypted.
+The data in the Y-code has been encrypted with a private key, $W$, and can be can be decrypted using the same key (i.e. $Y=P\oplus W$ and $Y\oplus W = (P\oplus W)\oplus W = P$).
+Data is sent at 50 bps and a complete message takes about 12.5 minutes to broadcast making that the time it takes for a ``cold-start'' (i.e. the time it takes a new device to collect the data that is necessary to use the system).
+
+\subsubsection{GLONASS}
+GLONASS is a Russian system of satellites operating in 3 MEO planes.
+Each orbital plane has 8 satellites (6 are needed to cover all of Russia).
+The orbital altitude for GLONASS is \SI{19100}{\kilo\metre} and the inclination have been chosen to provide good coverage over Russia and is \SI{64.8}{\degree}.
+
+\subsubsection{Galileo}
+Galileo is a European system of satellites operating in 3 MEO planes.
+Each orbital plane has 8 satellites in full service and 2 spare giving a total of 30 satellites.
+The orbital altitude for Galileo is \SI{23222}{\kilo\metre} and the inclination have been chosen to provide a good coverage over Europe and is \SI{56}{\degree}.
+
+\subsection{GNSS signals and measurements}
+The satellites broadcast signals on the L1 and L2 frequencies.
+In order for a device to use the system, it needs to download data for the satellites in the system.
+For GPS and GLONASS this process takes about 12 minutes.
+
+The satellites are equipped with atomic clocks and they broadcast signals which contains the timestamp from when the signal was sent.
+When a device wants to determine its position it listens for signals broadcast by the satellite and puts a timestamp on the received signal.
+The distance can then be calculated using the difference in the timestamps (i.e. $d=c(t_{\text{RX}}-t_{\text{TX}})$).
+Since there are error sources in this system this range is not the actual range, but the \textit{pseudorange}.
+
+\subsection{From pseudorange to true range}\label{sec:pseudorange}
+There are two main sources of error in the timing of the signal at the transmitter and receiver.
+The first is that the timestamps are according to the internal clock of of the transmitter/receiver which means that there most likely is a mismatch between them.
+The second is that the signal propagates through the atmosphere which delays the signal.
+
+The position estimation from range measurements alone results in a position estimation with precision in the region of \SI{1}{\metre} after it have been processed but in order to get better precision one can make use of the phase of the signal.
+Since the wavelength of the signal is a few decimeter the position estimation precision will be in the region of \SI{1}{\centi\metre} to \SI{1}{\milli\metre}.
+In this section the process of estimating the true range from the pseudorange will be described.\\
+
+\noindent The pseudorange $P_k^p$ is calculated from the difference in timestamps from the transmitter $T^p$, receiver $T_k$ and the propagation velocity $v$.
+\begin{equation}
+  \label{eq:pseudorange}
+  P_k^p=(T_k-T^p)v
+\end{equation}
+The timestamps can be modeled as a linear combination of the true time $\tau$ and a clock offset $t$.
+The propagation velocity can be modeled as a linear combination of the speed of light in vacuum $c_0$ and offsets due to delays in the atmosphere and ionosphere.
+The atmospheric and ionospheric delays can be treated as separate variables since they do not depend on the timestamps.
+\begin{align}
+  \label{eq:code_len}
+  P_k^p & = [(\tau_k+t_k)-(\tau^p+t^p)]v \nonumber \\
+        & = \rho_k^p + (t_k-t^p)c + I_k^p + A_k^p
+\end{align}\\
+
+\noindent The distance in terms of phase can be described in a similar way as the pseudorange, except that the measured phase has an unknown offset N
+\begin{equation}
+  \label{eq:phaserange}
+  \Phi_k^p=\phi_k-\phi^p-N_k^p
+\end{equation}
+The transmitter and receiver phases can be modeled as a linear combination of an initial offset $\theta$ and the phase since the start of the epoch for the internal clock $f_0t$.
+\begin{align}
+  \Phi_k^p & = \theta_k+f_0t_k - \theta^p-f_0t^p-N_k^p \nonumber \\
+           & = (\theta_k-\theta^p) + f_0(t_k-t^p) - N_k^p
+\end{align}
+The pseudorange in for phase measurements can then be expressed in a similar way as the pseudorange from time measurements.
+\begin{align}
+  \label{eq:phase_len}
+  L_k^p & = \lambda\Phi_k^p \nonumber \\
+        & = c(t_k-t^p) + \lambda(\theta_k-\theta^p - N_k^p) \nonumber \\
+        & = c(t_k-t^p) + B_k^p \nonumber \\
+        & = \rho_k^p + (t_k-t^p)c_0 + A_k^p - I_k^p + B_k^p
+\end{align}
+
+When the model for the distances is complete, one would typically use either single/double differencing or precise-point positioning (PPP) to remove clock errors.
+The single and double differencing can be used to get real-time positioning while PPP can be used for post-processing.
+Since the data used in this report have been collected years ago the data will be post-processed using PPP.
+
+In addition to removing clock errors one would have to account for atmospheric and ionospheric errors.
+The difference between PPP and differencing is mainly how the clock errors are dealt with, but the phase ambiguities (for phase measurements) and atmospheric and ionospheric delays have to be dealt with in more or less the same way regardless of using differencing ore PPP.
+
+\subsubsection{Atmospheric delays}
+The atmospheric delay can be mostly mitigated by modeling it as a function of elevation angle, where the lowest delay for when the satellite is in zenith.
+The ionospheric delay is frequency dependent and the first order term can be completely removed by using signals with different frequencies.
+Since L1 and L2 signals have different carrier frequencies, this can be achieved.
+
+The model used for dual frequency correction is different for code measurements and phase measurements, but they can be derived from (\ref{eq:code_len}) for code measurements and (\ref{eq:phase_len}) for phase measurements.
+For phase measurements using L1 and L2, where the pseudoranges (from (\ref{eq:phase_len})) are $L_1$ and $L_2$ the equations are.
+\begin{subequations}
+  \label{eq:dual_freq}
+  \begin{align}
+    L_1 & = L_c - I_1 \label{eq:dual_freq_1} \\
+    L_2 & = L_c - I_2 = L_c - I_1\bigg[\frac{f_1}{f_2}\bigg]^2 \label{eq:dual_freq_2} 
+  \end{align}
+\end{subequations}
+By combining (\ref{eq:dual_freq_1}) and (\ref{eq:dual_freq_2}) the ionospheric-corrected range $L_c$ is
+\begin{equation}
+  \label{eq:ion_correct}
+  L_c=L_2\frac{f_2^2}{f_2^2-f_1^2} - L_1\frac{f_1^2}{f_2^2-f_1^2}
+\end{equation}
+One can then replace $L_k^p$ with $L_c$ and remove $I_k^p$ in (\ref{eq:phase_len}) to remove the ionospheric delay.
+
+\subsubsection{Other geophysical errors}
+In addition to the atmospheric error sources there are a number of geophysical errors that have to be taken into account in order to get sub-meter precision.
+
+Important errors that needs to be taken into account are for example tidal effects due to the moon and geometry and orientation of the earth.
+These errors can be mitigated as there are good models for such geophysical effects.
+
+\subsubsection{Measurement errors}
+There are error sources other than the atmosphere and geophysical sources that can arise.
+One such source is that the station/antenna may be obstructed by e.g. snow.
+Such errors are very difficult to mitigate so this has to be taken into account when interpreting the processed data.
+
+Another source if error is missing data and cycle slip for phase measurement.
+Missing data would typically be handled by increasing the uncertainty in the position while cycle slip are more difficult to deal with.
+
+One method of detecting and correcting cycle slips is the Melbourne-Wübbena Wide Lane method which uses the range measurement to estimate the difference in phase between L1 and L2, thereby removing both the ionospheric delay and cycle slips.
+
+\subsubsection{Differencing}
+If one has access to two satellites, the clock error in the receiver can be removed by taking the difference of the measurements to each satellite.
+Similarly, if one has access to two receivers, the clock error in the satellite can be removed by taking the difference of the measurements to each receiver.
+This is called single differencing and the equation below describes single differencing using two base stations.
+
+\begin{align}
+  \label{eq:single_diff}
+  \Delta L_{ab}^j & = L_a^j - L_b^j \nonumber \\
+                  & = (\rho_a^p-\rho_b^p) + (t_a-t_b)c_0-(t^p-t^p)c_0 + (A_a^p-A_b^p) - (I_a^p-I_b^p) + (B_a^p-B_b^p) \nonumber \\
+                  & = \Delta \rho_{ab}^p + \Delta t_{ab}c_0 + \Delta A_{ab}^p - \Delta I_{ab}^p + \Delta B_{ab}^p
+\end{align}
+
+If one has access to two satellites and two receivers, taking the difference of the results from the single differencing will reduce the clock error for both the satellites and the receivers.
+This is called double differencing and the equation below describes double differencing using (\ref{eq:single_diff})
+
+\begin{align}
+  \label{eq:double_diff}
+  \nabla \Delta L_{ab}^{pq} & = \Delta L_a^p - \Delta L_b^q \nonumber \\
+                         & = (\Delta \rho_{ab}^p-\Delta \rho_{ab}^q) + (\Delta t_{ab}-\Delta t_{ab})c_0 + (\Delta A_{ab}^p-\Delta A_{ab}^q) - (\Delta I_{ab}^p-\Delta I_{ab}^q) + (\Delta B_{ab}^p-\Delta B_{ab}^q) \nonumber \\
+                         & = \nabla \Delta \rho_{ab}^{pq} + \nabla \Delta A_{ab}^{pq} - \nabla \Delta I_{ab}^{pq} + \nabla \Delta B_{ab}^{pq}
+\end{align}
+
+\subsubsection{Precise Point Positioning}
+Precise Point Positioning (PPP) is a method to post-process data from range measurements that uses a network of base stations with known locations to reduce error sources, such as the IGS network.
+A network of base stations is particularly good at estimating the tropospheric delay, satellite clock error and orbital error.
+
+This method is particularly useful when processing data from the past and/or double differencing was/is not possible.
+An obvious advantage is then that you do not need to have access to multiple receivers to get a good position estimation.
+The drawbacks are mainly that PPP is slower (too slow for real-time) and the precision is somewhat lower (cm precision instead of mm).
+
+\section{Method}
+The main focus has been on locating the center of the Laurentide ice, which meant that selecting base stations from the IGS network was made with that task in mind.
+Since the task was to measure uplift due to the Laurentide ice, the selected stations should have as little uplift from other geophysical sources as possible.
+As such the stations could not be located on top of a mountain and preferably not near a mountain.\\
+Another constraint when selecting stations was that we did not know where the center of the ice was located (other than northern North America) so the stations had to be spread out.
+It also took a long time to process the data from each station (about 2 minutes per day and station) and seven groups had to process their data in one week, so 10 stations spread across norther North America was chosen.
+The selected stations can be seen in Figure~\ref{fig:stations}.
+\begin{figure}[!ht]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.5}{\includegraphics{task1/igs_map.png}}}
+  \caption{The IGS stations used for determining the center of the Laurentide ice.}
+  \label{fig:stations}
+\end{figure}
+
+A part of the task was to determine the annual uplift so data from a few years had to be selected.
+The years 2005 through 2017 were chosen.
+In order to get reliable data from each year, one week was selected (the first week of July) to collect data from each year.
+A total of 910 data sets was to be collected (7 days per year for 13 years for 10 stations).
+
+As mentioned earlier, processing data for a station was somewhat time-consuming, so two of the already processed stations were chosen for the weather forecast.
+
+\subsection{Post-processing}
+The post-processing was done mostly using the software tool \textit{GIPSY}\footnote{\url{https://gipsy-oasis.jpl.nasa.gov}}.
+The main task carried out by the program is using a Kalman filter to solve the range equations (described in Section~\ref{sec:pseudorange}) for both code measurements and phase measurements.
+The initial guess is based on information from the IGS network and geophysical models (such as tectonic plate motion and earth tides).
+The results are combined with a weight matrix in each step and the best solution is computed through repeated iterations and updating variables.
+The flow for this post-processing as it is done in GIPSY can be seen in Figure~\ref{fig:gipsy_flow} and will now be explained in more detail.
+\begin{figure}[!ht]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.75}{\includegraphics{GIPSY_flow.pdf}}}
+  \caption{The post-processing flow for GIPSY.}
+  \label{fig:gipsy_flow}
+\end{figure}\\
+
+\noindent Pseudorange data from the the station, formatted in a RINEX-file, is processed by the software and the ionospheric delay is removed using Dual Frequency (data from L1 and L2 frequencies).
+The ionospheric-corrected pseudoranges are compared with an apriori estimation of the position using geophysical models (tidal effects etc.) and information from the IGS network (satellite clock errors etc.) as well as information about the station (antenna information etc.).
+The comparison between the pseudorange (observation) and the apriori model (calculation) is compared using a weight matrix.
+
+The residual of the observation-computation is processed by the Kalman filter and yields a new estimation of the position.
+If the new estimation is close enough to the observed position (given the weights) the coordinates have been found.
+If not, the new estimation is used in the observation-computation step.
+
+\subsubsection{Latitude, Longitude and Radial movement}
+After processing the RINEX data in GIPSY, the data was merged into a mean value for the entire period.
+The data was then compared with the mean value to create a time series with latitude, longitude and radial movement relative to the mean value.
+The data is then ready to be processed to solve the Laurentide ice problem.
+In order to get an accurate result it is necessary to save the coordinates for the stations for later processing.
+
+\subsubsection{Tropospheric delay}\label{sec:pp_trop}
+Data for the tropospheric delay is saved by GIPSY when processing the RINEX data.
+The data is relative to a reference value for each station, so in order to get the tropospheric delay this station-specific value has to be added to the relative values.
+
+\subsection{Locating the center of the Laurentide ice}\label{sec:laurentide}
+The resulting data from the post-processing was relative movement in latitude, longitude and radial direction for each station.
+The coordinates had been established with an error of mostly under \SI{1}{\centi\meter}.
+Unfortunately there was missing data for some years for some stations, but there was still enough data to proceed.
+
+The first step was to go through the data for all stations and look for strange data (e.g. unnatural movements/jumps in the data set).
+This was done by plotting the time series and looking at the total movement over the years.
+It appeared that 
+Unnatural radial movement was found for about half of the stations and after going through the log files for those stations it was found that the antennas for those stations had been replaced at one point which created meant that an offset had been added after that point.
+This was corrected by creating a forward time series and a backward time series.
+The forward time series represented data pre-change and the backward series post-change.
+Data points were added depending on the data relative to some reference point.
+Since the radial values were the data points that had unnatural movements, it was the radial component that determined whether or not the data point should be added, and the reference point was chosen to be the previous point (i.e. previous year for forward series and following year for backward series).
+Data was added if the position relative to the reference point was less than a chosen maximum reasonable annual movement, as can be seen in the code snippet below.
+\begin{lstlisting}
+  def within_tol(p, c, tol):
+    if p.val > c.val:
+      return (p.val-p.error) - (c.val+c.error) < tol
+    else:
+      return (c.val-c.error) - (p.val+p.error) < tol
+\end{lstlisting}
+
+When the forward and backward time series were created they had to be merged.
+This was done by performing a first-order polynomial fit (using the the reciprocal of the error as weights) to the forward series to predict the next element in the time series and add the difference between the predicted next value and the corresponding value in the backward series.
+The corrected backward series is then added to the forward series (in chronological order).
+
+\begin{lstlisting}
+  m_r, c_r = polyfit(frad.time, frad.val, 1, w=1/frad.error)
+  brad.val -= brad.val[0] - (m_r + c_r*brad.time[0])
+  for (i, t) in enumerate(brad.time):
+    if t not in frad.time:
+      flon.add(blon.time[i], blon.val[i], blon.error[i])
+      flat.add(blat.time[i], blat.val[i], blat.error[i])
+      frad.add(brad.time[i], brad.val[i], brad.error[i])
+\end{lstlisting}
+
+Once the time series have been corrected, the coordinates of the station.
+There are several ways of doing this but since this problem is inherently spherical (or more correctly, ellipsoidal), it was chosen to convert the entire problem into a spherical coordinate system.\\
+
+\noindent There are many ways to determine the uplift due to the Laurentide ice at this point.
+One has to take into account that the tectonic plate translates and rotates in addition to recovering from the ice.
+It can be a very difficult task to remove the translation and rotation from the tectonic plates themselves, which involves finding the point at which the plate rotates about, so instead a simpler model was chosen.
+This model assumes that the rotation and translation that affects the radial movement is very small so the radial movement is mostly caused by the land recovering from the Laurentide ice.
+The uplift was assumed to decrease with distance to the center of the ice $\vec{C}_L$ in an elliptical fashion.
+One way to realize this model can be seen in (\ref{eq:model}) and is the one used for this project.
+\begin{align}
+  \label{eq:model}
+  d_i & = R_i((\phi_i-\phi_L) + j(\theta_i-\theta_L)), \nonumber \\
+  \rho_i & = a + b\exp[-(\operatorname{Re}{(c_1d_i)}^2 + \operatorname{Im}{(c_2d_i)}^2)]
+\end{align}
+The longitude and latitude for the center of the ice $\phi_L, \theta_L \in \mathbb{R}$ and the coefficients $a, b \in \mathbb{R}$ and $c_1, c_2 \in \mathbb{C}$ was found using an \texttt{fmin} algorithm such as \texttt{fmin} from the \texttt{optimize} package in the Python library \textit{SciPy}\footnote{\url{https://www.scipy.org/}}.
+
+Since there were many coefficients to be minimized a nested \texttt{fmin} was chosen.
+The code below is an attempt to illustrate how the nested \texttt{fmin} was setup without showing more code than absolutely necessary.
+It is set up to minimize the difference between the observed radial movement $\Delta R_i$ with the computed radial movement $\rho_i$ from (\ref{eq:model}).
+\begin{table}
+  \begin{lstlisting}
+    def solver():
+      fmin(lambda X: theta_phi(X[0], X[1]), [phi_0, theta_0])
+
+    def theta_phi(phi, theta):
+      fmin(lambda X: c(phi, theta, X[0], X[1]), [c_1_0, c_2_0])
+
+    def c(phi_L, theta_L, c_1, c_2):
+      fmin(lambda X: a_b(phi_L, theta_L, c_1, c_2, X[0], X[1]), [a_0, b_0])
+
+    def a_b(phi_L, theta_L, c_1, c_2, a, b):
+      d_i = R_i*((phi_i-phi_L) + 1j*(theta_i-theta_L))
+      rho_i = a + b*exp(-(real(c_1*d_i)**2 + imag(c_2*d_i)**2))
+      sum(abs(delta_R_i - rho_i))
+  \end{lstlisting}
+\end{table}
+
+\section{Tropospheric delay prediction}
+During the post-processing of the data for the task in Section~\ref{sec:laurentide}, data for the tropospheric delay was stored.
+This data was used to predict the tropospheric delay.\\
+
+\noindent Two stations with different climate were chosen; MDO1 in western Texas, USA and RESO in northern Nunavut, Canada.
+Tropospheric delay data from these two stations during the first week of July 2005 was chosen since that data had already been processed.
+As stated in Section~\ref{sec:pp_trop}, the reference values had to be added to the Tropospheric delay data from the post-processing.
+
+The method used to predict the tropospheric delay was to simply use data from $n-1$ consecutive days to and create a polynomial fit to that data.
+This fit can then be used to predict the tropospheric delay for the $n^{\text{th}}$ day.
+To find the best fit for the data, polynomial fits with a degree ranging from 0 to 20 was created and the one that had the lowest least-square error was chosen.
+
+\section{Result}
+The resulting location for the Laurentide ice as well as the tropospheric delay predictions will be presented in this section.
+The resulting data from the post-processing using GIPSY will not be presented here as it contains little useful information on its own.
+It is worth mentioning that most data points had an error which was less than \SI{1}{\centi\meter}, which can be worth noting when the result is discussed.
+
+\subsection{Locating the center of the Laurentide ice}
+The location of the Laurentide ice was computed to be at latitude \SI{61.7}{\degree} north and longitude \SI{83.3}{\degree} west, which is in the northern part of Hudson Bay, Canada.
+The full result from the nested \texttt{fmin} can be seen in Table~\ref{tab:fmin}.
+The average radial residual was just under \SI{1}{\centi\meter} and a more detailed listing of the residual can be seen in Table~\ref{tab:residual}.
+Using the data from Table~\ref{tab:fmin} along with (\ref{eq:model}), the annual uplift due to the Laurentide ice is \SI{13}{\milli\meter} per year (the uplift for the center during 13 years is $a + b\exp(0)$).
+The stations and their uplift along with the computed center of the Laurentide ice can be seen in Figure~\ref{fig:laurentide_result}.
+Note that the contour plot does not appear to be elliptical as it should be.
+This is because the background image is the result of a conformal mapping, and all data points that are plotted on top of it have been mapped in the same way.
+
+\begin{table}[!ht]
+  \centering
+  \caption{The latitude and longitude for the center of the Laurentide ice and the coefficients in (\ref{eq:model}) resulting from the nested \texttt{fmin}.}
+  \begin{tabular}{|l|l|} \hline
+    Variable & Value \\ \hline
+    $\phi_L$ & \SI{-83.3}{\degree} \\
+    $\theta_L$ & \SI{61.7}{\degree} \\
+    $c_1$ & $0.235 \angle{\SI{0.32}{\degree}}$ \\
+    $c_2$ & $0.699 \angle{\SI{12.37}{\degree}}$ \\
+    $a$ & \SI{-40}{\milli\meter} \\
+    $b$ & \SI{212}{\milli\meter} \\\hline
+  \end{tabular}
+  \label{tab:fmin}
+\end{table}
+
+\begin{table}[!ht]
+  \centering
+  \caption{The residual for comparing the observed uplift $\Delta R_i$ to the computed uplift $\rho_i$ using (\ref{eq:model}).}
+  \begin{tabular}{|l|r|} \hline
+    Station & $\Delta R_i - \rho_i$ \\ \hline
+    MDO1 & \SI{58.3}{\milli\meter} \\
+    YELL & \SI{25.4}{\milli\meter} \\
+    NLIB & \SI{-14.5}{\milli\meter} \\
+    INVK & \SI{-126.5}{\micro\meter} \\
+    QIKI & \SI{21.6}{\micro\meter} \\
+    BAKE & \SI{-21.1}{\micro\meter} \\
+    RESO & \SI{8.1}{\micro\meter} \\
+    SASK & \SI{-6.3}{\micro\meter} \\
+    HNPT & \SI{4.0}{\micro\meter} \\
+    SCH2 & \SI{3.8}{\micro\meter} \\\hline
+  \end{tabular}
+  \label{tab:residual}
+\end{table}
+
+\begin{figure}[!ht]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.75}{\includegraphics{task1/Laurentide.png}}}
+  \caption{The IGS stations along with their total uplift over the years that the data was collected and the estimated center of the Laurentide ice along with a contour plot of (\ref{eq:model}) using data from Table~\ref{tab:fmin}.}
+  \label{fig:laurentide_result}
+\end{figure}
+
+\subsection{Tropospheric delay prediction}
+The prediction of the Tropospheric delay for MDO1 and RESO during the first week of July 2005 can be seen in Figure~\ref{fig:trop_delay}.
+\begin{figure}[!ht]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.75}{\input{task2/forecast_2.pgf}}}
+  \caption{The tropospheric delay for the selected stations. The red data have been plotted using 6 days of tropospheric delay data while the green have used 7 days. The blue data represents the observed tropospheric delay for the first 6 days and the black represents the $7^{\text{th}}$ day.}
+  \label{fig:trop_delay}
+\end{figure}\\
+
+\noindent The best fit for the first six days for RESO is an 18-degree polynomial.
+The polynomial can be seen in (\ref{eq:reso_fit}), where $t$ is in seconds since January 1 2000 at noon.
+\begin{align}
+  \label{eq:reso_fit}
+  p_\text{RESO}(t) = & 7.93\cdot 10^{7} - 5.33\cdot 10^{-2}t - 1.68\cdot 10^{-9}t^{2} - 1.12\cdot 10^{-17}t^{3} - 4.99\cdot 10^{-26}t^{4} \nonumber \\
+       & - 1.34\cdot 10^{-34}t^{5} + 2.18\cdot 10^{-43}t^{6} + 6.22\cdot 10^{-51}t^{7} + 5.49\cdot 10^{-59}t^{8} \nonumber \\
+       & + 3.53\cdot 10^{-67}t^{9} + 1.79\cdot 10^{-75}t^{10} + 6.57\cdot 10^{-84}t^{11} + 6.34\cdot 10^{-93}t^{12} \nonumber \\
+       & - 1.67\cdot 10^{-100}t^{13} - 1.99\cdot 10^{-108}t^{14} - 1.46\cdot 10^{-116}t^{15} - 7.13\cdot 10^{-125}t^{16} \nonumber \\
+       & - 6.87\cdot 10^{-134}t^{17} + 3.74\cdot 10^{-141}t^{18}
+\end{align}\\
+
+\noindent The best fit for the first six days for MDO1 is a 12-degree polynomial.
+The polynomial can be seen in (\ref{eq:mdo1_fit}), where $t$ is in seconds since January 1 2000 at noon.
+\begin{align}
+  \label{eq:mdo1_fit}
+  p_\text{MDO1}(t) = & 9.55\cdot 10^{4} - 1.59\cdot 10^{-6}t - 1.73\cdot 10^{-12}t^{2} - 1.32\cdot 10^{-20}t^{3} - 6.61\cdot 10^{-29}t^{4} \nonumber \\
+       & - 2.16\cdot 10^{-37}t^{5} + 1.27\cdot 10^{-47}t^{6} + 7.25\cdot 10^{-54}t^{7} + 7.25\cdot 10^{-62}t^{8} \nonumber \\
+       & + 4.75\cdot 10^{-70}t^{9} + 2.04\cdot 10^{-78}t^{10} - 6.22\cdot 10^{-89}t^{11} - 1.24\cdot 10^{-94}t^{12}
+\end{align}
+
+\section{Discussion}
+I think the results were surprisingly good considering that I used quite simple models to find them.
+
+It was unfortunate that about half of the stations had replaced their antennas at some point between 2005 and 2017.
+I was able to recover from it by predicting the offset using a linear polynomial fit to the data, but it was probably off by a few centimeter so I should probably have increased the error for the corrected points by a few centimeter.
+Another unfortunate happening was that data was missing for 2015 for all stations in addition to that some stations had missing data for other years.
+I believe there was still enough ``good'' data to get reliable results despite this.
+
+\subsection{Locating the center of the Laurentide ice}
+I was very surprised by how good my model worked since the target function was basically a rotated ellipse.
+I noticed that conformal maps can be very deceiving and this can clearly be seen in Figure~\ref{fig:laurentide_result} where the elliptical contours are deformed.
+The maximum extend of the Laurentide ice according to the United Stated Geological Survey can be seen in Figure~\ref{fig:laurentide_wiki} and the center I found does seem reasonable but again, conformal mapping can be deceiving.
+\begin{figure}[!ht]
+  \centering
+  \noindent\makebox[\textwidth]{\scalebox{0.75}{\includegraphics{task1/laurentide_wiki.png}}}
+  \caption{The maximum extend of the Laurentide ice, according to \cite{laurentide_wiki}.}
+  \label{fig:laurentide_wiki}
+\end{figure}
+As mentioned before the errors in the radial movement should probably be increased after the antennas were changed which means that the results might be slightly changed.
+It is very interesting, though, that the difference between the observed uplift and the computed uplift is less than the error in the coordinates the was computed by GIPSY, which indicates that the result is about as good as it gets with this model and data.\\
+There are two stations that does not really fit my model and those are YELL and MDO1.
+While MDO1 is quite far away and appears to be located near a mountain (which could explain the uplift), YELL is located quite near the computed center and has a high uplift.
+To me this is an indication that a better model is needed to describe how the land recovers from the ice, perhaps one that allows the center to be larger than a point.
+
+It would be interesting to collect data from stations near Hudson Bay, Canada and perhaps use a better geophysical model for how the land recovers from the ice to see how the result would be affected.
+
+I think the measurement techniques are good as they are and that most of the improvements would come from better and more realistic models for the uplift.
+For example I think it would have been a good idea to include the motion in the latitude and longitude directions since stations near the center would also move away from the center as it rises.
+I tried to do this at first but it proved to be a difficult task so I had to give it up due to lack of time.
+
+\subsection{Tropospheric delay prediction}
+Looking at the data in Figure~\ref{fig:trop_delay} it looks like there are piecewise trends in the data, which means that if you predict at end or start of a trend, the prediction will likely be bad but if you predict near the middle of a trend the prediction is likely more accurate.
+This can be seen in Figure~\ref{fig:trop_delay} where an upgoing trend starts at the beginning of day 6 and continues during day 7 for RESO while an upgoing trend starts to shift into a downgoing trend at the end of day 6 and the shifts back into an upgoing trend at the very end of day 6.
+The prediction for RESO seems better than MDO1, perhaps for this reason.
+
+It should be noted that the prediction is heavily impacted by how the data is weighted in the calculation.
+I chose to weight data points closer to the $7^{\text{th}}$ day more than those far away (in time) and the results varied quite a lot, especially for MDO1 so my final judgment on the prediction is that is is not very reliable.
+A better approach would perhaps be to keep the last data point from day 6 as the prediction and instead find a suitable error to add to the data points for the $7^{\text{th}}$ day.
+
+I think the measurement techniques are good enough as they are for predicting the tropospheric delay most of the improvements would come from finding better models and using data from many stations to get a bigger picture of the tropospheric delay in the area to come up with a more accurate prediction.
+
+\newpage
+\begin{thebibliography}{1}
+
+\bibitem{laurentide_wiki} various, Wikipedia,  ``Global Positioning System'' Internet: \url{https://en.wikipedia.org/wiki/Global_Positioning_System}, 2018-01-02 [2018-01-02]
+
+\bibitem{laurentide_wiki} various, Wikipedia,  ``GLONASS'' Internet: \url{https://en.wikipedia.org/wiki/GLONASS}, 2018-01-02 [2018-01-02]
+
+\bibitem{laurentide_wiki} various, Wikipedia,  ``Galileo (satellite navigation)'' Internet: \url{https://en.wikipedia.org/wiki/Galileo_(satellite_navigation)}, 2018-01-02 [2018-01-02]
+
+\bibitem{lecture_notes} Jan M. Johansson, Chalmers University of Technology,  ``Project Report Hints Final'' Internet: \url{https://pingpong.chalmers.se/courseId/8799/node.do?id=4263162&ts=1513097602324&u=-1631444947}, 2018-01-02 [2018-01-02]
+
+\bibitem{laurentide_wiki} John S. Schlee, United States Geological Survey ``OUR CHANGING CONTINENT'' Internet: \url{https://pubs.usgs.gov/gip/continents/map.jpg}, 2018-01-02 [2018-01-02]
+
+% \bibitem{cheng} D. K. Cheng. ``Theory and Applications of Transmission Lines'' in \textit{Field and Wave Electromagnetics}, 2$^{\text{nd}}$ ed. Edinburgh: Pearson, 2014, pp. 427-519
+
+\end{thebibliography}
+
+\end{document}

@@ -1,5 +1,6 @@
 import csv
 import numpy as np
+from numpy.polynomial.polynomial import polyfit
 import matplotlib.pyplot as plt
 
 
@@ -34,16 +35,18 @@ class station(object):
         end = self.idx_from_day(days)
         t = self.years[:end]
         v = self.val[:end]
-        e = self.error[:end] * np.sqrt(1+(end-np.arange(end)))
+        e = self.error[:end] * (1+(end-np.arange(end)))
         c_bf = np.polyfit(t, v, 0, w=1.0/e, full=False)
+        print('New fit')
         if optimize:
             y_bf = self.__data_from_coeff(t, c_bf)
             for i in range(0, 20):
-                c = np.polynomial.polynomial.polyfit(t, v, i, w=1.0/e, full=False)
+                c = polyfit(t, v, i, w=1.0/e, full=False)
                 y = self.__data_from_coeff(t, c)
-                if (np.linalg.norm(y - v) < np.linalg.norm(y_bf - v)):
+                if (np.average(abs(y - v), weights=1/e) < np.average(abs(y_bf - v), weights=1/e)):
                     y_bf = y
                     c_bf = c
+                    print(c, i)
         self.valfit = self.__data_from_coeff(self.years, c_bf)
         return self.valfit
 
@@ -74,17 +77,17 @@ def do_station(stn_obj, ax):
     ax.errorbar(stn_obj.years[i:], stn_obj.val[i:], yerr=stn_obj.error[i:],
                 label="GPS data day 7",
                 linestyle="-", ecolor="#000000", color="#000000")
-    ax.legend()
+    ax.legend(loc='lower left')
 
-    
+
 if __name__ == "__main__":
     fig = plt.figure()
     axis_reso = fig.add_subplot(211)
     axis_reso.set_title("RESO")
     axis_mdo1 = fig.add_subplot(212)
     axis_mdo1.set_title("MDO1")
-    reso = station(2.2941, "../res/trop/RESO_trop")
+    reso = station(2.2941, "res/trop/RESO_trop")
     do_station(reso, axis_reso)
-    mdo1 = station(1.8223, "../res/trop/MDO1_trop")
+    mdo1 = station(1.8223, "res/trop/MDO1_trop")
     do_station(mdo1, axis_mdo1)
     plt.show()

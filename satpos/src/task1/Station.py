@@ -1,13 +1,13 @@
 import numpy as np
-from Coordinate import Coordinate
+from .Coordinate import Coordinate
 from mpl_toolkits.mplot3d.axes3d import Axes3D
 import matplotlib.pyplot as plt
 
 
 class StationModel(object):
-    def __init__(self, acronyme, path_to_csv, years):
+    def __init__(self, acronyme, path_to_csv, years, yearly_average, correct_errors):
         self.acro = acronyme
-        self.coords = Coordinate(years)
+        self.coords = Coordinate(years, yearly_average, correct_errors)
         self.coords.from_file("%s/%s.lon.csv" % (path_to_csv, self.acro),
                               "%s/%s.lat.csv" % (path_to_csv, self.acro),
                               "%s/%s.rad.csv" % (path_to_csv, self.acro))
@@ -24,6 +24,16 @@ class StationModel(object):
             x = self.coords.x()
             return x.val[-1] - x.val[0]
 
+    def average_lon_error(self):
+        if self.coords._spherical:
+            theta = self.coords.theta()
+            phi = self.coords.phi()
+            rad = self.coords.rad()
+            return np.average(rad.error*np.cos(theta.error)*np.cos(phi.error))
+        else:
+            x = self.coords.x()
+            return np.average(x.error)
+
     def total_lat_move(self):
         if self.coords._spherical:
             theta = self.coords.theta()
@@ -36,6 +46,16 @@ class StationModel(object):
             y = self.coords.y()
             return y.val[-1] - y.val[0]
 
+    def average_lat_error(self):
+        if self.coords._spherical:
+            theta = self.coords.theta()
+            phi = self.coords.phi()
+            rad = self.coords.rad()
+            return np.average(rad.error*np.cos(theta.error)*np.sin(phi.error))
+        else:
+            y = self.coords.y()
+            return np.average(y.error)
+
     def total_rad_move(self):
         if self.coords._spherical:
             rad = self.coords.rad()
@@ -47,6 +67,16 @@ class StationModel(object):
             bgn = np.sqrt(x.val[0]**2 + y.val[0]**2 + z.val[0]**2)
             end = np.sqrt(x.val[-1]**2 + y.val[-1]**2 + z.val[-1]**2)
             return end - bgn
+
+    def average_rad_error(self):
+        if self.coords._spherical:
+            rad = self.coords.rad()
+            return np.average(rad.error)
+        else:
+            x = self.coords.x()
+            y = self.coords.y()
+            z = self.coords.z()
+            return np.average(np.sqrt(x.error**2 + y.error**2 + z.error**2))
 
 
 class StationViewer(object):

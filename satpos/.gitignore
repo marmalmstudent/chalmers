@@ -1,1 +1,4 @@
 local
+.project
+.pydevproject
+*.toc
